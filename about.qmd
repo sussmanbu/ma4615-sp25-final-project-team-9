@@ -8,16 +8,28 @@ about:
 
 This comes from the file `about.qmd`.
 
-This is a website for the final project for MA[46]15 Data Science with R by Team TEAMNAME.
+This is a website for the final project for MA[46]15 Data Science with R by Team 9
 The members of this team are below.
 
-## Jiaming Hu
+## Nick Petrunich
 
-Jiaming is a Ph.D. student in Stats and is the Teaching Fellow for the course.
+Nick is a bioinformatics graduate student with a passion for data science
 
-## Dan Sussman
+## Louie Belile 
 
-Dan is a professor in the Math/Stat department and is the instructor for the course. [Github](https://github.com/dpmcsuss)
+Louie is a Junior studying Data Science with a minor in public policy
+
+## Rashfiqur Rahman
+
+Rashfiqur is a BA/MS Computer Science student with interests in Machine learning and Data Science
+
+## Baijie Li
+
+Baijie is a Junior studying in Data Science major
+
+## Jiayi Zhang
+
+Jiayi is a Junior major in Economic and Mathematic
 
 <!-- Please leave in the information below -->
 
