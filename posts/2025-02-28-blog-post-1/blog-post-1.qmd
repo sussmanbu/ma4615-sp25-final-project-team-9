@@ -8,12 +8,12 @@ date-modified: "2025-02-28"
 draft: FALSE
 ---
 
-  **Original Data Source:** 
+  **Original Data Source:**
   
   The datasets that we have chosen are Suspensions,
   School Support, and Harassment & Bullying. The datasets originate from the
   U.S. Department of Education's Civil Rights Data Collection (CRDC) from
-  the year 2021-2022, accessible at [civilrightsdata.ed.gov](civilrightsdata.ed.gov). The CRDC collects
+  the year 2021-2022, accessible at [civilrightsdata.ed.gov](https://civilrightsdata.ed.gov). The CRDC collects
   information from public schools and school districts across the United
   States to monitor civil rights compliance and ensure equal educational
   opportunities.
