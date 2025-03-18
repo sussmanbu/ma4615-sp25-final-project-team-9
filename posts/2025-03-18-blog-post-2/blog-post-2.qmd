@@ -1,14 +1,9 @@
 ---
 title: "Blog Post 2"
-description:  |
-  Dataset Proposals
-author: "Team 9"
+author: ""
 date: "2025-03-17"
 date-modified: "2025-03-17"
 draft: FALSE
-editor: 
-  markdown: 
-    wrap: 72
 ---
 
 **Data Background**
