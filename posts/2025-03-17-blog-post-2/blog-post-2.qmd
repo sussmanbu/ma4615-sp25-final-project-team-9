@@ -6,16 +6,57 @@ author: "Team 9"
 date: "2025-03-17"
 date-modified: "2025-03-17"
 draft: FALSE
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
 **Data Background**
 
-The Civil Rights Data Collection (CRDC) data we chose comes from public schools and school districts across the United States, collected by the U.S. Department of Education’s Office for Civil Rights (OCR). It is gathered to monitor educational access and equity, ensuring compliance with federal civil rights laws. The data is publicly available on the [CRDC website](https://ocrdata.ed.gov/), allowing access to the original source. However, potential issues include self-reported data inaccuracies, missing responses, and reporting inconsistencies across districts. The sample population includes all U.S. public schools, but biases may arise from underreporting, data misclassification, or non-standardized responses. This data is widely used for research on disparities in school discipline, advanced coursework access, and special education services, informing policy decisions on educational equity and civil rights enforcement. Several studies have examined this data to analyze racial disparities, resource allocation, and systemic inequalities, raising questions about data reliability, completeness, and the effectiveness of civil rights enforcement based on these reports.
+The Civil Rights Data Collection (CRDC) data we chose comes from public
+schools and school districts across the United States, collected by the
+U.S. Department of Education’s Office for Civil Rights (OCR). It is
+gathered to monitor educational access and equity, ensuring compliance
+with federal civil rights laws. The data is publicly available on the
+[CRDCwebsite](https://ocrdata.ed.gov/), allowing access to the original
+source. However, potential issues include self-reported data
+inaccuracies, missing responses, and reporting inconsistencies across
+districts. The sample population includes all U.S. public schools, but
+biases may arise from underreporting, data misclassification, or
+non-standardized responses. This data is widely used for research on
+disparities in school discipline, advanced coursework access, and
+special education services, informing policy decisions on educational
+equity and civil rights enforcement. Several studies have examined this
+data to analyze racial disparities, resource allocation, and systemic
+inequalities, raising questions about data reliability, completeness,
+and the effectiveness of civil rights enforcement based on these
+reports.
 
 **Data Loading and Cleaning**
 
-We cleaned the dataset that the column name has “SCH\_”by removing SCH_H from all the columns and pushed it onto Github. Also, since the column names aren’t intuitive, we want to use the appendix and column definitions provided in it, to create some pattern or new way of naming columns so they’re easier to understand. We added a “cleaned.dataset.ds” into the dataset file. We are going to remove the missing values for the following criteria. There are 6710 rows in the dataset that contain any of the specified reserve code values (-3,-4,-5,-6,-9,-12,-13).
+We cleaned the dataset that the column name has “SCH\_”by removing SCH_H
+from all the columns and pushed it onto Github. Also, since the column
+names aren’t intuitive, we want to use the appendix and column
+definitions provided in it, to create some pattern or new way of naming
+columns so they’re easier to understand. We added a “cleaned.dataset.ds”
+into the dataset file.
+
+We are going to remove the missing values for the following criteria. 
+
+There are 6710 rows in the dataset that contain any of the specified
+reserve code values (-3,-4,-5,-6,-9,-12,-13).
 
 **Data for Equity**
 
-When analyzing the Harassment and Bullying dataset, it is essential to uphold equity principles to ensure responsible and ethical data use. Transparency and accountability require clearly documenting data sources, acknowledging limitations, and preventing misrepresentation. Contextualization and responsible communication emphasize understanding differences in reporting practices across schools to avoid misleading comparisons. Lastly, avoiding harm and misuse means disaggregating data thoughtfully to highlight disparities without reinforcing stereotypes and ensuring findings support positive, data-driven interventions rather than punitive measures. By applying these principles, we can produce insights that are fair, meaningful, and beneficial for educators, policymakers, and students.
+When analyzing the Harassment and Bullying dataset, it is essential to
+uphold equity principles to ensure responsible and ethical data use.
+Transparency and accountability require clearly documenting data
+sources, acknowledging limitations, and preventing misrepresentation.
+Contextualization and responsible communication emphasize understanding
+differences in reporting practices across schools to avoid misleading
+comparisons. Lastly, avoiding harm and misuse means disaggregating data
+thoughtfully to highlight disparities without reinforcing stereotypes
+and ensuring findings support positive, data-driven interventions rather
+than punitive measures. By applying these principles, we can produce
+insights that are fair, meaningful, and beneficial for educators,
+policymakers, and students.
