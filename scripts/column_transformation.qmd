@@ -1,0 +1,31 @@
+---
+title: "Untitled"
+editor: visual
+---
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+data <- read_csv('dataset/Harassment and Bullying.csv')
+
+definitions <- read_csv('dataset/data_definitions.csv')
+```
+
+remove all rows that do not start with HIBS
+
+```{r}
+definitions <- definitions %>%
+  filter(grepl("^HIBS:", Module))
+```
+
+select only variable name and survey question
+```{r}
+definitions <- definitions %>%
+  select(`Variable Name`, `Survey Question`)
+```
+
+
+
+

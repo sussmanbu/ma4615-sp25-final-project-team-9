@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Here we provide a detailed analysis using more sophisticated statistics techniques.">
 
-<title>Analysis – MA [46]15 Final Project TEAM 9</title>
+<title>eda(sex – MA [46]15 Final Project TEAM 9</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,22 +57,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,17 +102,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">MA [46]15 Final Project TEAM 9</span>
     </a>
   </div>
@@ -124,19 +123,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./big_picture.html"> 
+    <a class="nav-link" href="../big_picture.html"> 
 <span class="menu-text">Big Picture</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./analysis.html" aria-current="page"> 
+    <a class="nav-link" href="../analysis.html"> 
 <span class="menu-text">Analysis</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./data.html"> 
+    <a class="nav-link" href="../data.html"> 
 <span class="menu-text">Data</span></a>
   </li>  
 </ul>
@@ -150,53 +149,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#example-of-loading-data" id="toc-example-of-loading-data" class="nav-link active" data-scroll-target="#example-of-loading-data">Example of loading data</a></li>
-  <li><a href="#note-on-attribution" id="toc-note-on-attribution" class="nav-link" data-scroll-target="#note-on-attribution">Note on Attribution</a></li>
-  <li><a href="#rubric-on-this-page" id="toc-rubric-on-this-page" class="nav-link" data-scroll-target="#rubric-on-this-page">Rubric: On this page</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Analysis</h1>
-</div>
-
-<div>
-  <div class="description">
-    Here we provide a detailed analysis using more sophisticated statistics techniques.
-  </div>
-</div>
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Pebbleswithquarzite.jpg" class="img-fluid"></p>
-<p>This comes from the file <code>analysis.qmd</code>.</p>
-<p>We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You’ll also reflect on next steps and further analysis.</p>
-<p>The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc.</p>
-<p>While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points. If you want you can link back to your blog posts or create separate pages with more details.</p>
-<p>The style of this paper should aim to be that of an academic paper. I don’t expect this to be of publication quality but you should keep that aim in mind. Avoid using “we” too frequently, for example “We also found that …”. Describe your methodology and your findings but don’t describe your whole process.</p>
-<section id="example-of-loading-data" class="level3">
-<h3 class="anchored" data-anchor-id="example-of-loading-data">Example of loading data</h3>
-<p>The code below shows an example of loading the loan refusal data set (which you should delete at some point).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -211,63 +170,156 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">getwd</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the CSV file (update path if needed)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"dataset/clean_data file/Harassment_and_Bullying_clean.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: One or more parsing issues, call `problems()` on your data frame for details,
+e.g.:
+  dat &lt;- vroom(...)
+  problems(dat)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 98010 Columns: 159
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr   (5): LEA_STATE, LEA_STATE_NAME, LEA_NAME, NAME, JJ
+dbl (154): LEAID, SCHID, COMBOKEY, HBALLEGATIONS_SEX, HBALLEGATIONS_ORI, HBA...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "/Users/louieblile/Desktop/Rstudio/ma4615-sp25-final-project-team-9"</code></pre>
+<pre><code># A tibble: 6 × 159
+  LEA_STATE LEA_STATE_NAME  LEAID LEA_NAME            SCHID NAME  COMBOKEY JJ   
+  &lt;chr&gt;     &lt;chr&gt;           &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;
+1 AL        ALABAMA        100002 Alabama Youth Serv… 99995 AUTA…  1.00e10 Yes  
+2 AL        ALABAMA        100005 Albertville City      870 Albe…  1.00e10 No   
+3 AL        ALABAMA        100005 Albertville City      871 Albe…  1.00e10 No   
+4 AL        ALABAMA        100005 Albertville City      879 Albe…  1.00e10 No   
+5 AL        ALABAMA        100005 Albertville City      889 Albe…  1.00e10 No   
+6 AL        ALABAMA        100005 Albertville City     1616 Albe…  1.00e10 No   
+# ℹ 151 more variables: HBALLEGATIONS_SEX &lt;dbl&gt;, HBALLEGATIONS_ORI &lt;dbl&gt;,
+#   HBALLEGATIONS_RAC &lt;dbl&gt;, HBALLEGATIONS_DIS &lt;dbl&gt;, HBALLEGATIONS_REL &lt;dbl&gt;,
+#   HBALLEGATIONS_REL_ATAG &lt;dbl&gt;, HBALLEGATIONS_REL_BUDD &lt;dbl&gt;,
+#   HBALLEGATIONS_REL_CATH &lt;dbl&gt;, HBALLEGATIONS_REL_EAST &lt;dbl&gt;,
+#   HBALLEGATIONS_REL_HIND &lt;dbl&gt;, HBALLEGATIONS_REL_ISLM &lt;dbl&gt;,
+#   HBALLEGATIONS_REL_JWIT &lt;dbl&gt;, HBALLEGATIONS_REL_JWSH &lt;dbl&gt;,
+#   HBALLEGATIONS_REL_MORM &lt;dbl&gt;, HBALLEGATIONS_REL_MULTI &lt;dbl&gt;, …</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset/loan_refusal_clean.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="note-on-attribution" class="level2">
-<h2 class="anchored" data-anchor-id="note-on-attribution">Note on Attribution</h2>
-<p>In general, you should try to provide links to relevant resources, especially those that helped you. You don’t have to link to every StackOverflow post you used but if there are explainers on aspects of the data or specific models that you found helpful, try to link to those. Also, try to link to other sources that might support (or refute) your analysis. These can just be regular hyperlinks. You don’t need a formal citation.</p>
-<p>If you are directly quoting from a source, please make that clear. You can show long quotes using <code>&gt;</code> like this</p>
-<pre><code>&gt; To be or not to be.</code></pre>
-<blockquote class="blockquote">
-<p>To be or not to be.</p>
-</blockquote>
-<hr>
-</section>
-<section id="rubric-on-this-page" class="level2">
-<h2 class="anchored" data-anchor-id="rubric-on-this-page">Rubric: On this page</h2>
-<p>You will</p>
-<ul>
-<li>Introduce what motivates your Data Analysis (DA)
-<ul>
-<li>Which variables and relationships are you most interested in?</li>
-<li>What questions are you interested in answering?</li>
-<li>Provide context for the rest of the page. This will include figures/tables that illustrate aspects of the data of your question.</li>
-</ul></li>
-<li>Modeling and Inference
-<ul>
-<li>The page will include some kind of formal statistical model. This could be a linear regression, logistic regression, or another modeling framework.</li>
-<li>Explain the ideas and techniques you used to choose the predictors for your model. (Think about including interaction terms and other transformations of your variables.)</li>
-<li>Describe the results of your modelling and make sure to give a sense of the uncertainty in your estimates and conclusions.</li>
-</ul></li>
-<li>Explain the flaws and limitations of your analysis
-<ul>
-<li>Are there some assumptions that you needed to make that might not hold? Is there other data that would help to answer your questions?</li>
-</ul></li>
-<li>Clarity Figures
-<ul>
-<li>Are your figures/tables/results easy to read, informative, without problems like overplotting, hard-to-read labels, etc?</li>
-<li>Each figure should provide a key insight. Too many figures or other data summaries can detract from this. (While not a hard limit, around 5 total figures is probably a good target.)</li>
-<li>Default <code>lm</code> output and plots are typically not acceptable.</li>
-</ul></li>
-<li>Clarity of Explanations
-<ul>
-<li>How well do you explain each figure/result?</li>
-<li>Do you provide interpretations that suggest further analysis or explanations for observed phenomenon?</li>
-</ul></li>
-<li>Organization and cleanliness.
-<ul>
-<li>Make sure to remove excessive warnings, hide all code, organize with sections or multiple pages, use bullets, etc.</li>
-<li>This page should be self-contained, i.e.&nbsp;provide a description of the relevant data.</li>
-</ul></li>
-</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sex_cols <span class="ot">&lt;-</span> <span class="fu">names</span>(data)[<span class="fu">str_detect</span>(<span class="fu">names</span>(data), <span class="st">"SEX"</span>)]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sex_cols</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "HBALLEGATIONS_SEX"        "HBREPORTED_SEX_HI_M"     
+ [3] "HBREPORTED_SEX_HI_F"      "HBREPORTED_SEX_AM_M"     
+ [5] "HBREPORTED_SEX_AM_F"      "HBREPORTED_SEX_AS_M"     
+ [7] "HBREPORTED_SEX_AS_F"      "HBREPORTED_SEX_HP_M"     
+ [9] "HBREPORTED_SEX_HP_F"      "HBREPORTED_SEX_BL_M"     
+[11] "HBREPORTED_SEX_BL_F"      "HBREPORTED_SEX_WH_M"     
+[13] "HBREPORTED_SEX_WH_F"      "HBREPORTED_SEX_TR_M"     
+[15] "HBREPORTED_SEX_TR_F"      "TOT_HBREPORTED_SEX_M"    
+[17] "TOT_HBREPORTED_SEX_F"     "HBREPORTED_SEX_EL_M"     
+[19] "HBREPORTED_SEX_EL_F"      "HBREPORTED_SEX_IDEA_M"   
+[21] "HBREPORTED_SEX_IDEA_F"    "HBREPORTED_SEX_504_M"    
+[23] "HBREPORTED_SEX_504_F"     "HBDISCIPLINED_SEX_HI_M"  
+[25] "HBDISCIPLINED_SEX_HI_F"   "HBDISCIPLINED_SEX_AM_M"  
+[27] "HBDISCIPLINED_SEX_AM_F"   "HBDISCIPLINED_SEX_AS_M"  
+[29] "HBDISCIPLINED_SEX_AS_F"   "HBDISCIPLINED_SEX_HP_M"  
+[31] "HBDISCIPLINED_SEX_HP_F"   "HBDISCIPLINED_SEX_BL_M"  
+[33] "HBDISCIPLINED_SEX_BL_F"   "HBDISCIPLINED_SEX_WH_M"  
+[35] "HBDISCIPLINED_SEX_WH_F"   "HBDISCIPLINED_SEX_TR_M"  
+[37] "HBDISCIPLINED_SEX_TR_F"   "TOT_HBDISCIPLINED_SEX_M" 
+[39] "TOT_HBDISCIPLINED_SEX_F"  "HBDISCIPLINED_SEX_EL_M"  
+[41] "HBDISCIPLINED_SEX_EL_F"   "HBDISCIPLINED_SEX_IDEA_M"
+[43] "HBDISCIPLINED_SEX_IDEA_F" "HBDISCIPLINED_SEX_504_M" 
+[45] "HBDISCIPLINED_SEX_504_F" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Your list of reserved codes</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>reserved_codes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">5</span>, <span class="sc">-</span><span class="dv">6</span>, <span class="sc">-</span><span class="dv">9</span>, <span class="sc">-</span><span class="dv">12</span>, <span class="sc">-</span><span class="dv">13</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># List of sex-related columns you provided</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>sex_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBALLEGATIONS_SEX"</span>, <span class="st">"HBREPORTED_SEX_HI_M"</span>, <span class="st">"HBREPORTED_SEX_HI_F"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBREPORTED_SEX_AM_M"</span>, <span class="st">"HBREPORTED_SEX_AM_F"</span>, <span class="st">"HBREPORTED_SEX_AS_M"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBREPORTED_SEX_AS_F"</span>, <span class="st">"HBREPORTED_SEX_HP_M"</span>, <span class="st">"HBREPORTED_SEX_HP_F"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBREPORTED_SEX_BL_M"</span>, <span class="st">"HBREPORTED_SEX_BL_F"</span>, <span class="st">"HBREPORTED_SEX_WH_M"</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBREPORTED_SEX_WH_F"</span>, <span class="st">"HBREPORTED_SEX_TR_M"</span>, <span class="st">"HBREPORTED_SEX_TR_F"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TOT_HBREPORTED_SEX_M"</span>, <span class="st">"TOT_HBREPORTED_SEX_F"</span>, <span class="st">"HBREPORTED_SEX_EL_M"</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBREPORTED_SEX_EL_F"</span>, <span class="st">"HBREPORTED_SEX_IDEA_M"</span>, <span class="st">"HBREPORTED_SEX_IDEA_F"</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBREPORTED_SEX_504_M"</span>, <span class="st">"HBREPORTED_SEX_504_F"</span>, <span class="st">"HBDISCIPLINED_SEX_HI_M"</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBDISCIPLINED_SEX_HI_F"</span>, <span class="st">"HBDISCIPLINED_SEX_AM_M"</span>, <span class="st">"HBDISCIPLINED_SEX_AM_F"</span>,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBDISCIPLINED_SEX_AS_M"</span>, <span class="st">"HBDISCIPLINED_SEX_AS_F"</span>, <span class="st">"HBDISCIPLINED_SEX_HP_M"</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBDISCIPLINED_SEX_HP_F"</span>, <span class="st">"HBDISCIPLINED_SEX_BL_M"</span>, <span class="st">"HBDISCIPLINED_SEX_BL_F"</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBDISCIPLINED_SEX_WH_M"</span>, <span class="st">"HBDISCIPLINED_SEX_WH_F"</span>, <span class="st">"HBDISCIPLINED_SEX_TR_M"</span>,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBDISCIPLINED_SEX_TR_F"</span>, <span class="st">"TOT_HBDISCIPLINED_SEX_M"</span>, <span class="st">"TOT_HBDISCIPLINED_SEX_F"</span>,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBDISCIPLINED_SEX_EL_M"</span>, <span class="st">"HBDISCIPLINED_SEX_EL_F"</span>, <span class="st">"HBDISCIPLINED_SEX_IDEA_M"</span>,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"HBDISCIPLINED_SEX_IDEA_F"</span>, <span class="st">"HBDISCIPLINED_SEX_504_M"</span>, <span class="st">"HBDISCIPLINED_SEX_504_F"</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace reserved codes with NA in these columns</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(sex_cols), <span class="sc">~</span> <span class="fu">ifelse</span>(. <span class="sc">%in%</span> reserved_codes, <span class="cn">NA</span>, .)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>top_schools <span class="ot">&lt;-</span> data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(HBALLEGATIONS_SEX)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(NAME) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total_allegations =</span> <span class="fu">sum</span>(HBALLEGATIONS_SEX, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(total_allegations)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>top_schools</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   NAME                          total_allegations
+   &lt;chr&gt;                                     &lt;dbl&gt;
+ 1 DeKalb High School                         1145
+ 2 Clinton Rosette Middle School               427
+ 3 Wapato High School                          350
+ 4 Cooper Middle School                        214
+ 5 Adams Elementary                            182
+ 6 Wapato Middle School                        176
+ 7 Tyler Elementary School                     174
+ 8 Huntley Middle School                       167
+ 9 Gwendolyn Brooks Elem Sch                   131
+10 Alcona Elementary School                    128</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(top_schools, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(NAME, total_allegations), <span class="at">y =</span> total_allegations)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Schools by Sex-Based Harassment Allegations"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"School Name"</span>, <span class="at">y =</span> <span class="st">"Total Allegations"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EDA-Sex-_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">TOTAL_REPORTED_SEX =</span> TOT_HBREPORTED_SEX_M <span class="sc">+</span> TOT_HBREPORTED_SEX_F,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">allegations_per_1000 =</span> (HBALLEGATIONS_SEX <span class="sc">/</span> TOTAL_REPORTED_SEX) <span class="sc">*</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
