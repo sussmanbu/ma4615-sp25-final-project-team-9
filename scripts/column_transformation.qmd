@@ -28,7 +28,7 @@ definitions <- definitions %>%
 
 pivot to join to data
 ```{r}
-data %>%
+##data %>%
   
 ```
 
