@@ -1,0 +1,56 @@
+# Bullying Data Analysis
+
+library(dplyr)
+# Read the bullying data
+bullying_data <- read.csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", stringsAsFactors = FALSE)
+
+# Filter and calculate total harassment & bullying incidents
+bullying_data_filtered <- bullying_data %>%
+  filter(
+    HBALLEGATIONS_SEX > 0 |
+    HBALLEGATIONS_ORI > 0 |
+    HBALLEGATIONS_RAC > 0 |
+    HBALLEGATIONS_DIS > 0 |
+    HBALLEGATIONS_REL > 0
+  ) %>%
+  mutate(
+    TOTAL_HARASSMENT_BULLYING = HBALLEGATIONS_SEX +
+                                 HBALLEGATIONS_ORI +
+                                 HBALLEGATIONS_RAC +
+                                 HBALLEGATIONS_DIS +
+                                 HBALLEGATIONS_REL
+  )
+
+# Summarise incidents by state
+bullying_by_state <- bullying_data_filtered %>%
+  group_by(LEA_STATE) %>%
+  summarise(
+    total_bullying = sum(TOTAL_HARASSMENT_BULLYING, na.rm = TRUE)
+  ) %>%
+  arrange(desc(total_bullying))
+
+library(ggplot2)
+# Create a bar chart for bullying incidents by state
+ggplot(bullying_by_state, aes(x = reorder(LEA_STATE, total_bullying), y = total_bullying)) +
+  geom_bar(stat = "identity", fill = "purple") +
+  coord_flip() +
+  labs(
+    title = "Total Harassment & Bullying Incidents by State",
+    x = "State",
+    y = "Total Incidents"
+  ) +
+  theme_minimal()
+
+# Rename column for mapping
+bullying_by_state <- bullying_by_state %>%
+  rename(state = LEA_STATE)
+
+# Mapping the bullying incidents by state
+install.packages("usmap")
+install.packages("viridis")
+library(usmap)
+library(viridis)
+plot_usmap(data = bullying_by_state, values = "total_bullying", regions = "states") +
+  scale_fill_viridis(name = "Total Incidents", option = "C") +
+  labs(title = "Total Harassment & Bullying Incidents by State") +
+  theme(legend.position = "right")

@@ -1,0 +1,100 @@
+If want to remove all reserve code values (-3,-4,-5,-6,-9,-12,-13)
+```{r}
+library(tidyverse)
+
+
+data <- readRDS("dataset/cleaned_dataset.rds")
+class(data)
+reserve_codes <- c(-3, -4, -5, -6, -9, -12, -13)
+cleaned_data <- data %>%
+  filter(if_all(everything(), ~ !(.x %in% reserve_codes)))
+head(cleaned_data)
+```
+
+```{r}
+library(tidyverse)
+data <- readRDS("dataset/cleaned_dataset.rds")
+
+target_vars <- c(
+  "HBREPORTED_DIS_AS_M", "HBREPORTED_DIS_AS_F",
+  "HBREPORTED_DIS_HP_M", "HBREPORTED_DIS_HP_F",
+  "HBREPORTED_DIS_BL_M", "HBREPORTED_DIS_BL_F",
+  "HBREPORTED_DIS_WH_M", "HBREPORTED_DIS_WH_F",
+  "HBREPORTED_DIS_AM_M", "HBREPORTED_DIS_AM_F",
+  "HBREPORTED_DIS_HI_M", "HBREPORTED_DIS_HI_F",
+  "HBREPORTED_DIS_IDEA_M", "HBREPORTED_DIS_IDEA_F",
+  "HBREPORTED_DIS_504_M", "HBREPORTED_DIS_504_F",
+  "HBREPORTED_DIS_EL_M", "HBREPORTED_DIS_EL_F",
+  "HBREPORTED_DIS_TR_M", "HBREPORTED_DIS_TR_F"
+)
+
+long_data <- data %>%
+  select(all_of(target_vars)) %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "count") %>%
+  filter(count >= 0) %>%
+  mutate(
+    group = case_when(
+      variable == "HBREPORTED_DIS_AS_M" ~ "Asian_M",
+      variable == "HBREPORTED_DIS_AS_F" ~ "Asian_F",
+      variable == "HBREPORTED_DIS_HP_M" ~ "NativeHawaiian_M",
+      variable == "HBREPORTED_DIS_HP_F" ~ "NativeHawaiian_F",
+      variable == "HBREPORTED_DIS_BL_M" ~ "Black_M",
+      variable == "HBREPORTED_DIS_BL_F" ~ "Black_F",
+      variable == "HBREPORTED_DIS_WH_M" ~ "White_M",
+      variable == "HBREPORTED_DIS_WH_F" ~ "White_F",
+      variable == "HBREPORTED_DIS_AM_M" ~ "AmericanIndian_M",
+      variable == "HBREPORTED_DIS_AM_F" ~ "AmericanIndian_F",
+      variable == "HBREPORTED_DIS_HI_M" ~ "Hispanic_M",
+      variable == "HBREPORTED_DIS_HI_F" ~ "Hispanic_F",
+      variable == "HBREPORTED_DIS_IDEA_M" ~ "IDEA_M",
+      variable == "HBREPORTED_DIS_IDEA_F" ~ "IDEA_F",
+      variable == "HBREPORTED_DIS_504_M" ~ "504_M",
+      variable == "HBREPORTED_DIS_504_F" ~ "504_F",
+      variable == "HBREPORTED_DIS_TR_M" ~ "TwoOrPlusRaces_M",
+      variable == "HBREPORTED_DIS_TR_F" ~ "TwoOrPlusRaces_F",
+      variable == "HBREPORTED_DIS_EL_M" ~ "EL_M",
+      variable == "HBREPORTED_DIS_EL_F" ~ "EL_F"
+    ),
+    Race = str_extract(group, "^[^_]+"),
+    Gender = str_extract(group, "(M|F)")
+  )
+
+summary_data <- long_data %>%
+  mutate(
+    Race = ifelse(is.na(Race), "Others", Race),
+    Gender = recode(Gender, "M" = "Male", "F" = "Female")
+  ) %>%
+  group_by(Race, Gender) %>%
+  summarise(total_reports = sum(count), .groups = "drop")
+
+summary_data$Race <- factor(summary_data$Race, levels = c(
+  "Asian", "Black", "White", "Hispanic", "AmericanIndian", "NativeHawaiian",
+  "TwoOrPlusRaces", "IDEA", "504", "EL"
+))
+
+summary_data <- summary_data %>%
+  filter(!is.na(Race))
+
+ggplot(summary_data, aes(x = total_reports, y = Race, fill = Gender)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  geom_text(
+    aes(label = total_reports),
+    position = position_dodge(width = 0.7),
+    hjust = -0.1,
+    size = 3.5,
+    color = "black"
+  ) +
+  labs(
+    title = "Students Reported as Harassed or Bullied (Disability) by Group&Gender",
+    x = "# of Reports",
+    y = "Group"
+  ) +
+  scale_fill_manual(values = c("Male" = "steelblue", "Female" = "pink")) +
+  theme_minimal()
+
+summary_data %>%
+  filter(Race == "AmericanIndian" |Race == "Hispanic" |Race == "NativeHawaiian" |Race == "White" |Race == "Black" |Race == "Asian" |Race == "504" |Race == "EL" |Race == "TwoOrPlusRaces" | Race == "IDEA") %>%
+  group_by(Race, Gender) %>%
+  summarise(total_reports = sum(total_reports))
+
+```

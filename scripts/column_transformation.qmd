@@ -26,6 +26,13 @@ definitions <- definitions %>%
   select(`Variable Name`, `Survey Question`)
 ```
 
+pivot to join to data
+```{r}
+##data %>%
+  
+```
+
+
 
 
 
