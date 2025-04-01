@@ -1,0 +1,17 @@
+---
+title: "Blog Post 4"
+author: "Team 9"
+date: "2025-03-31"
+date-modified: "2025-03-31"
+draft: FALSE
+---
+In our ongoing exploration of the data, we have identified several clear trends, such as the variation in bullying rates across states for different demographic groups. One question we want to address next is whether these trends are primarily driven by the prevalence of certain racial, religious, or gender groups within each state, or whether other underlying factors also play significant roles. We plan to normalize reported harassment rates by each group’s population size in that state, thereby distinguishing true disparities from simple differences in group size. We also intend to create side-by-side visualizations comparing bullying incidents with school support resources—like security personnel, counselors, and social workers—to see if and how these resources might affect bullying outcomes.
+
+We will try to compare staffing ratios: calculate ratios such as the number of students per counselor or security guard and visualize differences in resource allocation using bar charts or heat maps (highlight states with high rates of bullying and inadequate allocation of support staff).
+
+Linking bullying to support staff. We sought to analyze the association between the presence of different types of support staff(counselors, security guards, nurses, etc) and reported rates of bullying. For example, we believe that schools with more counselors had lower rates of bullying, showing that counseling efforts are effective in preventing such incidents.
+To begin approaching this comparison, we created a state-level chart showing the average number of harassment allegations per school. This visualization allows us to normalize incident counts across states and better compare the burden faced by individual schools. States like Utah, Illinois, and Washington stand out with significantly higher per-school allegations. This chart sets the stage for deeper analysis, where we plan to examine whether such rates correlate with a lack (or presence) of specific support staff. Drawing these connections may help identify which staffing patterns are most effective at reducing incidents.
+
+As for modeling, we are considering a logistic regression approach that treats bullying incidents as the outcome variable, incorporating demographic proportions, resource availability, and potential interactions as predictors. We may also explore more flexible methods—such as random forests—if we suspect more complex or nonlinear relationships. In the coming week, our goal is to finalize which transformations are necessary, experiment with different model types, and assess model performance. By doing so, we hope to gain a clearer picture of which factors truly drive the observed patterns and how schools might leverage this information to improve student well-being.
+Below is graph the Heat map for total number of harassment by states(We’ll do the same for staff ratio after collecting data of total number of students in each school)
+
