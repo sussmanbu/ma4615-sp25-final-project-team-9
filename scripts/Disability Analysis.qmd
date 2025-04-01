@@ -1,8 +1,9 @@
 If want to remove all reserve code values (-3,-4,-5,-6,-9,-12,-13)
 ```{r}
 library(tidyverse)
-setwd("~/ma4615-sp25-final-project-team-9/dataset")
-data <- readRDS("cleaned_dataset.rds")
+
+
+data <- readRDS("dataset/cleaned_dataset.rds")
 class(data)
 reserve_codes <- c(-3, -4, -5, -6, -9, -12, -13)
 cleaned_data <- data %>%
@@ -12,8 +13,7 @@ head(cleaned_data)
 
 ```{r}
 library(tidyverse)
-setwd("~/ma4615-sp25-final-project-team-9/dataset")
-data <- readRDS("cleaned_dataset.rds")
+data <- readRDS("dataset/cleaned_dataset.rds")
 
 target_vars <- c(
   "HBREPORTED_DIS_AS_M", "HBREPORTED_DIS_AS_F",
