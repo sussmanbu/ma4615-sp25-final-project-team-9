@@ -1,0 +1,83 @@
+```{r}
+library(tidyverse)  
+support_data <- read_csv("dataset/School Support.csv")
+glimpse(support_data)
+names(support_data)
+library(dplyr)
+
+staff_by_state <- support_data %>%
+  filter(SCH_FTESECURITY_GUA > 0,
+         SCH_FTECOUNSELORS > 0,
+         SCH_FTESERVICES_PSY > 0) %>%
+  group_by(LEA_STATE) %>%
+  summarise(
+    total_security = sum(SCH_FTESECURITY_GUA, na.rm = TRUE),
+    total_counselors = sum(SCH_FTECOUNSELORS, na.rm = TRUE),
+    total_psychologists = sum(SCH_FTESERVICES_PSY, na.rm = TRUE),
+    schools_counted = n()
+  ) %>%
+  arrange(desc(total_counselors))
+library(ggplot2)
+
+ggplot(staff_by_state, aes(x = reorder(LEA_STATE, total_counselors), y = total_counselors)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  coord_flip() +
+  labs(title = "Total Counselors by State (Filtered for > 0)",
+       x = "State", y = "Total Counselors") +
+  theme_minimal()
+
+ggplot(staff_by_state, aes(x = reorder(LEA_STATE, total_security), y = total_security)) +
+  geom_bar(stat = "identity", fill = "red") +
+  coord_flip() +
+  labs(title = "Total Security by State (Filtered for > 0)",
+       x = "State", y = "Total Security") +
+  theme_minimal()
+```
+
+```{r}
+library(dplyr)
+bullying_data <- read.csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", stringsAsFactors = FALSE)
+bullying_data_filtered <- bullying_data %>%
+  filter(
+    HBALLEGATIONS_SEX > 0 |
+    HBALLEGATIONS_ORI > 0 |
+    HBALLEGATIONS_RAC > 0 |
+    HBALLEGATIONS_DIS > 0 |
+    HBALLEGATIONS_REL > 0
+  ) %>%
+  mutate(
+    TOTAL_HARASSMENT_BULLYING = HBALLEGATIONS_SEX +
+                                 HBALLEGATIONS_ORI +
+                                 HBALLEGATIONS_RAC +
+                                 HBALLEGATIONS_DIS +
+                                 HBALLEGATIONS_REL
+  )
+bullying_by_state <- bullying_data_filtered %>%
+  group_by(LEA_STATE) %>%
+  summarise(
+    total_bullying = sum(TOTAL_HARASSMENT_BULLYING, na.rm = TRUE)
+  ) %>%
+  arrange(desc(total_bullying))
+library(ggplot2)
+
+ggplot(bullying_by_state, aes(x = reorder(LEA_STATE, total_bullying), y = total_bullying)) +
+  geom_bar(stat = "identity", fill = "purple") +
+  coord_flip() +
+  labs(
+    title = "Total Harassment & Bullying Incidents by State",
+    x = "State",
+    y = "Total Incidents"
+  ) +
+  theme_minimal()
+
+bullying_by_state <- bullying_by_state %>%
+  rename(state = LEA_STATE)
+install.packages("usmap")
+install.packages("viridis")
+library(usmap)
+library(viridis)
+plot_usmap(data = bullying_by_state, values = "total_bullying", regions = "states") +
+  scale_fill_viridis(name = "Total Incidents", option = "C") +
+  labs(title = "Total Harassment & Bullying Incidents by State") +
+  theme(legend.position = "right")
+```

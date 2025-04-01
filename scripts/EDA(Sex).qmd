@@ -1,0 +1,77 @@
+```{r}
+library(tidyverse)
+```
+```{r}
+library(tidyverse)
+# Read the CSV file (update path if needed)
+library(tidyverse)
+library(tidyverse)
+
+data <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+
+```
+```{r}
+head(data)
+```
+```{r}
+sex_cols <- names(data)[str_detect(names(data), "SEX")]
+sex_cols
+```
+```{r}
+library(tidyverse)
+
+# Your list of reserved codes
+reserved_codes <- c(-3, -4, -5, -6, -9, -12, -13)
+
+# List of sex-related columns you provided
+sex_cols <- c(
+  "HBALLEGATIONS_SEX", "HBREPORTED_SEX_HI_M", "HBREPORTED_SEX_HI_F",
+  "HBREPORTED_SEX_AM_M", "HBREPORTED_SEX_AM_F", "HBREPORTED_SEX_AS_M",
+  "HBREPORTED_SEX_AS_F", "HBREPORTED_SEX_HP_M", "HBREPORTED_SEX_HP_F",
+  "HBREPORTED_SEX_BL_M", "HBREPORTED_SEX_BL_F", "HBREPORTED_SEX_WH_M",
+  "HBREPORTED_SEX_WH_F", "HBREPORTED_SEX_TR_M", "HBREPORTED_SEX_TR_F",
+  "TOT_HBREPORTED_SEX_M", "TOT_HBREPORTED_SEX_F", "HBREPORTED_SEX_EL_M",
+  "HBREPORTED_SEX_EL_F", "HBREPORTED_SEX_IDEA_M", "HBREPORTED_SEX_IDEA_F",
+  "HBREPORTED_SEX_504_M", "HBREPORTED_SEX_504_F", "HBDISCIPLINED_SEX_HI_M",
+  "HBDISCIPLINED_SEX_HI_F", "HBDISCIPLINED_SEX_AM_M", "HBDISCIPLINED_SEX_AM_F",
+  "HBDISCIPLINED_SEX_AS_M", "HBDISCIPLINED_SEX_AS_F", "HBDISCIPLINED_SEX_HP_M",
+  "HBDISCIPLINED_SEX_HP_F", "HBDISCIPLINED_SEX_BL_M", "HBDISCIPLINED_SEX_BL_F",
+  "HBDISCIPLINED_SEX_WH_M", "HBDISCIPLINED_SEX_WH_F", "HBDISCIPLINED_SEX_TR_M",
+  "HBDISCIPLINED_SEX_TR_F", "TOT_HBDISCIPLINED_SEX_M", "TOT_HBDISCIPLINED_SEX_F",
+  "HBDISCIPLINED_SEX_EL_M", "HBDISCIPLINED_SEX_EL_F", "HBDISCIPLINED_SEX_IDEA_M",
+  "HBDISCIPLINED_SEX_IDEA_F", "HBDISCIPLINED_SEX_504_M", "HBDISCIPLINED_SEX_504_F"
+)
+
+# Replace reserved codes with NA in these columns
+data_clean <- data %>%
+  mutate(across(all_of(sex_cols), ~ ifelse(. %in% reserved_codes, NA, .)))
+
+```
+
+```{r}
+top_schools <- data_clean %>%
+  filter(!is.na(HBALLEGATIONS_SEX)) %>%
+  group_by(NAME) %>%
+  summarize(total_allegations = sum(HBALLEGATIONS_SEX, na.rm = TRUE)) %>%
+  arrange(desc(total_allegations)) %>%
+  slice_head(n = 10)
+
+top_schools
+
+```
+```{r}
+ggplot(top_schools, aes(x = reorder(NAME, total_allegations), y = total_allegations)) +
+  geom_col(fill = "darkred") +
+  coord_flip() +
+  labs(title = "Top 10 Schools by Sex-Based Harassment Allegations",
+       x = "School Name", y = "Total Allegations")
+
+```
+
+```{r}
+data_clean <- data_clean %>%
+  mutate(TOTAL_REPORTED_SEX = TOT_HBREPORTED_SEX_M + TOT_HBREPORTED_SEX_F,
+         allegations_per_1000 = (HBALLEGATIONS_SEX / TOTAL_REPORTED_SEX) * 1000)
+
+```
+
