@@ -1,0 +1,35 @@
+---
+title: "blogpost5"
+format: html
+---
+
+```{r}
+
+# Load libraries
+library(tidyverse)
+library(janitor)
+library(readr)
+library(ggplot2)        # for maps      # optional for maps
+   # for nice color scales
+
+# Load datasets
+# Quiet the messages
+Harassment_and_Bullying_clean <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", show_col_types = FALSE)
+support <- read_csv("dataset/School Support.csv") 
+suspensions <- read_csv("dataset/Suspensions.csv") 
+characteristics <- read_csv("dataset/School Characteristics.csv")
+```
+
+```{r}
+# Load libraries
+library(tidyverse)
+library(janitor)
+library(readr)
+library(ggplot2)
+
+support <- read_csv("dataset/School Support.csv", show_col_types = FALSE) 
+suspensions <- read_csv("dataset/Suspensions.csv", show_col_types = FALSE) 
+characteristics <- read_csv("dataset/School Characteristics.csv", show_col_types = FALSE)
+
+```
+
