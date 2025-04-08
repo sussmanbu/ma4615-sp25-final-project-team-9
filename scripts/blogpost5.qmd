@@ -1,35 +1,65 @@
----
-title: "blogpost5"
-format: html
----
-
 ```{r}
-
-# Load libraries
+# Load necessary libraries
 library(tidyverse)
-library(janitor)
-library(readr)
-library(ggplot2)        # for maps      # optional for maps
-   # for nice color scales
 
-# Load datasets
-# Quiet the messages
-Harassment_and_Bullying_clean <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", show_col_types = FALSE)
-support <- read_csv("dataset/School Support.csv") 
-suspensions <- read_csv("dataset/Suspensions.csv") 
-characteristics <- read_csv("dataset/School Characteristics.csv")
+# Step 1: Read the CSV
+enrollment <- read_csv("dataset/Enrollment.csv")
+
+# Step 2: Select only the relevant demographic columns (race + gender + nonbinary)
+# Tip: Use matches() to help with pattern matching if needed
+student_columns <- c(
+  "Number of Hispanic Male Students",
+  "Number of Hispanic Female Students",
+  "Number of Hispanic Nonbinary Students",
+  "Number of American Indian/Alaska Native Male Students",
+  "Number of American Indian/Alaska Native Female Students",
+  "Number of American Indian/Alaska Native Nonbinary Students",
+  "Number of Asian Male Students",
+  "Number of Asian Female Students",
+  "Number of Asian Nonbinary Students",
+  "Number of Native Hawaiian/Pacific Islander Male Students",
+  "Number of Native Hawaiian/Pacific Islander Female Students",
+  "Number of Native Hawaiian/Pacific Islander Nonbinary Students",
+  "Number of Black Male Students",
+  "Number of Black Female Students",
+  "Number of Black Nonbinary Students",
+  "Number of White Male Students",
+  "Number of White Female Students",
+  "Number of White Nonbinary Students",
+  "Number of Two or More Races Male Students",
+  "Number of Two or More Races Female Students",
+  "Number of Two or More Races Nonbinary Students"
+)
+
+colnames(enrollment)
+student_columns <- c(
+  "SCH_ENR_HI_M", "SCH_ENR_HI_F", "SCH_ENR_HI_X",
+  "SCH_ENR_AM_M", "SCH_ENR_AM_F", "SCH_ENR_AM_X",
+  "SCH_ENR_AS_M", "SCH_ENR_AS_F", "SCH_ENR_AS_X",
+  "SCH_ENR_HP_M", "SCH_ENR_HP_F", "SCH_ENR_HP_X",
+  "SCH_ENR_BL_M", "SCH_ENR_BL_F", "SCH_ENR_BL_X",
+  "SCH_ENR_WH_M", "SCH_ENR_WH_F", "SCH_ENR_WH_X",
+  "SCH_ENR_TR_M", "SCH_ENR_TR_F", "SCH_ENR_TR_X"
+)
+
+
+
+
+```
+```{r}
+# Step 3: Clean data & compute total enrollment per school
+enrollment_clean <- enrollment %>%
+  mutate(across(all_of(student_columns), ~ ifelse(. < 0, 0, .))) %>%
+  rowwise() %>%
+  mutate(Total_Students = sum(c_across(all_of(student_columns)), na.rm = TRUE)) %>%
+  ungroup()
+
+# Step 4: Preview results
+enrollment_clean %>%
+  select(SCH_NAME, Total_Students) %>%
+  head()
+
 ```
 
-```{r}
-# Load libraries
-library(tidyverse)
-library(janitor)
-library(readr)
-library(ggplot2)
 
-support <- read_csv("dataset/School Support.csv", show_col_types = FALSE) 
-suspensions <- read_csv("dataset/Suspensions.csv", show_col_types = FALSE) 
-characteristics <- read_csv("dataset/School Characteristics.csv", show_col_types = FALSE)
-
-```
 
