@@ -56,8 +56,8 @@ enrollment_clean <- enrollment %>%
 
 # Step 4: Preview results
 enrollment_clean %>%
-  select(SCH_NAME, Total_Students) %>%
-  head()
+  filter(LEA_STATE == "MA") %>%
+  select(SCH_NAME, Total_Students)
 
 ```
 
