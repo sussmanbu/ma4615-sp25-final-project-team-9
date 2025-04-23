@@ -1,0 +1,62 @@
+---
+title: "Blog Post 7"
+author: "Your Name"
+date: "2025-04-22"
+format: html
+categories: [progress, interactive, project]
+---
+
+## Blog Post 7
+
+This week, we focused on laying the foundation for the interactive visualizations that will be central to our final project. Our goal is to create a **Shiny-based web app** that allows users to explore patterns in school-based harassment and bullying allegations across the United States, broken down by identity categories such as **sexual orientation**, **race**, and **religion**. 
+
+While we haven’t completed the graphs yet, we’ve developed the **core logic and structure of the app** and have a clear plan for how the interactive components will function.
+
+---
+
+## 🎯 Goals
+
+### 🌎 National Map Visualization
+
+Users will be able to:
+- Select an **allegation type** from a dropdown menu (e.g., sexual orientation, race, religion)
+- View a **map** showing schools across the U.S., each represented by a **circle**
+  - Circle size and color reflect the **number of allegations per 100 students**
+
+### 🏛 State-Level Bar Chart
+
+Users will be able to:
+- Choose a **specific state**
+- View a **bar chart** showing the **average rate of allegations per 100 students** in that state
+- Data will be broken down by the **three main categories** (sexual orientation, race, religion)
+
+This provides both national and regional insights.
+
+---
+
+## 🎨 Design Intentions
+
+We’re designing the interactive to follow key principles of effective data visualization:
+
+- **Big Picture & Zoom-In:**  
+  The map gives a **national overview**, while the bar chart allows deeper **state-level focus**
+
+- **Interactivity:**  
+  Dropdown menus will let users **guide their own exploration** and switch views dynamically
+
+- **User Guidance:**  
+  Clear **labels**, **legends**, and thoughtful layout will help users understand the graphs
+
+- **Potential for Personalization:**  
+  Although not implemented yet, we’re considering allowing users to **search by school or district** to explore personally relevant data
+
+---
+
+## 🚧 What’s Next
+
+- Finish building the dropdown logic for the map and bar chart
+- Normalize allegations by school size
+- Begin experimenting with `{shinylive}` for browser-based deployment
+- Consider adding data table or district search box
+
+Stay tuned for more updates next week!
