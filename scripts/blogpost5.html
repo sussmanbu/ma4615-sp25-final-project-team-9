@@ -310,18 +310,23 @@ dbl (225): SCH_ENR_HI_M, SCH_ENR_HI_F, SCH_ENR_HI_X, SCH_ENR_AM_M, SCH_ENR_A...
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Preview results</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>enrollment_clean <span class="sc">%&gt;%</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SCH_NAME, Total_Students) <span class="sc">%&gt;%</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(LEA_STATE <span class="sc">==</span> <span class="st">"MA"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SCH_NAME, Total_Students)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 2
-  SCH_NAME                          Total_Students
-  &lt;chr&gt;                                      &lt;dbl&gt;
-1 AUTAUGA CAMPUS                               105
-2 Albertville Middle School                    901
-3 Albertville High School                     1672
-4 Albertville Intermediate School              930
-5 Albertville Elementary School                893
-6 Albertville Kindergarten and PreK            471</code></pre>
+<pre><code># A tibble: 1,868 × 2
+   SCH_NAME                       Total_Students
+   &lt;chr&gt;                                   &lt;dbl&gt;
+ 1 Quabbin Regional High School              619
+ 2 Quabbin Regional Middle School            532
+ 3 Hardwick Elementary                       187
+ 4 Hubbardston Center                        307
+ 5 New Braintree Grade                        47
+ 6 Oakham Center                             124
+ 7 Ruggles Lane                              374
+ 8 Knox Trail Middle School                  406
+ 9 East Brookfield Elementary                145
+10 David Prouty High                         343
+# ℹ 1,858 more rows</code></pre>
 </div>
 </div>
 
