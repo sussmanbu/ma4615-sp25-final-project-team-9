@@ -1,0 +1,101 @@
+---
+title: "practice"
+format: html
+---
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+
+support <- read_csv("dataset/School Support.csv")
+harassment <- read_csv("dataset/Harassment and Bullying.csv")
+enroll = read_csv("dataset/Enrollment.csv")
+
+ma_schools <- enroll |>
+  filter(LEA_STATE_NAME == "MASSACHUSETTS")
+merged <- ma_schools |>
+  inner_join(harassment, by = "COMBOKEY") 
+merged <- merged %>%
+  mutate(
+    total_allegations = rowSums(select(., SCH_HBALLEGATIONS_SEX, SCH_HBALLEGATIONS_RAC, SCH_HBALLEGATIONS_DIS), na.rm = TRUE)
+  )
+
+# Calculate total enrollment
+merged <- merged %>%
+  mutate(
+    total_enrollment = TOT_ENR_M + TOT_ENR_F + TOT_ENR_X,
+    allegations_per_100 = (total_allegations / total_enrollment) * 100
+  )
+top_schools <- merged %>%
+  arrange(desc(allegations_per_100)) %>%
+  select(SCH_NAME.x, LEA_NAME.x, allegations_per_100, total_enrollment, total_allegations) %>%
+  head(10)
+
+top_schools
+
+```
+
+```{r}
+merged <- merged %>%
+  mutate(
+    total_enrollment = TOT_ENR_M + TOT_ENR_F + TOT_ENR_X,
+    total_idea = TOT_IDEAENR_M + TOT_IDEAENR_F + TOT_IDEAENR_X,
+    total_504 = TOT_504ENR_M + TOT_504ENR_F + TOT_504ENR_X,
+    total_el = TOT_ELENR_M + TOT_ELENR_F + TOT_ELENR_X
+  )
+merged <- merged %>%
+  mutate(
+    pct_disabilities = (total_idea + total_504) / total_enrollment,
+    pct_el = total_el / total_enrollment,
+    allegations_per_100 = (total_allegations / total_enrollment) * 100
+  )
+correlation_results <- merged %>%
+  summarise(
+    corr_pct_disabilities = cor(pct_disabilities, allegations_per_100, use = "complete.obs"),
+    corr_pct_el = cor(pct_el, allegations_per_100, use = "complete.obs")
+  )
+
+correlation_results
+
+library(ggplot2)
+
+# Disabilities
+ggplot(merged, aes(x = pct_disabilities, y = allegations_per_100)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Allegations per 100 Students vs. % with Disabilities",
+    x = "Percentage of Students with Disabilities",
+    y = "Allegations per 100 Students"
+  )
+
+ggplot(merged, aes(x = pct_el, y = allegations_per_100)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Allegations per 100 Students vs. % English Learners",
+    x = "Percentage of English Learners",
+    y = "Allegations per 100 Students"
+  )
+```
+```{r}
+# Total students with disabilities (IDEA + 504)
+merged <- merged %>%
+  mutate(
+    total_disabilities = total_idea + total_504,
+    allegations_per_100_disabilities = (total_allegations / total_disabilities) * 100
+  )
+merged <- merged %>%
+  mutate(
+    total_black = SCH_ENR_BL_M + SCH_ENR_BL_F + SCH_ENR_BL_X,
+    allegations_per_100_black = (total_allegations / total_black) * 100
+  )
+ggplot(merged, aes(x = pct_disabilities, y = allegations_per_100_disabilities)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+```
+
