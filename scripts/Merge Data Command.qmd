@@ -1,0 +1,35 @@
+```{r}
+library(dplyr)
+library(readr)
+library(readxl)
+
+# Load all datasets
+harassment <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+school_support <- read_csv("dataset/School Support.csv")
+enrollment <- read_csv("dataset/Enrollment.csv")
+
+# Select only columns after JJ
+jj_index <- which(names(school_support) == "JJ")
+
+# Select COMBOKEY and all columns after JJ
+school_support_trimmed <- school_support %>%
+  select(COMBOKEY, (jj_index + 1):ncol(.))
+
+jj_index_enr <- which(names(enrollment) == "JJ")
+enrollment_trimmed <- enrollment %>%
+  select(COMBOKEY, (jj_index_enr + 1):ncol(.))
+
+# Merge into harassment data
+harassment <- harassment %>% mutate(COMBOKEY = as.character(COMBOKEY))
+school_support_trimmed <- school_support_trimmed %>% mutate(COMBOKEY = as.character(COMBOKEY))
+enrollment_trimmed <- enrollment_trimmed %>% mutate(COMBOKEY = as.character(COMBOKEY))
+merged <- harassment %>%
+  left_join(school_support_trimmed, by = "COMBOKEY") %>%
+  left_join(enrollment_trimmed, by = "COMBOKEY")
+
+#Save as RDS
+saveRDS(merged, "dataset/clean_data file/merged_harassment_dataset.rds")
+# Save as CSV
+write_csv(merged, "dataset/clean_data file/merged_harassment_dataset.csv")
+
+```
