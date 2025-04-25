@@ -1,0 +1,99 @@
+```{r}
+library(highcharter)
+library(dplyr)
+library(readr)
+library(viridisLite)
+harassment_data <-read_csv("dataset/clean_data file/merged_harassment_dataset.csv")
+
+# Define the enrollment columns
+enrollment_cols <- c(
+  "SCH_ENR_HI_M", "SCH_ENR_HI_F", 
+  "SCH_ENR_AM_M", "SCH_ENR_AM_F", 
+  "SCH_ENR_AS_M", "SCH_ENR_AS_F",
+  "SCH_ENR_HP_M", "SCH_ENR_HP_F",
+  "SCH_ENR_BL_M", "SCH_ENR_BL_F",
+  "SCH_ENR_WH_M", "SCH_ENR_WH_F",
+  "SCH_ENR_TR_M", "SCH_ENR_TR_F"
+)
+
+# Calculate total enrollment per school
+harassment_data <- harassment_data %>%
+  mutate(TOTAL_ENROLLMENT = rowSums(across(all_of(enrollment_cols)), na.rm = TRUE))
+
+# Aggregate by state and calculate rate per 100 students
+bullying_data <- harassment_data %>%
+  group_by(LEA_STATE) %>%
+  summarise(
+    total_allegations = sum(HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI, na.rm = TRUE),
+    total_students = sum(TOTAL_ENROLLMENT, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(rate_per_100 = round(total_allegations / total_students * 100, 2))
+# Create a key that matches highmaps "hc-key" format
+bullying_data <- bullying_data %>%
+  mutate(`hc-key` = paste0("us-", tolower(LEA_STATE)))
+library(highcharter)
+library(viridisLite)
+
+# Load map data FIRST
+usgeojson <- get_data_from_map(download_map_data("countries/us/us-all"))
+
+# Plot using hcmap instead of hchart
+hcmap(
+  "countries/us/us-all",     # Built-in Highmaps map
+  data = bullying_data,
+  name = "Allegations per 100 students",
+  value = "rate_per_100",
+  joinBy = c("hc-key", "hc-key"),  # key match for map + data
+  borderWidth = 0,
+  nullColor = "#d3d3d3"
+) %>%
+  hc_colorAxis(
+    stops = color_stops(colors = viridisLite::inferno(10)),
+    min = 0
+  ) %>%
+  hc_title(text = "Harassment/Bullying Allegations per 100 Students by State") %>%
+  hc_tooltip(pointFormat = "{point.name}: {point.value}")
+
+
+```
+```{r}
+library(tidyverse)
+
+# Load your dataset
+data <- read_csv("~/ma4615-sp25-final-project-team-9/dataset/clean_data file/merged_harassment_dataset.csv")
+data <- data %>%
+  mutate(
+    total_support = SCH_FTECOUNSELORS + SCH_FTESERVICES_PSY + SCH_FTESECURITY_GUA,
+    total_enrollment = rowSums(across(starts_with("SCH_ENR_")), na.rm = TRUE),
+    allegations_per_100 = (HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI) / total_enrollment * 100
+  )
+# Install if needed
+install.packages("ggpmisc")
+
+library(ggpmisc)
+
+# Create log-log plot with regression annotation
+ggplot(data, aes(x = total_support, y = allegations_per_100)) +
+  geom_point(alpha = 0.3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "forestgreen", se = TRUE) +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "top",
+    size = 5,
+    color = "black"
+  ) +
+  labs(
+    x = "Log(Total School Support Staff)",
+    y = "Log(Harassment Allegations per 100 Students)",
+    title = "Log-Log Relationship Between School Support and Harassment Reports"
+  ) +
+  theme_minimal()
+
+```
+Comment:To explore the relationship between school support staffing and reported harassment, we constructed a log-log regression model using total school support (sum of counselors, psychologists, and security guards) and reported harassment allegations per 100 enrolled students. The resulting regression line (𝑦 = −0.331 − 0.401𝑥) indicated a negative association, with an R² of 0.11, suggesting that higher levels of student support staff are weakly but significantly associated with lower harassment rates. While the model explains only a modest portion of the variance, this trend aligns with theories that greater support infrastructure may contribute to safer school climates. Nonetheless, causality cannot be inferred due to the observational nature of the data.
