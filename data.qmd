@@ -3,45 +3,169 @@ title: Data
 description: We describe the sources of our data and the cleaning process.
 toc: true
 draft: false
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
 ![](images/dataqmd.PNG)
+
+## Source
+
+The data is publicly available on the [CRDC website](https://ocrdata.ed.gov/), allowing access to the original source.
+
+## Describe where/how to find data
+
+All of our three raw datasets are coming from the Civil Rights Data Collection (CRDC).
+It includes public schools and school districts across the United States, collected by the U.S.
+Department of Education’s Office for Civil Rights (OCR).
+
+It is used to monitor educational access and equity, ensuring compliance with federal civil rights laws.
+The datasets originate from the U.S.
+Department of Education's Civil Rights Data Collection (CRDC) from the year 2021-2022, accessible at [civilrightsdata.ed.gov](https://civilrightsdata.ed.gov/data).
+
+## Data Source
+
+### Data Set 1: Harassment and Bullying
+
+Description
+
+This dataset primarily focuses on harassment and bullying incidents reported in educational institutions, capturing various forms of misconduct and disciplinary actions.
+It includes key variables such as state, district, school names, student demographics and so on.
+The dataset contains 98,010 rows and 159 columns, making it a large dataset with detailed information on bullying and harassment incidents in schools across different states.
+It gathers key civil rights metrics to assess access to and obstacles in educational opportunities from early childhood through grade 12.
+The Office for Civil Rights (OCR) utilizes this data from public school districts to investigate discrimination complaints, evaluate compliance with federal civil rights laws, conduct proactive reviews, and offer policy guidance and technical support to schools and districts.
+
+| Variable | Description | Data Type |
+|:------------------|:---------------------------------|:-----------------:|
+| HBALLEGATIONS_SEX | Number of reported harassment/bullying allegations based on sex or gender | int64 |
+| HBALLEGATIONS_RAC | Number of reported harassment/bullying allegations based on race | int64 |
+| HBALLEGATIONS_DIS | Number of reported harassment/bullying allegations based on disability | int64 |
+| HBALLEGATIONS_REL | Number of reported harassment/bullying allegations based on religion | int64 |
+| HBREPORTED_RAC_HI_M | Number of Hispanic Male Students | int64 |
+| HBREPORTED_RAC_HI_F | Number of Hispanic Female Students | int64 |
+| HBREPORTED_RAC_AM_M | Number of American Indian/Alaska Native Male Students | int64 |
+| HBREPORTED_RAC_AM_F | Number of American Indian/Alaska Native Female Students | int64 |
+| HBREPORTED_RAC_AS_M | Number of Asian Male Students | int64 |
+| HBREPORTED_RAC_AS_F | Number of Asian Female Students | int64 |
+| HBREPORTED_RAC_HP_M | Number of Native Hawaiian/Pacific Islander Male Students | int64 |
+| HBREPORTED_RAC_HP_F | Number of Native Hawaiian/Pacific Islander Female Students | int64 |
+| HBREPORTED_RAC_BL_M | Number of Black Male Students | int64 |
+| HBREPORTED_RAC_BL_F | Number of Black Female Students | int64 |
+| HBREPORTED_RAC_WH_M | Number of White Male Students | int64 |
+| HBREPORTED_RAC_WH_F | Number of White Female Students | int64 |
+| HBREPORTED_RAC_TR_M | Number of Two or More Races Male Students | int64 |
+| HBREPORTED_RAC_TR_F | Number of Two or More Races Female Students | int64 |
+
+#### Distribution of key variables
+
+#### Harassment Type
+
+```{r, echo=FALSE}
+library(tidyverse)
+
+data <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+harassment_vars <- c("HBALLEGATIONS_SEX", "HBALLEGATIONS_RAC", 
+                     "HBALLEGATIONS_DIS", "HBALLEGATIONS_REL")
+
+data_clean <- data %>%
+  mutate(across(all_of(harassment_vars), ~ ifelse(. < 0, NA, .)))
+
+harassment_summary <- data_clean %>%
+  summarise(across(all_of(harassment_vars), ~ sum(., na.rm = TRUE))) %>%
+  pivot_longer(cols = everything(), names_to = "Harassment_Type", values_to = "Total_Allegations")
+
+ggplot(harassment_summary, aes(x = Harassment_Type, y = Total_Allegations, fill = Harassment_Type)) +
+  geom_bar(stat = "identity", width = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Total Number of Different Types of Harassment Allegations",
+    x = "Harassment Type",
+    y = "Total Allegations"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### Harassment grouped by race
+
+```{r, echo = False}
+race_groups <- list(
+  "Hispanic"        = c("HBREPORTED_RAC_HI_M", "HBREPORTED_RAC_HI_F"),
+  "AmericanIndian"  = c("HBREPORTED_RAC_AM_M", "HBREPORTED_RAC_AM_F"),
+  "Asian"           = c("HBREPORTED_RAC_AS_M", "HBREPORTED_RAC_AS_F"),
+  "PacificIslander" = c("HBREPORTED_RAC_HP_M", "HBREPORTED_RAC_HP_F"),
+  "Black"           = c("HBREPORTED_RAC_BL_M", "HBREPORTED_RAC_BL_F"),
+  "White"           = c("HBREPORTED_RAC_WH_M", "HBREPORTED_RAC_WH_F"),
+  "TwoOrMore"       = c("HBREPORTED_RAC_TR_M", "HBREPORTED_RAC_TR_F")
+)
+
+race_long <- map_dfr(names(race_groups), function(race) {
+  cols <- race_groups[[race]]
+  
+  harassment_data %>%
+    select(all_of(cols)) %>%
+    pivot_longer(cols = everything(), names_to = "Sex", values_to = "Allegations") %>%
+    mutate(
+      Race = race,
+      Gender = ifelse(str_detect(Sex, "_M$"), "Male", "Female")
+    )
+})
+
+race_long <- race_long %>%
+  filter(Allegations >= 0)
+
+ggplot(race_long, aes(x = Race, y = Allegations, fill = Gender)) +
+  geom_bar(stat = "summary", fun = "sum", position = "stack", width = 0.7) +
+  labs(
+    title = "Race-Based Harassment Allegations by Gender",
+    x = "Race Group",
+    y = "Number of Allegations"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("Male" = "skyblue", "Female" = "pink"))
+
+```
 
 This comes from the file `data.qmd`.
 
 Your first steps in this project will be to find data to work on.
 
-I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.
+I recommend trying to find data that interests you and that you are knowledgeable about.
+A bad example would be if you have no interest in video games but your data set is about video games.
+I also recommend finding data that is related to current events, social justice, and other areas that have an impact.
 
-
-Initially, you will study _one dataset_ but later you will need to combine that data with another dataset. For this reason, I recommend finding data that has some date and/or location components. These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable.
+Initially, you will study *one dataset* but later you will need to combine that data with another dataset.
+For this reason, I recommend finding data that has some date and/or location components.
+These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable.
 Data from the census, weather data, economic data, are all relatively easy to combine with other data with time/location components.
-
 
 ## What makes a good data set?
 
-* Data you are interested in and care about.
-* Data where there are a lot of potential questions that you can explore.
-* A data set that isn't completely cleaned already.
-* Multiple sources for data that you can combine.
-* Some type of time and/or location component.
-
+-   Data you are interested in and care about.
+-   Data where there are a lot of potential questions that you can explore.
+-   A data set that isn't completely cleaned already.
+-   Multiple sources for data that you can combine.
+-   Some type of time and/or location component.
 
 ## Where to keep data?
 
-
 Below 50mb: In `dataset` folder
 
-Above 50mb: In `dataset-ignore` folder which you will have to create manually. This folder will be ignored by `git` so you'll have to manually sync these files across your team.
+Above 50mb: In `dataset-ignore` folder which you will have to create manually.
+This folder will be ignored by `git` so you'll have to manually sync these files across your team.
 
 ### Sharing your data
 
+For small datasets (\<50mb), you can use the `dataset` folder that is tracked by github.
+Stage and commit the files just like you would any other file.
 
-For small datasets (<50mb), you can use the `dataset` folder that is tracked by github. Stage and commit the files just like you would any other file.
+For larger datasets, you'll need to create a new folder in the project root directory named `dataset-ignore`.
+This will be ignored by git (based off the `.gitignore` file in the project root directory) which will help you avoid issues with Github's size limits.
+Your team will have to manually make sure the data files in `dataset-ignore` are synced across team members.
 
-For larger datasets, you'll need to create a new folder in the project root directory named `dataset-ignore`. This will be ignored by git (based off the `.gitignore` file in the project root directory) which will help you avoid issues with Github's size limits. Your team will have to manually make sure the data files in `dataset-ignore` are synced across team members.
-
-Your [clean_data.R](/scripts/clean_data.R) file in the `scripts` folder is the file where you will import the raw data that you download, clean it, and write `.rds` file(s) (using `write_rds`) that you'll load in your analysis page. If desirable, you can have multiple scripts that produce different derived data sets, just make sure to link to them on this page.
+Your [clean_data.R](/scripts/clean_data.R) file in the `scripts` folder is the file where you will import the raw data that you download, clean it, and write `.rds` file(s) (using `write_rds`) that you'll load in your analysis page.
+If desirable, you can have multiple scripts that produce different derived data sets, just make sure to link to them on this page.
 
 You should never use absolute paths (eg. `/Users/danielsussman/path/to/project/` or `C:\MA415\\Final_Project\`).
 Instead, use the `here` function from the [`here` package](https://here.r-lib.org/articles/here.html) to avoid path problems.
@@ -51,27 +175,29 @@ Instead, use the `here` function from the [`here` package](https://here.r-lib.or
 The idea behind this file is that someone coming to your website could largely replicate your analyses after running this script on the original data sets to clean them.
 This file might create a derivative data set that you then use for your subsequent analysis.
 Note that you don't need to run this script from every post/page.
-Instead, you can load in the results of this script, which will usually be `.rds` files. In your data page you'll describe how these results were created. If you have a very large data set, you might save smaller data sets that you can use for exploration purposes.
-To link to this file, you can use `[cleaning script](/scripts/clean_data.R)` wich appears as [cleaning script](/scripts/clean_data.R). 
+Instead, you can load in the results of this script, which will usually be `.rds` files.
+In your data page you'll describe how these results were created.
+If you have a very large data set, you might save smaller data sets that you can use for exploration purposes.
+To link to this file, you can use `[cleaning script](/scripts/clean_data.R)` wich appears as [cleaning script](/scripts/clean_data.R).
 
-----
+------------------------------------------------------------------------
 
 ## Rubric: On this page
 
 You will
 
-* Describe where/how to find data.
-  * You must include a link to the original data source(s). Make sure to provide attribution to those who collected the data.
-  * Why was the data collected/curated? Who put it together? (This is important, if you don't know why it was collected then that might not be a good dataset to look at.
-* Describe the different data files used and what each variable means. 
-  * If you have many variables then only describe the most relevant ones, possibly grouping together variables that are similar, and summarize the rest.
-  * Use figures or tables to help explain the data. For example, showing a histogram or bar chart for a particularly important variable can provide a quick overview of the values that variable tends to take.
-* Describe any cleaning you had to do for your data.
-  * You *must* include a link to your `clean_data.R` file.
-  * Rename variables and recode factors to make data more clear.
-  * Also, describe any additional R packages you used outside of those covered in class.
-  * Describe and show code for how you combined multiple data files and any cleaning that was necessary for that.
-  * Some repetition of what you do in your `clean_data.R` file is fine and encouraged if it helps explain what you did.
-* Organization, clarity, cleanliness of the page
-  * Make sure to remove excessive warnings, use clean easy-to-read code (without side scrolling), organize with sections, use bullets and other organization tools, etc.
-  * This page should be self-contained.
+-   Describe where/how to find data.
+    -   You must include a link to the original data source(s). Make sure to provide attribution to those who collected the data.
+    -   Why was the data collected/curated? Who put it together? (This is important, if you don't know why it was collected then that might not be a good dataset to look at.
+-   Describe the different data files used and what each variable means.
+    -   If you have many variables then only describe the most relevant ones, possibly grouping together variables that are similar, and summarize the rest.
+    -   Use figures or tables to help explain the data. For example, showing a histogram or bar chart for a particularly important variable can provide a quick overview of the values that variable tends to take.
+-   Describe any cleaning you had to do for your data.
+    -   You *must* include a link to your `clean_data.R` file.
+    -   Rename variables and recode factors to make data more clear.
+    -   Also, describe any additional R packages you used outside of those covered in class.
+    -   Describe and show code for how you combined multiple data files and any cleaning that was necessary for that.
+    -   Some repetition of what you do in your `clean_data.R` file is fine and encouraged if it helps explain what you did.
+-   Organization, clarity, cleanliness of the page
+    -   Make sure to remove excessive warnings, use clean easy-to-read code (without side scrolling), organize with sections, use bullets and other organization tools, etc.
+    -   This page should be self-contained.
