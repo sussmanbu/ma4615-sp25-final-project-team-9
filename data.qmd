@@ -37,7 +37,7 @@ It gathers key civil rights metrics to assess access to and obstacles in educati
 The Office for Civil Rights (OCR) utilizes this data from public school districts to investigate discrimination complaints, evaluate compliance with federal civil rights laws, conduct proactive reviews, and offer policy guidance and technical support to schools and districts.
 
 | Variable | Description | Data Type |
-|:------------------|:---------------------------------|:-----------------:|
+|:------------------|:--------------------------------|:-----------------:|
 | HBALLEGATIONS_SEX | Number of reported harassment/bullying allegations based on sex or gender | int64 |
 | HBALLEGATIONS_RAC | Number of reported harassment/bullying allegations based on race | int64 |
 | HBALLEGATIONS_DIS | Number of reported harassment/bullying allegations based on disability | int64 |
@@ -88,7 +88,7 @@ ggplot(harassment_summary, aes(x = Harassment_Type, y = Total_Allegations, fill 
 
 #### Harassment grouped by race
 
-```{r, echo = False}
+```{r, echo = FALSE}
 race_groups <- list(
   "Hispanic"        = c("HBREPORTED_RAC_HI_M", "HBREPORTED_RAC_HI_F"),
   "AmericanIndian"  = c("HBREPORTED_RAC_AM_M", "HBREPORTED_RAC_AM_F"),
@@ -102,7 +102,7 @@ race_groups <- list(
 race_long <- map_dfr(names(race_groups), function(race) {
   cols <- race_groups[[race]]
   
-  harassment_data %>%
+  data %>%
     select(all_of(cols)) %>%
     pivot_longer(cols = everything(), names_to = "Sex", values_to = "Allegations") %>%
     mutate(

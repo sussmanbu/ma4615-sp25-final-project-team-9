@@ -61,7 +61,7 @@ hcmap(
 library(tidyverse)
 
 # Load your dataset
-data <- read_csv("~/ma4615-sp25-final-project-team-9/dataset/clean_data file/merged_harassment_dataset.csv")
+data <- read_csv("dataset/clean_data file/merged_harassment_dataset.csv")
 data <- data %>%
   mutate(
     total_support = SCH_FTECOUNSELORS + SCH_FTESERVICES_PSY + SCH_FTESECURITY_GUA,
@@ -69,7 +69,7 @@ data <- data %>%
     allegations_per_100 = (HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI) / total_enrollment * 100
   )
 # Install if needed
-install.packages("ggpmisc")
+install.packages("ggpmisc", repos = "https://cran.rstudio.com/")
 
 library(ggpmisc)
 

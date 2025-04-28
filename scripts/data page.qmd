@@ -39,7 +39,7 @@ race_groups <- list(
 race_long <- map_dfr(names(race_groups), function(race) {
   cols <- race_groups[[race]]
   
-  harassment_data %>%
+  data %>%
     select(all_of(cols)) %>%
     pivot_longer(cols = everything(), names_to = "Sex", values_to = "Allegations") %>%
     mutate(

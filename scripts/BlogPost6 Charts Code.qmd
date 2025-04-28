@@ -1,5 +1,8 @@
 #after running blog5 qmd
 ```{r}
+library(tidyverse)
+enrollment_clean <- read_csv("dataset/clean_data file/enrollment_clean.csv")
+
 #Preview results
 enrollment_clean %>%
   filter(LEA_STATE == "MA") %>%
@@ -10,11 +13,12 @@ enrollment_clean %>%
 # Load necessary libraries
 library(dplyr)
 library(here)
-support <- read_csv(here("dataset", "School Support.csv"))
-harassment <- read_csv("~/ma4615-sp25-final-project-team-9/dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+library(readr)
+support <- read_csv("dataset/School Support.csv")
+harassment <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
 
 # STEP 1: Clean the support staff data
-support_clean <- support %>%
+support_clean <- support |>
   mutate(across(c(SCH_FTECOUNSELORS, SCH_FTESERVICES_PSY, SCH_FTESECURITY_GUA),
                 ~ ifelse(. < 0, 0, .)))
 
@@ -47,8 +51,8 @@ harass_clean <- harass_clean %>%
   mutate(COMBOKEY = as.character(COMBOKEY))
 
 # STEP 3: Join all datasets — enrollment + support + harassment
-combined_ma <- enrollment_clean %>%
-  filter(LEA_STATE == "MA") %>%
+combined_ma <- enrollment_clean |>
+  filter(LEA_STATE == "MA") |>
   select(COMBOKEY, SCH_NAME, Total_Students) %>%
   inner_join(support_clean, by = "COMBOKEY") %>%
   inner_join(harass_clean, by = "COMBOKEY") %>%
