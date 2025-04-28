@@ -1,0 +1,49 @@
+```{r}
+library(dplyr)
+library(readr)
+library(readxl)
+
+reserved_codes <- c(-3, -4, -5, -6, -9, -12, -13)
+
+# Load all datasets
+harassment <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+school_support <- read_csv("dataset/School Support.csv")
+enrollment <- read_csv("dataset/Enrollment.csv")
+
+harassment <- harassment %>%
+  mutate(across(everything(), ~ replace(., . %in% reserved_codes, NA)))
+
+# Replace in school support dataset
+school_support <- school_support %>%
+  mutate(across(everything(), ~ replace(., . %in% reserved_codes, NA)))
+
+# Replace in enrollment dataset
+enrollment <- enrollment %>%
+  mutate(across(everything(), ~ replace(., . %in% reserved_codes, NA)))
+# Make sure COMBOKEY is character
+harassment <- harassment %>% mutate(COMBOKEY = as.character(COMBOKEY))
+school_support <- school_support %>% mutate(COMBOKEY = as.character(COMBOKEY))
+enrollment <- enrollment %>% mutate(COMBOKEY = as.character(COMBOKEY))
+
+# Get index of JJ and slice
+jj_index_support <- which(names(school_support) == "JJ")
+jj_index_enroll <- which(names(enrollment) == "JJ")
+
+school_support_trimmed <- school_support %>%
+  select(COMBOKEY, (jj_index_support + 1):ncol(.))
+
+enrollment_trimmed <- enrollment %>%
+  select(COMBOKEY, (jj_index_enroll + 1):ncol(.))
+
+merged <- harassment %>%
+  left_join(school_support_trimmed, by = "COMBOKEY") %>%
+  left_join(enrollment_trimmed, by = "COMBOKEY")
+
+write_csv(merged, "dataset/clean_data file/merged_harassment_dataset.csv")
+
+```
+
+
+
+
+```
