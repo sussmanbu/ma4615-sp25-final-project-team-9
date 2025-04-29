@@ -22,7 +22,7 @@ Psychologists and security guards did not show statistically significant effects
 
 ![QQ Plot](qplot.png)
 
----
+------------------------------------------------------------------------
 
 ## Compare Demographics
 
@@ -30,8 +30,8 @@ Psychologists and security guards did not show statistically significant effects
 
 ![Disability Correlation Plot](disability.png)
 
-- **0.166** indicates a **weak positive association** between the percentage of students with disabilities and allegation rates.
-- **0.126** shows a similar weak association for English learners.
+-   **0.166** indicates a **weak positive association** between the percentage of students with disabilities and allegation rates.
+-   **0.126** shows a similar weak association for English learners.
 
 ![Allegations vs Disability Percentage](allegations.png)
 
@@ -45,17 +45,16 @@ There is an **outlier**—two schools with very high disability percentages and 
 
 Based on the above plot, we conclude that **students with disabilities may be experiencing higher rates of allegations in schools where they are a larger proportion of the population**.
 
-
----
+------------------------------------------------------------------------
 
 ## Code Summary
 
 The core logic this week included:
 
-- Cleaning and transforming allegation counts  
-- Joining with total student enrollment  
-- Calculating per-100-student rates  
-- Mapping with `ggplot2` and `map_data("state")`  
-- Building a reusable function for category-specific maps  
+-   Cleaning and transforming allegation counts\
+-   Joining with total student enrollment\
+-   Calculating per-100-student rates\
+-   Mapping with `ggplot2` and `map_data("state")`\
+-   Building a reusable function for category-specific maps
 
----
+------------------------------------------------------------------------

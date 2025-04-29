@@ -18,50 +18,50 @@ This week, we decided to do some data exploration on our dataset in order to und
 
 These plots will give us insight into which groups are facing discrimination more than others, and help us identify patterns to focus on for the final version of the project.
 
----
+------------------------------------------------------------------------
 
 ## Religion
 
 This plot shows the amount of harassment and bullying cases reported by religion.
 
-- The **most reports** were by **Jewish children**, followed by **Muslim children**.
-- A low number of allegations against **Buddhist children** reflects a smaller population size.
+-   The **most reports** were by **Jewish children**, followed by **Muslim children**.
+-   A low number of allegations against **Buddhist children** reflects a smaller population size.
 
 ![Religion-based Allegations](religion.png)
 
----
+------------------------------------------------------------------------
 
 ## Sex
 
 For this graph, we looked at **sex-based allegations by schools** to find concerning trends.
 
-- **Dekalb High School** had significantly more cases than any other school — nearly **three times** as many.
+-   **Dekalb High School** had significantly more cases than any other school — nearly **three times** as many.
 
 ![Sex-based Allegations](sexbased.png)
 
----
+------------------------------------------------------------------------
 
 ## Disabilities
 
 This bar chart shows the number of students reported as harassed or bullied due to disability, broken down by student group and gender.
 
-- **White** and **IDEA** male students had the **highest number** of reported cases.
-- Across all groups, **males reported more harassment** than females.
+-   **White** and **IDEA** male students had the **highest number** of reported cases.
+-   Across all groups, **males reported more harassment** than females.
 
 ![Disability-based Allegations](disability.png)
 
----
+------------------------------------------------------------------------
 
 ## State
 
 This plot shows the **total number of harassment and bullying allegations in each state**.
 
-- **New York** had the highest total.
-- This might reflect better **reporting mechanisms**, higher diversity, or actual higher incident rates.
+-   **New York** had the highest total.
+-   This might reflect better **reporting mechanisms**, higher diversity, or actual higher incident rates.
 
 ![State-level Allegations](state.png)
 
----
+------------------------------------------------------------------------
 
 ## Conclusion
 
