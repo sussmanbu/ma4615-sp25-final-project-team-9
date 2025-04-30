@@ -1,0 +1,184 @@
+#after running blog5 qmd
+```{r}
+library(tidyverse)
+enrollment_clean <- read_csv("dataset/clean_data file/enrollment_clean.csv")
+
+#Preview results
+enrollment_clean %>%
+  filter(LEA_STATE == "MA") %>%
+  select(SCH_NAME, Total_Students)
+```
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(here)
+library(readr)
+support <- read_csv("dataset/School Support.csv")
+harassment <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+
+# STEP 1: Clean the support staff data
+support_clean <- support |>
+  mutate(across(c(SCH_FTECOUNSELORS, SCH_FTESERVICES_PSY, SCH_FTESECURITY_GUA),
+                ~ ifelse(. < 0, 0, .)))
+
+# STEP 2: Clean the harassment & bullying data
+harass_clean <- harassment %>%
+  mutate(across(c(
+    HBALLEGATIONS_SEX,
+    HBALLEGATIONS_REL,
+    HBALLEGATIONS_RAC,
+    HBALLEGATIONS_DIS,
+    HBALLEGATIONS_ORI
+  ), ~ ifelse(. < 0, 0, .))) %>%
+  rowwise() %>%
+  mutate(Total_Allegations = sum(
+    c_across(c(
+      HBALLEGATIONS_SEX,
+      HBALLEGATIONS_REL,
+      HBALLEGATIONS_RAC,
+      HBALLEGATIONS_DIS,
+      HBALLEGATIONS_ORI
+    )), na.rm = TRUE
+  )) %>%
+  ungroup() %>%
+  select(COMBOKEY, Total_Allegations)
+
+enrollment_clean <- enrollment_clean %>%
+  mutate(COMBOKEY = as.character(COMBOKEY))
+
+harass_clean <- harass_clean %>%
+  mutate(COMBOKEY = as.character(COMBOKEY))
+
+# STEP 3: Join all datasets — enrollment + support + harassment
+combined_ma <- enrollment_clean |>
+  filter(LEA_STATE == "MA") |>
+  select(COMBOKEY, SCH_NAME, Total_Students) %>%
+  inner_join(support_clean, by = "COMBOKEY") %>%
+  inner_join(harass_clean, by = "COMBOKEY") %>%
+  mutate(
+    allegations_per_100 = Total_Allegations / Total_Students * 100
+  )
+
+# STEP 4: Check correlations
+combined_ma %>%
+  select(allegations_per_100, SCH_FTECOUNSELORS, SCH_FTESERVICES_PSY, SCH_FTESECURITY_GUA) %>%
+  cor(use = "complete.obs")
+```
+
+```{r}
+# Log-Linear Regression for further check
+combined_ma <- combined_ma %>%
+  mutate(log_allegations = log(allegations_per_100 + 0.01))
+
+log_model <- lm(log_allegations ~ SCH_FTECOUNSELORS + SCH_FTESERVICES_PSY + SCH_FTESECURITY_GUA,
+                data = combined_ma)
+
+summary(log_model)
+
+# Base residual plot
+plot(log_model$fitted.values, log_model$residuals,
+     xlab = "Fitted Values (log allegations)",
+     ylab = "Residuals",
+     main = "Residuals vs Fitted Values")
+abline(h = 0, col = "red", lty = 2)
+
+
+qqnorm(log_model$residuals)
+qqline(log_model$residuals, col = "lightblue")
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+
+support <- read_csv("dataset/School Support.csv")
+harassment <- read_csv("dataset/Harassment and Bullying.csv")
+enroll = read_csv("dataset/Enrollment.csv")
+
+ma_schools <- enroll |>
+  filter(LEA_STATE_NAME == "MASSACHUSETTS")
+merged <- ma_schools |>
+  inner_join(harassment, by = "COMBOKEY") 
+merged <- merged %>%
+  mutate(
+    total_allegations = rowSums(select(., SCH_HBALLEGATIONS_SEX, SCH_HBALLEGATIONS_RAC, SCH_HBALLEGATIONS_DIS), na.rm = TRUE)
+  )
+
+# Calculate total enrollment
+merged <- merged %>%
+  mutate(
+    total_enrollment = TOT_ENR_M + TOT_ENR_F + TOT_ENR_X,
+    allegations_per_100 = (total_allegations / total_enrollment) * 100
+  )
+top_schools <- merged %>%
+  arrange(desc(allegations_per_100)) %>%
+  select(SCH_NAME.x, LEA_NAME.x, allegations_per_100, total_enrollment, total_allegations) %>%
+  head(10)
+
+top_schools
+
+```
+```{r}
+merged <- merged %>%
+  mutate(
+    total_enrollment = TOT_ENR_M + TOT_ENR_F + TOT_ENR_X,
+    total_idea = TOT_IDEAENR_M + TOT_IDEAENR_F + TOT_IDEAENR_X,
+    total_504 = TOT_504ENR_M + TOT_504ENR_F + TOT_504ENR_X,
+    total_el = TOT_ELENR_M + TOT_ELENR_F + TOT_ELENR_X
+  )
+merged <- merged %>%
+  mutate(
+    pct_disabilities = (total_idea + total_504) / total_enrollment,
+    pct_el = total_el / total_enrollment,
+    allegations_per_100 = (total_allegations / total_enrollment) * 100
+  )
+correlation_results <- merged %>%
+  summarise(
+    corr_pct_disabilities = cor(pct_disabilities, allegations_per_100, use = "complete.obs"),
+    corr_pct_el = cor(pct_el, allegations_per_100, use = "complete.obs")
+  )
+
+correlation_results
+
+library(ggplot2)
+
+# Disabilities
+ggplot(merged, aes(x = pct_disabilities, y = allegations_per_100)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Allegations per 100 Students vs. % with Disabilities",
+    x = "Percentage of Students with Disabilities",
+    y = "Allegations per 100 Students"
+  )
+
+ggplot(merged, aes(x = pct_el, y = allegations_per_100)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Allegations per 100 Students vs. % English Learners",
+    x = "Percentage of English Learners",
+    y = "Allegations per 100 Students"
+  )
+```
+
+```{r}
+# Total students with disabilities (IDEA + 504)
+merged <- merged %>%
+  mutate(
+    total_disabilities = total_idea + total_504,
+    allegations_per_100_disabilities = (total_allegations / total_disabilities) * 100
+  )
+merged <- merged %>%
+  mutate(
+    total_black = SCH_ENR_BL_M + SCH_ENR_BL_F + SCH_ENR_BL_X,
+    allegations_per_100_black = (total_allegations / total_black) * 100
+  )
+ggplot(merged, aes(x = pct_disabilities, y = allegations_per_100_disabilities)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+```

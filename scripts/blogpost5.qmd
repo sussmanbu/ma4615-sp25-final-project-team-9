@@ -61,5 +61,10 @@ enrollment_clean %>%
 
 ```
 
+```{r}
+# Save enrollment_clean to a file
+write_csv(enrollment_clean, "dataset/clean_data file/enrollment_clean.csv")
+
+```
 
 

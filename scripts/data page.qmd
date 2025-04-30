@@ -1,0 +1,187 @@
+# Dataset 1. Harassment Type
+```{r}
+library(tidyverse)
+
+data <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+harassment_vars <- c("HBALLEGATIONS_SEX", "HBALLEGATIONS_RAC", 
+                     "HBALLEGATIONS_DIS", "HBALLEGATIONS_REL")
+
+data_clean <- data %>%
+  mutate(across(all_of(harassment_vars), ~ ifelse(. < 0, NA, .)))
+
+harassment_summary <- data_clean %>%
+  summarise(across(all_of(harassment_vars), ~ sum(., na.rm = TRUE))) %>%
+  pivot_longer(cols = everything(), names_to = "Harassment_Type", values_to = "Total_Allegations")
+
+ggplot(harassment_summary, aes(x = Harassment_Type, y = Total_Allegations, fill = Harassment_Type)) +
+  geom_bar(stat = "identity", width = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Total Number of Different Types of Harassment Allegations",
+    x = "Harassment Type",
+    y = "Total Allegations"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#Dataset 1. Harassment grouped by race
+```{r}
+race_groups <- list(
+  "Hispanic"        = c("HBREPORTED_RAC_HI_M", "HBREPORTED_RAC_HI_F"),
+  "AmericanIndian"  = c("HBREPORTED_RAC_AM_M", "HBREPORTED_RAC_AM_F"),
+  "Asian"           = c("HBREPORTED_RAC_AS_M", "HBREPORTED_RAC_AS_F"),
+  "PacificIslander" = c("HBREPORTED_RAC_HP_M", "HBREPORTED_RAC_HP_F"),
+  "Black"           = c("HBREPORTED_RAC_BL_M", "HBREPORTED_RAC_BL_F"),
+  "White"           = c("HBREPORTED_RAC_WH_M", "HBREPORTED_RAC_WH_F"),
+  "TwoOrMore"       = c("HBREPORTED_RAC_TR_M", "HBREPORTED_RAC_TR_F")
+)
+
+race_long <- map_dfr(names(race_groups), function(race) {
+  cols <- race_groups[[race]]
+  
+  data %>%
+    select(all_of(cols)) %>%
+    pivot_longer(cols = everything(), names_to = "Sex", values_to = "Allegations") %>%
+    mutate(
+      Race = race,
+      Gender = ifelse(str_detect(Sex, "_M$"), "Male", "Female")
+    )
+})
+
+race_long <- race_long %>%
+  filter(Allegations >= 0)
+
+ggplot(race_long, aes(x = Race, y = Allegations, fill = Gender)) +
+  geom_bar(stat = "summary", fun = "sum", position = "stack", width = 0.7) +
+  labs(
+    title = "Race-Based Harassment Allegations by Gender",
+    x = "Race Group",
+    y = "Number of Allegations"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("Male" = "skyblue", "Female" = "pink"))
+
+```
+
+#Dataset 2. School Support
+```{r}
+school_support_data <- read_csv("dataset/School Support.csv")
+
+# Clean: Only remove negatives and NA
+school_support_clean <- school_support_data %>%
+  select(
+    counselors = SCH_FTECOUNSELORS,
+    psychologists = SCH_FTESERVICES_PSY,
+    security_guards = SCH_FTESECURITY_GUA
+  ) %>%
+  mutate(
+    counselors = ifelse(counselors < 0 , NA, counselors),
+    psychologists = ifelse(psychologists < 0 , NA, psychologists),
+    security_guards = ifelse(security_guards < 0 , NA, security_guards)
+  )
+
+summary(school_support_clean)
+library(tidyverse)
+
+# Key Statistics
+summary_table <- school_support_clean %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>%
+  group_by(variable) %>%
+  summarise(
+    count = n(),
+    missing = sum(is.na(value)),
+    mean = round(mean(value, na.rm = TRUE), 2),
+    median = round(median(value, na.rm = TRUE), 2),
+    sd = round(sd(value, na.rm = TRUE), 2),
+    min = round(min(value, na.rm = TRUE), 2),
+    max = round(max(value, na.rm = TRUE), 2)
+  )
+
+print(summary_table)
+
+
+# Short Textual Introduction (to include in your report)
+cat("The school support dataset contains information on the number of full-time equivalent (FTE) counselors, psychologists, and security guards at individual schools. After removing negative and missing values, we found that most schools have very few support staff, with distributions heavily skewed toward zero. While the majority of schools report no psychologists or guards, a small number of schools report larger support teams. The presence of a few schools with unusually high staff numbers indicates variation likely related to school size or reporting differences.")
+
+
+```
+#Dataset 3. Enrollment
+```{r}
+library(tidyverse)
+
+# ---- 0. Load and Clean Enrollment Data ----
+enrollment_data <- read_csv("dataset/Enrollment.csv") %>%
+  select(
+    SCH_ENR_HI_M, SCH_ENR_HI_F,
+    SCH_ENR_AM_M, SCH_ENR_AM_F,
+    SCH_ENR_AS_M, SCH_ENR_AS_F,
+    SCH_ENR_HP_M, SCH_ENR_HP_F,
+    SCH_ENR_BL_M, SCH_ENR_BL_F,
+    SCH_ENR_WH_M, SCH_ENR_WH_F,
+    SCH_ENR_TR_M, SCH_ENR_TR_F
+  ) %>%
+  mutate(across(everything(), ~ ifelse(. < 0, NA, .)))  # Remove negatives
+
+# ---- 1. Missing Data Rate Table ----
+missing_summary <- enrollment_data %>%
+  summarise(across(everything(), ~ mean(is.na(.)))) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "MissingRate") %>%
+  mutate(MissingRate = round(MissingRate * 100, 2))  # as percentage
+
+# ---- 2. Summarize Total Enrollment by Race ----
+race_summary <- enrollment_data %>%
+  pivot_longer(cols = everything(), names_to = "RaceSex", values_to = "Enrollment") %>%
+  filter(!is.na(Enrollment)) %>%
+  mutate(
+    Race = case_when(
+      str_detect(RaceSex, "HI") ~ "Hispanic",
+      str_detect(RaceSex, "AM") ~ "AmericanIndian",
+      str_detect(RaceSex, "AS") ~ "Asian",
+      str_detect(RaceSex, "HP") ~ "PacificIslander",
+      str_detect(RaceSex, "BL") ~ "Black",
+      str_detect(RaceSex, "WH") ~ "White",
+      str_detect(RaceSex, "TR") ~ "TwoOrMore"
+    )
+  ) %>%
+  group_by(Race) %>%
+  summarise(Total_Enrollment = sum(Enrollment, na.rm = TRUE)) %>%
+  arrange(desc(Total_Enrollment))
+
+# ---- 3. Stacked Bar Chart of Enrollment by Race and Gender ----
+enrollment_long <- enrollment_data %>%
+  pivot_longer(cols = everything(), names_to = "RaceSex", values_to = "Enrollment") %>%
+  filter(!is.na(Enrollment)) %>%
+  mutate(
+    Race = case_when(
+      str_detect(RaceSex, "HI") ~ "Hispanic",
+      str_detect(RaceSex, "AM") ~ "AmericanIndian",
+      str_detect(RaceSex, "AS") ~ "Asian",
+      str_detect(RaceSex, "HP") ~ "PacificIslander",
+      str_detect(RaceSex, "BL") ~ "Black",
+      str_detect(RaceSex, "WH") ~ "White",
+      str_detect(RaceSex, "TR") ~ "TwoOrMore"
+    ),
+    Gender = case_when(
+      str_detect(RaceSex, "_M$") ~ "Male",
+      str_detect(RaceSex, "_F$") ~ "Female"
+    )
+  )
+
+# Plot stacked bar
+ggplot(enrollment_long, aes(x = reorder(Race, -Enrollment, sum), y = Enrollment, fill = Gender)) +
+  geom_bar(stat = "summary", fun = "sum", width = 0.7, position = "stack") +
+  labs(
+    title = "Student Enrollment by Race and Gender",
+    x = "Race Group",
+    y = "Total Number of Students",
+    fill = "Gender"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# ---- 4. Outputs ----
+missing_summary  # Table of missing data rate (%)
+race_summary     # Table of total enrollment per race
+
+```

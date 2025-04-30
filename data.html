@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -121,7 +155,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-makes-a-good-data-set" id="toc-what-makes-a-good-data-set" class="nav-link active" data-scroll-target="#what-makes-a-good-data-set">What makes a good data set?</a></li>
+  <li><a href="#source" id="toc-source" class="nav-link active" data-scroll-target="#source">Source</a></li>
+  <li><a href="#describe-wherehow-to-find-data" id="toc-describe-wherehow-to-find-data" class="nav-link" data-scroll-target="#describe-wherehow-to-find-data">Describe where/how to find data</a></li>
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source</a>
+  <ul class="collapse">
+  <li><a href="#data-set-1-harassment-and-bullying" id="toc-data-set-1-harassment-and-bullying" class="nav-link" data-scroll-target="#data-set-1-harassment-and-bullying">Data Set 1: Harassment and Bullying</a></li>
+  <li><a href="#data-set-2-school-support" id="toc-data-set-2-school-support" class="nav-link" data-scroll-target="#data-set-2-school-support">Data Set 2: School Support</a></li>
+  <li><a href="#data-set-3-school-enrollment" id="toc-data-set-3-school-enrollment" class="nav-link" data-scroll-target="#data-set-3-school-enrollment">Data Set 3: School Enrollment</a></li>
+  </ul></li>
+  <li><a href="#merge-and-clean-data-process" id="toc-merge-and-clean-data-process" class="nav-link" data-scroll-target="#merge-and-clean-data-process">Merge and Clean Data Process</a></li>
+  <li><a href="#r-package-used" id="toc-r-package-used" class="nav-link" data-scroll-target="#r-package-used">R Package Used</a></li>
+  <li><a href="#what-makes-a-good-data-set" id="toc-what-makes-a-good-data-set" class="nav-link" data-scroll-target="#what-makes-a-good-data-set">What makes a good data set?</a></li>
   <li><a href="#where-to-keep-data" id="toc-where-to-keep-data" class="nav-link" data-scroll-target="#where-to-keep-data">Where to keep data?</a>
   <ul class="collapse">
   <li><a href="#sharing-your-data" id="toc-sharing-your-data" class="nav-link" data-scroll-target="#sharing-your-data">Sharing your data</a></li>
@@ -158,11 +202,440 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><img src="images/data-import-cheatsheet-thumbs.png" class="img-fluid"></p>
+<p><img src="images/dataqmd.PNG" class="img-fluid"></p>
+<section id="source" class="level2">
+<h2 class="anchored" data-anchor-id="source">Source</h2>
+<p>The data is publicly available on the <a href="https://ocrdata.ed.gov/">CRDC website</a>, allowing access to the original source.</p>
+</section>
+<section id="describe-wherehow-to-find-data" class="level2">
+<h2 class="anchored" data-anchor-id="describe-wherehow-to-find-data">Describe where/how to find data</h2>
+<p>All of our three raw datasets are coming from the Civil Rights Data Collection (CRDC). It includes public schools and school districts across the United States, collected by the U.S. Department of Education’s Office for Civil Rights (OCR).</p>
+<p>It is used to monitor educational access and equity, ensuring compliance with federal civil rights laws. The datasets originate from the U.S. Department of Education’s Civil Rights Data Collection (CRDC) from the year 2021-2022, accessible at <a href="https://civilrightsdata.ed.gov/data">civilrightsdata.ed.gov</a>.</p>
+</section>
+<section id="data-source" class="level2">
+<h2 class="anchored" data-anchor-id="data-source">Data Source</h2>
+<section id="data-set-1-harassment-and-bullying" class="level3">
+<h3 class="anchored" data-anchor-id="data-set-1-harassment-and-bullying">Data Set 1: Harassment and Bullying</h3>
+<p>Description:</p>
+<p>This dataset primarily focuses on harassment and bullying incidents reported in educational institutions, capturing various forms of misconduct and disciplinary actions. It includes key variables such as state, district, school names, student demographics and so on.It gathers key civil rights metrics to assess access to and obstacles in educational opportunities from early childhood through grade 12. The Office for Civil Rights (OCR) utilizes this data from public school districts to investigate discrimination complaints, evaluate compliance with federal civil rights laws, conduct proactive reviews, and offer policy guidance and technical support to schools and districts.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: center;">Data Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">HBALLEGATIONS_SEX</td>
+<td style="text-align: left;">Number of reported harassment/bullying allegations based on sex or gender</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBALLEGATIONS_RAC</td>
+<td style="text-align: left;">Number of reported harassment/bullying allegations based on race</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HBALLEGATIONS_DIS</td>
+<td style="text-align: left;">Number of reported harassment/bullying allegations based on disability</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBALLEGATIONS_REL</td>
+<td style="text-align: left;">Number of reported harassment/bullying allegations based on religion</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HBREPORTED_RAC_HI_M</td>
+<td style="text-align: left;">Number of Hispanic Male Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBREPORTED_RAC_HI_F</td>
+<td style="text-align: left;">Number of Hispanic Female Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HBREPORTED_RAC_AM_M</td>
+<td style="text-align: left;">Number of American Indian/Alaska Native Male Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBREPORTED_RAC_AM_F</td>
+<td style="text-align: left;">Number of American Indian/Alaska Native Female Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HBREPORTED_RAC_AS_M</td>
+<td style="text-align: left;">Number of Asian Male Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBREPORTED_RAC_AS_F</td>
+<td style="text-align: left;">Number of Asian Female Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HBREPORTED_RAC_HP_M</td>
+<td style="text-align: left;">Number of Native Hawaiian/Pacific Islander Male Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBREPORTED_RAC_HP_F</td>
+<td style="text-align: left;">Number of Native Hawaiian/Pacific Islander Female Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HBREPORTED_RAC_BL_M</td>
+<td style="text-align: left;">Number of Black Male Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBREPORTED_RAC_BL_F</td>
+<td style="text-align: left;">Number of Black Female Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HBREPORTED_RAC_WH_M</td>
+<td style="text-align: left;">Number of White Male Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBREPORTED_RAC_WH_F</td>
+<td style="text-align: left;">Number of White Female Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HBREPORTED_RAC_TR_M</td>
+<td style="text-align: left;">Number of Two or More Races Male Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HBREPORTED_RAC_TR_F</td>
+<td style="text-align: left;">Number of Two or More Races Female Students</td>
+<td style="text-align: center;">int64</td>
+</tr>
+</tbody>
+</table>
+<section id="distribution-of-key-variables" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-of-key-variables">Distribution of key variables</h4>
+</section>
+<section id="harassment-type" class="level4">
+<h4 class="anchored" data-anchor-id="harassment-type">Harassment Type</h4>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: One or more parsing issues, call `problems()` on your data frame for details,
+e.g.:
+  dat &lt;- vroom(...)
+  problems(dat)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 98010 Columns: 159
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr   (5): LEA_STATE, LEA_STATE_NAME, LEA_NAME, NAME, JJ
+dbl (154): LEAID, SCHID, COMBOKEY, HBALLEGATIONS_SEX, HBALLEGATIONS_ORI, HBA...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="harassment-grouped-by-race" class="level4">
+<h4 class="anchored" data-anchor-id="harassment-grouped-by-race">Harassment grouped by race</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="data-set-2-school-support" class="level3">
+<h3 class="anchored" data-anchor-id="data-set-2-school-support">Data Set 2: School Support</h3>
+<p>Description The school support dataset contains information on the number of full-time equivalent (FTE) counselors, psychologists, and security guards at individual schools. After removing negative and missing values, we found that most schools have very few support staff, with distributions heavily skewed toward zero. While the majority of schools report no psychologists or guards, a small number of schools report larger support teams. The presence of a few schools with unusually high staff numbers indicates variation likely related to school size or reporting differences.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+<th>Data Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FTECOUNSELORS</td>
+<td>Number of FTE school counselors</td>
+<td>Decimal</td>
+</tr>
+<tr class="even">
+<td>FTESERVICES_PSY</td>
+<td>Number of FTE psychologists</td>
+<td>Decimal</td>
+</tr>
+<tr class="odd">
+<td>FTESECURITY_GUA</td>
+<td>Number of FTE security guards</td>
+<td>Decimal</td>
+</tr>
+</tbody>
+</table>
+<section id="findings-about-key-variables" class="level4">
+<h4 class="anchored" data-anchor-id="findings-about-key-variables">Findings about key variables</h4>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 98010 Columns: 19
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (8): LEA_STATE, LEA_STATE_NAME, LEAID, LEA_NAME, SCHID, SCH_NAME, COMBO...
+dbl (11): SCH_FTESECURITY_LEO, SCH_FTESECURITY_GUA, SCH_FTETEACH_TOT, SCH_FT...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   counselors     psychologists      security_guards   
+ Min.   :  0.00   Min.   :  0.0000   Min.   :  0.0000  
+ 1st Qu.:  0.20   1st Qu.:  0.0000   1st Qu.:  0.0000  
+ Median :  1.00   Median :  0.0000   Median :  0.0000  
+ Mean   :  1.35   Mean   :  0.4033   Mean   :  0.3739  
+ 3rd Qu.:  2.00   3rd Qu.:  0.6000   3rd Qu.:  0.0000  
+ Max.   :280.00   Max.   :175.0000   Max.   :100.0000  
+ NA's   :99       NA's   :3          NA's   :2468      </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 8
+  variable        count missing  mean median    sd   min   max
+  &lt;chr&gt;           &lt;int&gt;   &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 counselors      98010      99  1.35      1  2.1      0   280
+2 psychologists   98010       3  0.4       0  1.21     0   175
+3 security_guards 98010    2468  0.37      0  1.42     0   100</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Counselors are more consistently present across schools.
+    Psychologists and especially security guards are much less common, with higher proportions of zeros and missing entries.
+    The high standard deviations relative to means for all three suggest substantial variability across school sizes or resource allocations.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="data-set-3-school-enrollment" class="level3">
+<h3 class="anchored" data-anchor-id="data-set-3-school-enrollment">Data Set 3: School Enrollment</h3>
+<p>Reason to use this dataset: The Enrollment dataset contains detailed counts of student populations across multiple racial and ethnic groups at the school level.It breaks down enrollment into male and female students across 7 racial categories: Hispanic, American Indian/Alaska Native, Asian, Native Hawaiian/Pacific Islander, Black, White, and Two or More Races.This data is crucial for accurately normalizing harassment report counts by providing the total population against which allegations are measured, enabling fair comparison across institutions of varying sizes and demographics. If we only compare raw counts of harassment reports, larger schools will naturally have more reports just because they have more students.By dividing number of harassment reports by total enrollment, we calculate harassment allegations per 100 students, which normalizes across schools of different sizes.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 85%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ENR_HI_M</td>
+<td>Number of Hispanic Male Students</td>
+</tr>
+<tr class="even">
+<td>ENR_HI_F</td>
+<td>Number of Hispanic Female Students</td>
+</tr>
+<tr class="odd">
+<td>ENR_AM_M</td>
+<td>Number of American Indian/Alaska Native Male Students</td>
+</tr>
+<tr class="even">
+<td>ENR_AM_F</td>
+<td>Number of American Indian/Alaska Native Female Students</td>
+</tr>
+<tr class="odd">
+<td>ENR_AS_M</td>
+<td>Number of Asian Male Students</td>
+</tr>
+<tr class="even">
+<td>ENR_AS_F</td>
+<td>Number of Asian Female Students</td>
+</tr>
+<tr class="odd">
+<td>ENR_HP_M</td>
+<td>Number of Native Hawaiian/Pacific Islander Male Students</td>
+</tr>
+<tr class="even">
+<td>ENR_HP_F</td>
+<td>Number of Native Hawaiian/Pacific Islander Female Students</td>
+</tr>
+<tr class="odd">
+<td>ENR_BL_M</td>
+<td>Number of Black Male Students</td>
+</tr>
+<tr class="even">
+<td>ENR_BL_F</td>
+<td>Number of Black Female Students</td>
+</tr>
+<tr class="odd">
+<td>ENR_WH_M</td>
+<td>Number of White Male Students</td>
+</tr>
+<tr class="even">
+<td>ENR_WH_F</td>
+<td>Number of White Female Students</td>
+</tr>
+<tr class="odd">
+<td>ENR_TR_M</td>
+<td>Number of Two or More Races Male Students</td>
+</tr>
+<tr class="even">
+<td>ENR_TR_F</td>
+<td>Number of Two or More Races Female Students</td>
+</tr>
+</tbody>
+</table>
+<section id="distribution-of-key-variables-1" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-of-key-variables-1">Distribution of key variables</h4>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 98010 Columns: 233
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr   (8): LEA_STATE, LEA_STATE_NAME, LEAID, LEA_NAME, SCHID, SCH_NAME, COMB...
+dbl (225): SCH_ENR_HI_M, SCH_ENR_HI_F, SCH_ENR_HI_X, SCH_ENR_AM_M, SCH_ENR_A...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 2
+   Variable     MissingRate
+   &lt;chr&gt;              &lt;dbl&gt;
+ 1 SCH_ENR_HI_M        1.92
+ 2 SCH_ENR_HI_F        1.92
+ 3 SCH_ENR_AM_M        1.92
+ 4 SCH_ENR_AM_F        1.92
+ 5 SCH_ENR_AS_M        1.92
+ 6 SCH_ENR_AS_F        1.92
+ 7 SCH_ENR_HP_M        1.92
+ 8 SCH_ENR_HP_F        1.92
+ 9 SCH_ENR_BL_M        1.91
+10 SCH_ENR_BL_F        1.92
+11 SCH_ENR_WH_M        1.92
+12 SCH_ENR_WH_F        1.93
+13 SCH_ENR_TR_M        1.92
+14 SCH_ENR_TR_F        1.92</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 2
+  Race            Total_Enrollment
+  &lt;chr&gt;                      &lt;dbl&gt;
+1 White                   21947054
+2 Hispanic                13914099
+3 Black                    7197685
+4 Asian                    2611056
+5 TwoOrMore                2284917
+6 AmericanIndian            456405
+7 PacificIslander           185273</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="merge-and-clean-data-process" class="level2">
+<h2 class="anchored" data-anchor-id="merge-and-clean-data-process">Merge and Clean Data Process</h2>
+<p><a href="scripts/data_clean_process.R" download="true">Download Cleaning Script</a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"scripts/data_clean_process.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This project involved merging and cleaning multiple datasets related to school enrollment, harassment reports, and school support services. In the original dataset, several variables contained reserved codes represented by negative values. These codes are not actual data values but rather placeholders for missing, suppressed, or logic-dependent responses. The specific reserve codes and their meanings are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Reserve Code Value</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>-3</td>
+<td>Skip Logic or Processing Failure</td>
+</tr>
+<tr class="even">
+<td>-4</td>
+<td>Missing Optional Data</td>
+</tr>
+<tr class="odd">
+<td>-5</td>
+<td>Action Plan/Quick Plans</td>
+</tr>
+<tr class="even">
+<td>-6</td>
+<td>Force Certified</td>
+</tr>
+<tr class="odd">
+<td>-9</td>
+<td>Not Applicable/Skipped</td>
+</tr>
+<tr class="even">
+<td>-12</td>
+<td>Suppressed for Privacy Protections</td>
+</tr>
+<tr class="odd">
+<td>-13</td>
+<td>Missing DIND Skip Logic</td>
+</tr>
+</tbody>
+</table>
+<p>To ensure accurate analysis, these values were converted to <code>NA</code>, as they do not represent valid quantitative information. Including them would lead to misleading statistics and incorrect interpretations in visualizations and summaries.</p>
+<p>The overall script includes:</p>
+<p>- Reading raw datasets from the <code>dataset/</code> directory</p>
+<p>- Replacing reserved codes (e.g.&nbsp;-3, -4, -6, etc.) with <code>NA</code></p>
+<p>- Removing invalid or fully-missing rows</p>
+<p>- Renaming variables for clarity (e.g., removing <code>SCH_</code> prefix)</p>
+<p>- Merging harassment, enrollment, and support data into a single cleaned dataset - Saving the output as <code>.rds</code> and <code>.csv</code> files</p>
+</section>
+<section id="r-package-used" class="level2">
+<h2 class="anchored" data-anchor-id="r-package-used">R Package Used</h2>
 <p>This comes from the file <code>data.qmd</code>.</p>
 <p>Your first steps in this project will be to find data to work on.</p>
 <p>I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.</p>
 <p>Initially, you will study <em>one dataset</em> but later you will need to combine that data with another dataset. For this reason, I recommend finding data that has some date and/or location components. These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable. Data from the census, weather data, economic data, are all relatively easy to combine with other data with time/location components.</p>
+</section>
 <section id="what-makes-a-good-data-set" class="level2">
 <h2 class="anchored" data-anchor-id="what-makes-a-good-data-set">What makes a good data set?</h2>
 <ul>
