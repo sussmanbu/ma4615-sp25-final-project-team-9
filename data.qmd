@@ -3,9 +3,7 @@ title: Data
 description: We describe the sources of our data and the cleaning process.
 toc: true
 draft: false
-editor: 
-  markdown: 
-    wrap: sentence
+editor: Jiayi Zhang & Baijie Li
 ---
 
 ![](images/dataqmd.PNG)
@@ -16,13 +14,9 @@ The data is publicly available on the [CRDC website](https://ocrdata.ed.gov/), a
 
 ## Describe where/how to find data
 
-All of our three raw datasets are coming from the Civil Rights Data Collection (CRDC).
-It includes public schools and school districts across the United States, collected by the U.S.
-Department of Education’s Office for Civil Rights (OCR).
+All of our three raw datasets are coming from the Civil Rights Data Collection (CRDC). It includes public schools and school districts across the United States, collected by the U.S. Department of Education’s Office for Civil Rights (OCR).
 
-It is used to monitor educational access and equity, ensuring compliance with federal civil rights laws.
-The datasets originate from the U.S.
-Department of Education's Civil Rights Data Collection (CRDC) from the year 2021-2022, accessible at [civilrightsdata.ed.gov](https://civilrightsdata.ed.gov/data).
+It is used to monitor educational access and equity, ensuring compliance with federal civil rights laws. The datasets originate from the U.S. Department of Education's Civil Rights Data Collection (CRDC) from the year 2021-2022, accessible at [civilrightsdata.ed.gov](https://civilrightsdata.ed.gov/data).
 
 ## Data Source
 
@@ -30,12 +24,10 @@ Department of Education's Civil Rights Data Collection (CRDC) from the year 2021
 
 Description:
 
-This dataset primarily focuses on harassment and bullying incidents reported in educational institutions, capturing various forms of misconduct and disciplinary actions.
-It includes key variables such as state, district, school names, student demographics and so on.It gathers key civil rights metrics to assess access to and obstacles in educational opportunities from early childhood through grade 12.
-The Office for Civil Rights (OCR) utilizes this data from public school districts to investigate discrimination complaints, evaluate compliance with federal civil rights laws, conduct proactive reviews, and offer policy guidance and technical support to schools and districts.
+This dataset primarily focuses on harassment and bullying incidents reported in educational institutions, capturing various forms of misconduct and disciplinary actions. It includes key variables such as state, district, school names, student demographics and so on.It gathers key civil rights metrics to assess access to and obstacles in educational opportunities from early childhood through grade 12. The Office for Civil Rights (OCR) utilizes this data from public school districts to investigate discrimination complaints, evaluate compliance with federal civil rights laws, conduct proactive reviews, and offer policy guidance and technical support to schools and districts.
 
 | Variable            | Description                                                               | Data Type |
-|:-------------------|:-------------------------------|:------------------:|
+|:--------------------|:--------------------------------------------------------------------------|:---------:|
 | HBALLEGATIONS_SEX   | Number of reported harassment/bullying allegations based on sex or gender |   int64   |
 | HBALLEGATIONS_RAC   | Number of reported harassment/bullying allegations based on race          |   int64   |
 | HBALLEGATIONS_DIS   | Number of reported harassment/bullying allegations based on disability    |   int64   |
@@ -127,10 +119,7 @@ ggplot(race_long, aes(x = Race, y = Allegations, fill = Gender)) +
 
 ### Data Set 2: School Support
 
-Description The school support dataset contains information on the number of full-time equivalent (FTE) counselors, psychologists, and security guards at individual schools.
-After removing negative and missing values, we found that most schools have very few support staff, with distributions heavily skewed toward zero.
-While the majority of schools report no psychologists or guards, a small number of schools report larger support teams.
-The presence of a few schools with unusually high staff numbers indicates variation likely related to school size or reporting differences.
+Description The school support dataset contains information on the number of full-time equivalent (FTE) counselors, psychologists, and security guards at individual schools. After removing negative and missing values, we found that most schools have very few support staff, with distributions heavily skewed toward zero. While the majority of schools report no psychologists or guards, a small number of schools report larger support teams. The presence of a few schools with unusually high staff numbers indicates variation likely related to school size or reporting differences.
 
 | Variable        | Description                     | Data Type |
 |-----------------|---------------------------------|-----------|
@@ -181,8 +170,7 @@ cat("Counselors are more consistently present across schools.
 
 ### Data Set 3: School Enrollment
 
-Reason to use this dataset: The Enrollment dataset contains detailed counts of student populations across multiple racial and ethnic groups at the school level.It breaks down enrollment into male and female students across 7 racial categories: Hispanic, American Indian/Alaska Native, Asian, Native Hawaiian/Pacific Islander, Black, White, and Two or More Races.This data is crucial for accurately normalizing harassment report counts by providing the total population against which allegations are measured, enabling fair comparison across institutions of varying sizes and demographics.
-If we only compare raw counts of harassment reports, larger schools will naturally have more reports just because they have more students.By dividing number of harassment reports by total enrollment, we calculate harassment allegations per 100 students, which normalizes across schools of different sizes.
+Reason to use this dataset: The Enrollment dataset contains detailed counts of student populations across multiple racial and ethnic groups at the school level.It breaks down enrollment into male and female students across 7 racial categories: Hispanic, American Indian/Alaska Native, Asian, Native Hawaiian/Pacific Islander, Black, White, and Two or More Races.This data is crucial for accurately normalizing harassment report counts by providing the total population against which allegations are measured, enabling fair comparison across institutions of varying sizes and demographics. If we only compare raw counts of harassment reports, larger schools will naturally have more reports just because they have more students.By dividing number of harassment reports by total enrollment, we calculate harassment allegations per 100 students, which normalizes across schools of different sizes.
 
 | Variable | Description                                                |
 |----------|------------------------------------------------------------|
@@ -286,10 +274,7 @@ race_summary     # Table of total enrollment per race
 
 [Download Cleaning Script](scripts/data_clean_process.qmd){download="true"}
 
-This project involved merging and cleaning multiple datasets related to school enrollment, harassment reports, and school support services.
-In the original dataset, several variables contained reserved codes represented by negative values.
-These codes are not actual data values but rather placeholders for missing, suppressed, or logic-dependent responses.
-The specific reserve codes and their meanings are:
+This project involved merging and cleaning multiple datasets related to school enrollment, harassment reports, and school support services. In the original dataset, several variables contained reserved codes represented by negative values. These codes are not actual data values but rather placeholders for missing, suppressed, or logic-dependent responses. The specific reserve codes and their meanings are:
 
 | Reserve Code Value | Definition                         |
 |--------------------|------------------------------------|
@@ -301,8 +286,7 @@ The specific reserve codes and their meanings are:
 | -12                | Suppressed for Privacy Protections |
 | -13                | Missing DIND Skip Logic            |
 
-To ensure accurate analysis, these values were converted to `NA`, as they do not represent valid quantitative information.
-Including them would lead to misleading statistics and incorrect interpretations in visualizations and summaries.
+To ensure accurate analysis, these values were converted to `NA`, as they do not represent valid quantitative information. Including them would lead to misleading statistics and incorrect interpretations in visualizations and summaries.
 
 The overall script includes:
 
@@ -322,14 +306,9 @@ This comes from the file `data.qmd`.
 
 Your first steps in this project will be to find data to work on.
 
-I recommend trying to find data that interests you and that you are knowledgeable about.
-A bad example would be if you have no interest in video games but your data set is about video games.
-I also recommend finding data that is related to current events, social justice, and other areas that have an impact.
+I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.
 
-Initially, you will study *one dataset* but later you will need to combine that data with another dataset.
-For this reason, I recommend finding data that has some date and/or location components.
-These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable.
-Data from the census, weather data, economic data, are all relatively easy to combine with other data with time/location components.
+Initially, you will study *one dataset* but later you will need to combine that data with another dataset. For this reason, I recommend finding data that has some date and/or location components. These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable. Data from the census, weather data, economic data, are all relatively easy to combine with other data with time/location components.
 
 ## What makes a good data set?
 
@@ -343,33 +322,21 @@ Data from the census, weather data, economic data, are all relatively easy to co
 
 Below 50mb: In `dataset` folder
 
-Above 50mb: In `dataset-ignore` folder which you will have to create manually.
-This folder will be ignored by `git` so you'll have to manually sync these files across your team.
+Above 50mb: In `dataset-ignore` folder which you will have to create manually. This folder will be ignored by `git` so you'll have to manually sync these files across your team.
 
 ### Sharing your data
 
-For small datasets (\<50mb), you can use the `dataset` folder that is tracked by github.
-Stage and commit the files just like you would any other file.
+For small datasets (\<50mb), you can use the `dataset` folder that is tracked by github. Stage and commit the files just like you would any other file.
 
-For larger datasets, you'll need to create a new folder in the project root directory named `dataset-ignore`.
-This will be ignored by git (based off the `.gitignore` file in the project root directory) which will help you avoid issues with Github's size limits.
-Your team will have to manually make sure the data files in `dataset-ignore` are synced across team members.
+For larger datasets, you'll need to create a new folder in the project root directory named `dataset-ignore`. This will be ignored by git (based off the `.gitignore` file in the project root directory) which will help you avoid issues with Github's size limits. Your team will have to manually make sure the data files in `dataset-ignore` are synced across team members.
 
-Your [clean_data.R](/scripts/clean_data.R) file in the `scripts` folder is the file where you will import the raw data that you download, clean it, and write `.rds` file(s) (using `write_rds`) that you'll load in your analysis page.
-If desirable, you can have multiple scripts that produce different derived data sets, just make sure to link to them on this page.
+Your [clean_data.R](/scripts/clean_data.R) file in the `scripts` folder is the file where you will import the raw data that you download, clean it, and write `.rds` file(s) (using `write_rds`) that you'll load in your analysis page. If desirable, you can have multiple scripts that produce different derived data sets, just make sure to link to them on this page.
 
-You should never use absolute paths (eg. `/Users/danielsussman/path/to/project/` or `C:\MA415\\Final_Project\`).
-Instead, use the `here` function from the [`here` package](https://here.r-lib.org/articles/here.html) to avoid path problems.
+You should never use absolute paths (eg. `/Users/danielsussman/path/to/project/` or `C:\MA415\\Final_Project\`). Instead, use the `here` function from the [`here` package](https://here.r-lib.org/articles/here.html) to avoid path problems.
 
 ### Clean data script
 
-The idea behind this file is that someone coming to your website could largely replicate your analyses after running this script on the original data sets to clean them.
-This file might create a derivative data set that you then use for your subsequent analysis.
-Note that you don't need to run this script from every post/page.
-Instead, you can load in the results of this script, which will usually be `.rds` files.
-In your data page you'll describe how these results were created.
-If you have a very large data set, you might save smaller data sets that you can use for exploration purposes.
-To link to this file, you can use `[cleaning script](/scripts/clean_data.R)` wich appears as [cleaning script](/scripts/clean_data.R).
+The idea behind this file is that someone coming to your website could largely replicate your analyses after running this script on the original data sets to clean them. This file might create a derivative data set that you then use for your subsequent analysis. Note that you don't need to run this script from every post/page. Instead, you can load in the results of this script, which will usually be `.rds` files. In your data page you'll describe how these results were created. If you have a very large data set, you might save smaller data sets that you can use for exploration purposes. To link to this file, you can use `[cleaning script](/scripts/clean_data.R)` wich appears as [cleaning script](/scripts/clean_data.R).
 
 ------------------------------------------------------------------------
 
