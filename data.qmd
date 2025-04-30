@@ -28,7 +28,7 @@ Department of Education's Civil Rights Data Collection (CRDC) from the year 2021
 
 ### Data Set 1: Harassment and Bullying
 
-Description
+Description:
 
 This dataset primarily focuses on harassment and bullying incidents reported in educational institutions, capturing various forms of misconduct and disciplinary actions.
 It includes key variables such as state, district, school names, student demographics and so on.It gathers key civil rights metrics to assess access to and obstacles in educational opportunities from early childhood through grade 12.
@@ -202,6 +202,7 @@ If we only compare raw counts of harassment reports, larger schools will natural
 | ENR_TR_F | Number of Two or More Races Female Students                |
 
 #### Distribution of key variables
+
 ```{r, echo = FALSE}
 library(tidyverse)
 
@@ -280,18 +281,42 @@ missing_summary  # Table of missing data rate (%)
 race_summary     # Table of total enrollment per race
 
 ```
-## Data Clean Process
 
+## Merge and Clean Data Process
 
+[Download Cleaning Script](scripts/data_clean_process.qmd){download="true"}
+
+This project involved merging and cleaning multiple datasets related to school enrollment, harassment reports, and school support services.
+In the original dataset, several variables contained reserved codes represented by negative values.
+These codes are not actual data values but rather placeholders for missing, suppressed, or logic-dependent responses.
+The specific reserve codes and their meanings are:
+
+| Reserve Code Value | Definition                         |
+|--------------------|------------------------------------|
+| -3                 | Skip Logic or Processing Failure   |
+| -4                 | Missing Optional Data              |
+| -5                 | Action Plan/Quick Plans            |
+| -6                 | Force Certified                    |
+| -9                 | Not Applicable/Skipped             |
+| -12                | Suppressed for Privacy Protections |
+| -13                | Missing DIND Skip Logic            |
+
+To ensure accurate analysis, these values were converted to `NA`, as they do not represent valid quantitative information.
+Including them would lead to misleading statistics and incorrect interpretations in visualizations and summaries.
+
+The overall script includes:
+
+\- Reading raw datasets from the `dataset/` directory
+
+\- Replacing reserved codes (e.g. -3, -4, -6, etc.) with `NA`
+
+\- Removing invalid or fully-missing rows
+
+\- Renaming variables for clarity (e.g., removing `SCH_` prefix)
+
+\- Merging harassment, enrollment, and support data into a single cleaned dataset - Saving the output as `.rds` and `.csv` files
 
 ## R Package Used
-
-
-
-
-
-
-
 
 This comes from the file `data.qmd`.
 
