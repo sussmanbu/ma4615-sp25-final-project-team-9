@@ -3,7 +3,6 @@ title: Data
 description: We describe the sources of our data and the cleaning process.
 toc: true
 draft: false
-editor: Jiayi Zhang & Baijie Li
 ---
 
 ![](images/dataqmd.PNG)
@@ -26,26 +25,26 @@ Description:
 
 This dataset primarily focuses on harassment and bullying incidents reported in educational institutions, capturing various forms of misconduct and disciplinary actions. It includes key variables such as state, district, school names, student demographics and so on.It gathers key civil rights metrics to assess access to and obstacles in educational opportunities from early childhood through grade 12. The Office for Civil Rights (OCR) utilizes this data from public school districts to investigate discrimination complaints, evaluate compliance with federal civil rights laws, conduct proactive reviews, and offer policy guidance and technical support to schools and districts.
 
-| Variable            | Description                                                               | Data Type |
-|:--------------------|:--------------------------------------------------------------------------|:---------:|
-| HBALLEGATIONS_SEX   | Number of reported harassment/bullying allegations based on sex or gender |   int64   |
-| HBALLEGATIONS_RAC   | Number of reported harassment/bullying allegations based on race          |   int64   |
-| HBALLEGATIONS_DIS   | Number of reported harassment/bullying allegations based on disability    |   int64   |
-| HBALLEGATIONS_REL   | Number of reported harassment/bullying allegations based on religion      |   int64   |
-| HBREPORTED_RAC_HI_M | Number of Hispanic Male Students                                          |   int64   |
-| HBREPORTED_RAC_HI_F | Number of Hispanic Female Students                                        |   int64   |
-| HBREPORTED_RAC_AM_M | Number of American Indian/Alaska Native Male Students                     |   int64   |
-| HBREPORTED_RAC_AM_F | Number of American Indian/Alaska Native Female Students                   |   int64   |
-| HBREPORTED_RAC_AS_M | Number of Asian Male Students                                             |   int64   |
-| HBREPORTED_RAC_AS_F | Number of Asian Female Students                                           |   int64   |
-| HBREPORTED_RAC_HP_M | Number of Native Hawaiian/Pacific Islander Male Students                  |   int64   |
-| HBREPORTED_RAC_HP_F | Number of Native Hawaiian/Pacific Islander Female Students                |   int64   |
-| HBREPORTED_RAC_BL_M | Number of Black Male Students                                             |   int64   |
-| HBREPORTED_RAC_BL_F | Number of Black Female Students                                           |   int64   |
-| HBREPORTED_RAC_WH_M | Number of White Male Students                                             |   int64   |
-| HBREPORTED_RAC_WH_F | Number of White Female Students                                           |   int64   |
-| HBREPORTED_RAC_TR_M | Number of Two or More Races Male Students                                 |   int64   |
-| HBREPORTED_RAC_TR_F | Number of Two or More Races Female Students                               |   int64   |
+| Variable | Description | Data Type |
+|:-----------------------|:-----------------------|:----------------------:|
+| HBALLEGATIONS_SEX | Number of reported harassment/bullying allegations based on sex or gender | int64 |
+| HBALLEGATIONS_RAC | Number of reported harassment/bullying allegations based on race | int64 |
+| HBALLEGATIONS_DIS | Number of reported harassment/bullying allegations based on disability | int64 |
+| HBALLEGATIONS_REL | Number of reported harassment/bullying allegations based on religion | int64 |
+| HBREPORTED_RAC_HI_M | Number of Hispanic Male Students | int64 |
+| HBREPORTED_RAC_HI_F | Number of Hispanic Female Students | int64 |
+| HBREPORTED_RAC_AM_M | Number of American Indian/Alaska Native Male Students | int64 |
+| HBREPORTED_RAC_AM_F | Number of American Indian/Alaska Native Female Students | int64 |
+| HBREPORTED_RAC_AS_M | Number of Asian Male Students | int64 |
+| HBREPORTED_RAC_AS_F | Number of Asian Female Students | int64 |
+| HBREPORTED_RAC_HP_M | Number of Native Hawaiian/Pacific Islander Male Students | int64 |
+| HBREPORTED_RAC_HP_F | Number of Native Hawaiian/Pacific Islander Female Students | int64 |
+| HBREPORTED_RAC_BL_M | Number of Black Male Students | int64 |
+| HBREPORTED_RAC_BL_F | Number of Black Female Students | int64 |
+| HBREPORTED_RAC_WH_M | Number of White Male Students | int64 |
+| HBREPORTED_RAC_WH_F | Number of White Female Students | int64 |
+| HBREPORTED_RAC_TR_M | Number of Two or More Races Male Students | int64 |
+| HBREPORTED_RAC_TR_F | Number of Two or More Races Female Students | int64 |
 
 #### Distribution of key variables
 
@@ -54,7 +53,7 @@ This dataset primarily focuses on harassment and bullying incidents reported in 
 ```{r, echo=FALSE}
 library(tidyverse)
 
-data <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+data <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", show_col_types = FALSE)
 harassment_vars <- c("HBALLEGATIONS_SEX", "HBALLEGATIONS_RAC", 
                      "HBALLEGATIONS_DIS", "HBALLEGATIONS_REL")
 
@@ -130,7 +129,7 @@ Description The school support dataset contains information on the number of ful
 #### Findings about key variables
 
 ```{r, echo = FALSE}
-school_support_data <- read_csv("dataset/School Support.csv")
+school_support_data <- read_csv("dataset/School Support.csv", show_col_types = FALSE)
 
 # Clean: Only remove negatives and NA
 school_support_clean <- school_support_data %>%
@@ -195,7 +194,7 @@ Reason to use this dataset: The Enrollment dataset contains detailed counts of s
 library(tidyverse)
 
 # ---- 0. Load and Clean Enrollment Data ----
-enrollment_data <- read_csv("dataset/Enrollment.csv") %>%
+enrollment_data <- read_csv("dataset/Enrollment.csv", show_col_types = FALSE) %>%
   select(
     SCH_ENR_HI_M, SCH_ENR_HI_F,
     SCH_ENR_AM_M, SCH_ENR_AM_F,
@@ -272,7 +271,12 @@ race_summary     # Table of total enrollment per race
 
 ## Merge and Clean Data Process
 
-[Download Cleaning Script](scripts/data_clean_process.qmd){download="true"}
+[Download Cleaning Script](scripts/data_clean_process.R){download="true"}
+
+```{r eval = FALSE}
+source("scripts/data_clean_process.R")
+
+```
 
 This project involved merging and cleaning multiple datasets related to school enrollment, harassment reports, and school support services. In the original dataset, several variables contained reserved codes represented by negative values. These codes are not actual data values but rather placeholders for missing, suppressed, or logic-dependent responses. The specific reserve codes and their meanings are:
 
@@ -299,63 +303,3 @@ The overall script includes:
 \- Renaming variables for clarity (e.g., removing `SCH_` prefix)
 
 \- Merging harassment, enrollment, and support data into a single cleaned dataset - Saving the output as `.rds` and `.csv` files
-
-## R Package Used
-
-This comes from the file `data.qmd`.
-
-Your first steps in this project will be to find data to work on.
-
-I recommend trying to find data that interests you and that you are knowledgeable about. A bad example would be if you have no interest in video games but your data set is about video games. I also recommend finding data that is related to current events, social justice, and other areas that have an impact.
-
-Initially, you will study *one dataset* but later you will need to combine that data with another dataset. For this reason, I recommend finding data that has some date and/or location components. These types of data are conducive to interesting visualizations and analysis and you can also combine this data with other data that also has a date or location variable. Data from the census, weather data, economic data, are all relatively easy to combine with other data with time/location components.
-
-## What makes a good data set?
-
--   Data you are interested in and care about.
--   Data where there are a lot of potential questions that you can explore.
--   A data set that isn't completely cleaned already.
--   Multiple sources for data that you can combine.
--   Some type of time and/or location component.
-
-## Where to keep data?
-
-Below 50mb: In `dataset` folder
-
-Above 50mb: In `dataset-ignore` folder which you will have to create manually. This folder will be ignored by `git` so you'll have to manually sync these files across your team.
-
-### Sharing your data
-
-For small datasets (\<50mb), you can use the `dataset` folder that is tracked by github. Stage and commit the files just like you would any other file.
-
-For larger datasets, you'll need to create a new folder in the project root directory named `dataset-ignore`. This will be ignored by git (based off the `.gitignore` file in the project root directory) which will help you avoid issues with Github's size limits. Your team will have to manually make sure the data files in `dataset-ignore` are synced across team members.
-
-Your [clean_data.R](/scripts/clean_data.R) file in the `scripts` folder is the file where you will import the raw data that you download, clean it, and write `.rds` file(s) (using `write_rds`) that you'll load in your analysis page. If desirable, you can have multiple scripts that produce different derived data sets, just make sure to link to them on this page.
-
-You should never use absolute paths (eg. `/Users/danielsussman/path/to/project/` or `C:\MA415\\Final_Project\`). Instead, use the `here` function from the [`here` package](https://here.r-lib.org/articles/here.html) to avoid path problems.
-
-### Clean data script
-
-The idea behind this file is that someone coming to your website could largely replicate your analyses after running this script on the original data sets to clean them. This file might create a derivative data set that you then use for your subsequent analysis. Note that you don't need to run this script from every post/page. Instead, you can load in the results of this script, which will usually be `.rds` files. In your data page you'll describe how these results were created. If you have a very large data set, you might save smaller data sets that you can use for exploration purposes. To link to this file, you can use `[cleaning script](/scripts/clean_data.R)` wich appears as [cleaning script](/scripts/clean_data.R).
-
-------------------------------------------------------------------------
-
-## Rubric: On this page
-
-You will
-
--   Describe where/how to find data.
-    -   You must include a link to the original data source(s). Make sure to provide attribution to those who collected the data.
-    -   Why was the data collected/curated? Who put it together? (This is important, if you don't know why it was collected then that might not be a good dataset to look at.
--   Describe the different data files used and what each variable means.
-    -   If you have many variables then only describe the most relevant ones, possibly grouping together variables that are similar, and summarize the rest.
-    -   Use figures or tables to help explain the data. For example, showing a histogram or bar chart for a particularly important variable can provide a quick overview of the values that variable tends to take.
--   Describe any cleaning you had to do for your data.
-    -   You *must* include a link to your `clean_data.R` file.
-    -   Rename variables and recode factors to make data more clear.
-    -   Also, describe any additional R packages you used outside of those covered in class.
-    -   Describe and show code for how you combined multiple data files and any cleaning that was necessary for that.
-    -   Some repetition of what you do in your `clean_data.R` file is fine and encouraged if it helps explain what you did.
--   Organization, clarity, cleanliness of the page
-    -   Make sure to remove excessive warnings, use clean easy-to-read code (without side scrolling), organize with sections, use bullets and other organization tools, etc.
-    -   This page should be self-contained.
