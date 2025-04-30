@@ -31,31 +31,29 @@ Department of Education's Civil Rights Data Collection (CRDC) from the year 2021
 Description
 
 This dataset primarily focuses on harassment and bullying incidents reported in educational institutions, capturing various forms of misconduct and disciplinary actions.
-It includes key variables such as state, district, school names, student demographics and so on.
-The dataset contains 98,010 rows and 159 columns, making it a large dataset with detailed information on bullying and harassment incidents in schools across different states.
-It gathers key civil rights metrics to assess access to and obstacles in educational opportunities from early childhood through grade 12.
+It includes key variables such as state, district, school names, student demographics and so on.It gathers key civil rights metrics to assess access to and obstacles in educational opportunities from early childhood through grade 12.
 The Office for Civil Rights (OCR) utilizes this data from public school districts to investigate discrimination complaints, evaluate compliance with federal civil rights laws, conduct proactive reviews, and offer policy guidance and technical support to schools and districts.
 
-| Variable | Description | Data Type |
-|:------------------|:--------------------------------|:-----------------:|
-| HBALLEGATIONS_SEX | Number of reported harassment/bullying allegations based on sex or gender | int64 |
-| HBALLEGATIONS_RAC | Number of reported harassment/bullying allegations based on race | int64 |
-| HBALLEGATIONS_DIS | Number of reported harassment/bullying allegations based on disability | int64 |
-| HBALLEGATIONS_REL | Number of reported harassment/bullying allegations based on religion | int64 |
-| HBREPORTED_RAC_HI_M | Number of Hispanic Male Students | int64 |
-| HBREPORTED_RAC_HI_F | Number of Hispanic Female Students | int64 |
-| HBREPORTED_RAC_AM_M | Number of American Indian/Alaska Native Male Students | int64 |
-| HBREPORTED_RAC_AM_F | Number of American Indian/Alaska Native Female Students | int64 |
-| HBREPORTED_RAC_AS_M | Number of Asian Male Students | int64 |
-| HBREPORTED_RAC_AS_F | Number of Asian Female Students | int64 |
-| HBREPORTED_RAC_HP_M | Number of Native Hawaiian/Pacific Islander Male Students | int64 |
-| HBREPORTED_RAC_HP_F | Number of Native Hawaiian/Pacific Islander Female Students | int64 |
-| HBREPORTED_RAC_BL_M | Number of Black Male Students | int64 |
-| HBREPORTED_RAC_BL_F | Number of Black Female Students | int64 |
-| HBREPORTED_RAC_WH_M | Number of White Male Students | int64 |
-| HBREPORTED_RAC_WH_F | Number of White Female Students | int64 |
-| HBREPORTED_RAC_TR_M | Number of Two or More Races Male Students | int64 |
-| HBREPORTED_RAC_TR_F | Number of Two or More Races Female Students | int64 |
+| Variable            | Description                                                               | Data Type |
+|:-------------------|:-------------------------------|:------------------:|
+| HBALLEGATIONS_SEX   | Number of reported harassment/bullying allegations based on sex or gender |   int64   |
+| HBALLEGATIONS_RAC   | Number of reported harassment/bullying allegations based on race          |   int64   |
+| HBALLEGATIONS_DIS   | Number of reported harassment/bullying allegations based on disability    |   int64   |
+| HBALLEGATIONS_REL   | Number of reported harassment/bullying allegations based on religion      |   int64   |
+| HBREPORTED_RAC_HI_M | Number of Hispanic Male Students                                          |   int64   |
+| HBREPORTED_RAC_HI_F | Number of Hispanic Female Students                                        |   int64   |
+| HBREPORTED_RAC_AM_M | Number of American Indian/Alaska Native Male Students                     |   int64   |
+| HBREPORTED_RAC_AM_F | Number of American Indian/Alaska Native Female Students                   |   int64   |
+| HBREPORTED_RAC_AS_M | Number of Asian Male Students                                             |   int64   |
+| HBREPORTED_RAC_AS_F | Number of Asian Female Students                                           |   int64   |
+| HBREPORTED_RAC_HP_M | Number of Native Hawaiian/Pacific Islander Male Students                  |   int64   |
+| HBREPORTED_RAC_HP_F | Number of Native Hawaiian/Pacific Islander Female Students                |   int64   |
+| HBREPORTED_RAC_BL_M | Number of Black Male Students                                             |   int64   |
+| HBREPORTED_RAC_BL_F | Number of Black Female Students                                           |   int64   |
+| HBREPORTED_RAC_WH_M | Number of White Male Students                                             |   int64   |
+| HBREPORTED_RAC_WH_F | Number of White Female Students                                           |   int64   |
+| HBREPORTED_RAC_TR_M | Number of Two or More Races Male Students                                 |   int64   |
+| HBREPORTED_RAC_TR_F | Number of Two or More Races Female Students                               |   int64   |
 
 #### Distribution of key variables
 
@@ -126,6 +124,174 @@ ggplot(race_long, aes(x = Race, y = Allegations, fill = Gender)) +
   scale_fill_manual(values = c("Male" = "skyblue", "Female" = "pink"))
 
 ```
+
+### Data Set 2: School Support
+
+Description The school support dataset contains information on the number of full-time equivalent (FTE) counselors, psychologists, and security guards at individual schools.
+After removing negative and missing values, we found that most schools have very few support staff, with distributions heavily skewed toward zero.
+While the majority of schools report no psychologists or guards, a small number of schools report larger support teams.
+The presence of a few schools with unusually high staff numbers indicates variation likely related to school size or reporting differences.
+
+| Variable        | Description                     | Data Type |
+|-----------------|---------------------------------|-----------|
+| FTECOUNSELORS   | Number of FTE school counselors | Decimal   |
+| FTESERVICES_PSY | Number of FTE psychologists     | Decimal   |
+| FTESECURITY_GUA | Number of FTE security guards   | Decimal   |
+
+#### Findings about key variables
+
+```{r, echo = FALSE}
+school_support_data <- read_csv("dataset/School Support.csv")
+
+# Clean: Only remove negatives and NA
+school_support_clean <- school_support_data %>%
+  select(
+    counselors = SCH_FTECOUNSELORS,
+    psychologists = SCH_FTESERVICES_PSY,
+    security_guards = SCH_FTESECURITY_GUA
+  ) %>%
+  mutate(
+    counselors = ifelse(counselors < 0 , NA, counselors),
+    psychologists = ifelse(psychologists < 0 , NA, psychologists),
+    security_guards = ifelse(security_guards < 0 , NA, security_guards)
+  )
+
+summary(school_support_clean)
+
+# Key Statistics
+summary_table <- school_support_clean %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>%
+  group_by(variable) %>%
+  summarise(
+    count = n(),
+    missing = sum(is.na(value)),
+    mean = round(mean(value, na.rm = TRUE), 2),
+    median = round(median(value, na.rm = TRUE), 2),
+    sd = round(sd(value, na.rm = TRUE), 2),
+    min = round(min(value, na.rm = TRUE), 2),
+    max = round(max(value, na.rm = TRUE), 2)
+  )
+
+print(summary_table)
+
+cat("Counselors are more consistently present across schools.
+    Psychologists and especially security guards are much less common, with higher proportions of zeros and missing entries.
+    The high standard deviations relative to means for all three suggest substantial variability across school sizes or resource allocations.")
+```
+
+### Data Set 3: School Enrollment
+
+Reason to use this dataset: The Enrollment dataset contains detailed counts of student populations across multiple racial and ethnic groups at the school level.It breaks down enrollment into male and female students across 7 racial categories: Hispanic, American Indian/Alaska Native, Asian, Native Hawaiian/Pacific Islander, Black, White, and Two or More Races.This data is crucial for accurately normalizing harassment report counts by providing the total population against which allegations are measured, enabling fair comparison across institutions of varying sizes and demographics.
+If we only compare raw counts of harassment reports, larger schools will naturally have more reports just because they have more students.By dividing number of harassment reports by total enrollment, we calculate harassment allegations per 100 students, which normalizes across schools of different sizes.
+
+| Variable | Description                                                |
+|----------|------------------------------------------------------------|
+| ENR_HI_M | Number of Hispanic Male Students                           |
+| ENR_HI_F | Number of Hispanic Female Students                         |
+| ENR_AM_M | Number of American Indian/Alaska Native Male Students      |
+| ENR_AM_F | Number of American Indian/Alaska Native Female Students    |
+| ENR_AS_M | Number of Asian Male Students                              |
+| ENR_AS_F | Number of Asian Female Students                            |
+| ENR_HP_M | Number of Native Hawaiian/Pacific Islander Male Students   |
+| ENR_HP_F | Number of Native Hawaiian/Pacific Islander Female Students |
+| ENR_BL_M | Number of Black Male Students                              |
+| ENR_BL_F | Number of Black Female Students                            |
+| ENR_WH_M | Number of White Male Students                              |
+| ENR_WH_F | Number of White Female Students                            |
+| ENR_TR_M | Number of Two or More Races Male Students                  |
+| ENR_TR_F | Number of Two or More Races Female Students                |
+
+#### Distribution of key variables
+```{r, echo = FALSE}
+library(tidyverse)
+
+# ---- 0. Load and Clean Enrollment Data ----
+enrollment_data <- read_csv("dataset/Enrollment.csv") %>%
+  select(
+    SCH_ENR_HI_M, SCH_ENR_HI_F,
+    SCH_ENR_AM_M, SCH_ENR_AM_F,
+    SCH_ENR_AS_M, SCH_ENR_AS_F,
+    SCH_ENR_HP_M, SCH_ENR_HP_F,
+    SCH_ENR_BL_M, SCH_ENR_BL_F,
+    SCH_ENR_WH_M, SCH_ENR_WH_F,
+    SCH_ENR_TR_M, SCH_ENR_TR_F
+  ) %>%
+  mutate(across(everything(), ~ ifelse(. < 0, NA, .)))  # Remove negatives
+
+# ---- 1. Missing Data Rate Table ----
+missing_summary <- enrollment_data %>%
+  summarise(across(everything(), ~ mean(is.na(.)))) %>%
+  pivot_longer(cols = everything(), names_to = "Variable", values_to = "MissingRate") %>%
+  mutate(MissingRate = round(MissingRate * 100, 2))  # as percentage
+
+# ---- 2. Summarize Total Enrollment by Race ----
+race_summary <- enrollment_data %>%
+  pivot_longer(cols = everything(), names_to = "RaceSex", values_to = "Enrollment") %>%
+  filter(!is.na(Enrollment)) %>%
+  mutate(
+    Race = case_when(
+      str_detect(RaceSex, "HI") ~ "Hispanic",
+      str_detect(RaceSex, "AM") ~ "AmericanIndian",
+      str_detect(RaceSex, "AS") ~ "Asian",
+      str_detect(RaceSex, "HP") ~ "PacificIslander",
+      str_detect(RaceSex, "BL") ~ "Black",
+      str_detect(RaceSex, "WH") ~ "White",
+      str_detect(RaceSex, "TR") ~ "TwoOrMore"
+    )
+  ) %>%
+  group_by(Race) %>%
+  summarise(Total_Enrollment = sum(Enrollment, na.rm = TRUE)) %>%
+  arrange(desc(Total_Enrollment))
+
+# ---- 3. Stacked Bar Chart of Enrollment by Race and Gender ----
+enrollment_long <- enrollment_data %>%
+  pivot_longer(cols = everything(), names_to = "RaceSex", values_to = "Enrollment") %>%
+  filter(!is.na(Enrollment)) %>%
+  mutate(
+    Race = case_when(
+      str_detect(RaceSex, "HI") ~ "Hispanic",
+      str_detect(RaceSex, "AM") ~ "AmericanIndian",
+      str_detect(RaceSex, "AS") ~ "Asian",
+      str_detect(RaceSex, "HP") ~ "PacificIslander",
+      str_detect(RaceSex, "BL") ~ "Black",
+      str_detect(RaceSex, "WH") ~ "White",
+      str_detect(RaceSex, "TR") ~ "TwoOrMore"
+    ),
+    Gender = case_when(
+      str_detect(RaceSex, "_M$") ~ "Male",
+      str_detect(RaceSex, "_F$") ~ "Female"
+    )
+  )
+
+# Plot stacked bar
+ggplot(enrollment_long, aes(x = reorder(Race, -Enrollment, sum), y = Enrollment, fill = Gender)) +
+  geom_bar(stat = "summary", fun = "sum", width = 0.7, position = "stack") +
+  labs(
+    title = "Student Enrollment by Race and Gender",
+    x = "Race Group",
+    y = "Total Number of Students",
+    fill = "Gender"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# ---- 4. Outputs ----
+missing_summary  # Table of missing data rate (%)
+race_summary     # Table of total enrollment per race
+
+```
+## Data Clean Process
+
+
+
+## R Package Used
+
+
+
+
+
+
+
 
 This comes from the file `data.qmd`.
 
