@@ -273,12 +273,10 @@ race_summary     # Table of total enrollment per race
 
 ## Merge and Clean Data Process
 
-[Download Cleaning Script](scripts/data_clean_process.R){download="true"}
+[data_clean_process.qmd](/scripts/data_clean_process.qmd)
 
-```{r eval = FALSE}
-source("scripts/data_clean_process.R")
+[data_clean_process.R](/scripts/data_clean_process.R)
 
-```
 
 This project involved merging and cleaning multiple datasets related to school enrollment, harassment reports, and school support services. In the original dataset, several variables contained reserved codes represented by negative values. These codes are not actual data values but rather placeholders for missing, suppressed, or logic-dependent responses. The specific reserve codes and their meanings are:
 
