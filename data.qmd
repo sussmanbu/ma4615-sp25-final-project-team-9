@@ -50,7 +50,7 @@ This dataset primarily focuses on harassment and bullying incidents reported in 
 
 #### Harassment Type
 
-```{r, echo=FALSE}
+```{r echo=FALSE}
 library(tidyverse)
 
 data <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", show_col_types = FALSE)
@@ -77,7 +77,8 @@ ggplot(harassment_summary, aes(x = Harassment_Type, y = Total_Allegations, fill 
 
 #### Harassment grouped by race
 
-```{r, echo = FALSE}
+```{r echo=FALSE}
+
 race_groups <- list(
   "Hispanic"        = c("HBREPORTED_RAC_HI_M", "HBREPORTED_RAC_HI_F"),
   "AmericanIndian"  = c("HBREPORTED_RAC_AM_M", "HBREPORTED_RAC_AM_F"),
@@ -128,7 +129,7 @@ Description The school support dataset contains information on the number of ful
 
 #### Findings about key variables
 
-```{r, echo = FALSE}
+```{r echo=FALSE}
 school_support_data <- read_csv("dataset/School Support.csv", show_col_types = FALSE)
 
 # Clean: Only remove negatives and NA
@@ -190,7 +191,7 @@ Reason to use this dataset: The Enrollment dataset contains detailed counts of s
 
 #### Distribution of key variables
 
-```{r, echo = FALSE}
+```{r echo=FALSE}
 library(tidyverse)
 
 # ---- 0. Load and Clean Enrollment Data ----
@@ -273,7 +274,7 @@ race_summary     # Table of total enrollment per race
 
 [Download Cleaning Script](scripts/data_clean_process.R){download="true"}
 
-```{r eval = FALSE}
+```{r echo=FALSE}
 source("scripts/data_clean_process.R")
 
 ```
