@@ -50,7 +50,7 @@ This dataset primarily focuses on harassment and bullying incidents reported in 
 
 #### Harassment Type
 
-```{r include=FALSE}
+```{r echo=FALSE}
 library(tidyverse)
 
 data <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", show_col_types = FALSE)
@@ -77,7 +77,7 @@ ggplot(harassment_summary, aes(x = Harassment_Type, y = Total_Allegations, fill 
 
 #### Harassment grouped by race
 
-```{r include=FALSE}
+```{r echo=FALSE}
 
 race_groups <- list(
   "Hispanic"        = c("HBREPORTED_RAC_HI_M", "HBREPORTED_RAC_HI_F"),
@@ -274,7 +274,7 @@ race_summary     # Table of total enrollment per race
 
 [Download Cleaning Script](scripts/data_clean_process.R){download="true"}
 
-```{r include=FALSE}
+```{r echo=FALSE}
 source("scripts/data_clean_process.R")
 
 ```
