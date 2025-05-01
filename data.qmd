@@ -51,6 +51,7 @@ This dataset primarily focuses on harassment and bullying incidents reported in 
 #### Harassment Type
 
 ```{r echo=FALSE}
+#| warning: false
 library(tidyverse)
 
 data <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", show_col_types = FALSE)
