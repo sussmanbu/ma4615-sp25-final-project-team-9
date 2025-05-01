@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="We describe the sources of our data and the cleaning process.">
 
-<title>data – MA [46]15 Final Project TEAM 9</title>
+<title>Data – MA [46]15 Final Project TEAM 9</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -105,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -136,7 +137,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./data.html" aria-current="page"> 
-<span class="menu-text">Source</span></a>
+<span class="menu-text">Data</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -149,15 +150,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#source" id="toc-source" class="nav-link active" data-scroll-target="#source">Source</a></li>
+  <li><a href="#describe-wherehow-to-find-data" id="toc-describe-wherehow-to-find-data" class="nav-link" data-scroll-target="#describe-wherehow-to-find-data">Describe where/how to find data</a></li>
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source</a>
+  <ul class="collapse">
+  <li><a href="#data-set-1-harassment-and-bullying" id="toc-data-set-1-harassment-and-bullying" class="nav-link" data-scroll-target="#data-set-1-harassment-and-bullying">Data Set 1: Harassment and Bullying</a></li>
+  <li><a href="#data-set-2-school-support" id="toc-data-set-2-school-support" class="nav-link" data-scroll-target="#data-set-2-school-support">Data Set 2: School Support</a></li>
+  <li><a href="#data-set-3-school-enrollment" id="toc-data-set-3-school-enrollment" class="nav-link" data-scroll-target="#data-set-3-school-enrollment">Data Set 3: School Enrollment</a></li>
+  </ul></li>
+  <li><a href="#merge-and-clean-data-process" id="toc-merge-and-clean-data-process" class="nav-link" data-scroll-target="#merge-and-clean-data-process">Merge and Clean Data Process</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data</h1>
+</div>
+
+<div>
+  <div class="description">
+    We describe the sources of our data and the cleaning process.
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
 
-<hr>
-<hr>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <p><img src="images/dataqmd.PNG" class="img-fluid"></p>
 <section id="source" class="level2">
 <h2 class="anchored" data-anchor-id="source">Source</h2>
@@ -286,24 +322,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="harassment-type" class="level4">
 <h4 class="anchored" data-anchor-id="harassment-type">Harassment Type</h4>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: One or more parsing issues, call `problems()` on your data frame for details,
-e.g.:
-  dat &lt;- vroom(...)
-  problems(dat)</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -506,7 +524,7 @@ e.g.:
 <h2 class="anchored" data-anchor-id="merge-and-clean-data-process">Merge and Clean Data Process</h2>
 <p><a href="scripts/data_clean_process.R" download="true">Download Cleaning Script</a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"scripts/data_clean_process.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"scripts/data_clean_process.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This project involved merging and cleaning multiple datasets related to school enrollment, harassment reports, and school support services. In the original dataset, several variables contained reserved codes represented by negative values. These codes are not actual data values but rather placeholders for missing, suppressed, or logic-dependent responses. The specific reserve codes and their meanings are:</p>
 <table class="caption-top table">
