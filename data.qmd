@@ -275,7 +275,7 @@ race_summary     # Table of total enrollment per race
 
 [Download Cleaning Script](scripts/data_clean_process.R){download="true"}
 
-```{r echo=FALSE}
+```{r eval = FALSE}
 source("scripts/data_clean_process.R")
 
 ```
