@@ -57,30 +57,38 @@ hcmap(
 
 
 ```
+
+#Model Analysis School Support & Harassment
 ```{r}
 library(tidyverse)
+library(ggpmisc)
+library(broom)
+library(knitr)
 
-# Load your dataset
-data <- read_csv("dataset/clean_data file/merged_harassment_dataset.csv")
+# Load and process data
+data <- read_csv("dataset/clean_data file/final_clean_data.csv")
+
 data <- data %>%
   mutate(
-    total_support = SCH_FTECOUNSELORS + SCH_FTESERVICES_PSY + SCH_FTESECURITY_GUA,
-    total_enrollment = rowSums(across(starts_with("SCH_ENR_")), na.rm = TRUE),
-    allegations_per_100 = (HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI) / total_enrollment * 100
-  )
-# Install if needed
-install.packages("ggpmisc", repos = "https://cran.rstudio.com/")
+    total_support = FTECOUNSELORS + FTESERVICES_PSY + FTESECURITY_GUA,
+    total_enrollment = ENR_HI_M + ENR_HI_F + ENR_AM_M + ENR_AM_F +
+                       ENR_AS_M + ENR_AS_F + ENR_HP_M + ENR_HP_F +
+                       ENR_BL_M + ENR_BL_F + ENR_WH_M + ENR_WH_F +
+                       ENR_TR_M + ENR_TR_F,
+    allegations_per_100 = (HBALLEGATIONS_RAC + HBALLEGATIONS_REL +
+                           HBALLEGATIONS_SEX + HBALLEGATIONS_DIS) / total_enrollment * 100
+  ) %>%
+  # Filter to ensure log transformation is valid
+  filter(total_support > 0, allegations_per_100 > 0)
 
-library(ggpmisc)
-
-# Create log-log plot with regression annotation
+# Plot with regression equation and R²
 ggplot(data, aes(x = total_support, y = allegations_per_100)) +
   geom_point(alpha = 0.3) +
   scale_x_log10() +
   scale_y_log10() +
   geom_smooth(method = "lm", formula = y ~ x, color = "forestgreen", se = TRUE) +
   stat_poly_eq(
-    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    aes(label = after_stat(paste(eq.label, rr.label, sep = "~~~"))),
     formula = y ~ x,
     parse = TRUE,
     label.x.npc = "right",
@@ -95,5 +103,117 @@ ggplot(data, aes(x = total_support, y = allegations_per_100)) +
   ) +
   theme_minimal()
 
+#Model Evaluation
+model <- lm(log(allegations_per_100) ~ log(total_support), data = data)
+
+model_stats <- glance(model) %>%
+  transmute(
+    `R-squared` = r.squared,
+    `Adjusted R-squared` = adj.r.squared,
+    Sigma = sigma,
+    `F-statistic` = statistic,
+    `p-value` = p.value,
+    `Degrees of Freedom` = df
+  ) %>%
+  pivot_longer(everything(), names_to = "Metric", values_to = "Value")
+
+kable(model_stats, caption = "Model Fit Statistics Table")
+
+
+#Redisual VS Fitted
+model_diag <- augment(model)
+
+# Plot using ggplot
+ggplot(model_diag, aes(.fitted, .resid)) +
+  geom_point(alpha = 0.4) +
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
+  labs(
+    x = "Fitted Values",
+    y = "Residuals",
+    title = "Residuals vs Fitted Plot"
+  ) +
+  theme_minimal()
+
+ggplot(model_diag, aes(sample = .resid)) +
+  stat_qq(alpha = 0.4) +
+  stat_qq_line(color = "red") +
+  labs(
+    title = "Q-Q Plot of Model Residuals",
+    x = "Theoretical Quantiles",
+    y = "Sample Quantiles"
+  ) +
+  theme_minimal()
 ```
-Comment:To explore the relationship between school support staffing and reported harassment, we constructed a log-log regression model using total school support (sum of counselors, psychologists, and security guards) and reported harassment allegations per 100 enrolled students. The resulting regression line (𝑦 = −0.331 − 0.401𝑥) indicated a negative association, with an R² of 0.11, suggesting that higher levels of student support staff are weakly but significantly associated with lower harassment rates. While the model explains only a modest portion of the variance, this trend aligns with theories that greater support infrastructure may contribute to safer school climates. Nonetheless, causality cannot be inferred due to the observational nature of the data.
+Comment:In this model, we've removed all values with 0 and NAs, because The logarithmic function is undefined at zero and negative values. Attempting to compute log⁡(0) results in negative infinity, which can cause computational issues and distort analyses.
+Slope: β1=−0.352, it indicates that a 1% increase in total support staff is associated with a 0.352% decrease in harassment allegations per 100 students. This negative elasticity suggests that more support staff correlates with fewer reported incidents.
+Intercept (β0): This represents the expected log of allegations per 100 students when the log of total support staff is zero.
+R^2 = 0.08 : This means that approximately 8% of the variability in harassment allegations per 100 students is explained by the model. While the relationship is statistically significant, other factors not included in the model likely influence the number of allegations.
+
+```{r}
+library(tidyverse)
+
+# STEP 1: Create the dataset for modeling
+data_model <- data %>%
+  mutate(
+    total_support = FTECOUNSELORS + FTESERVICES_PSY + FTESECURITY_GUA,
+    
+    harassment_HI = HBREPORTED_RAC_HI_M + HBREPORTED_RAC_HI_F,
+    harassment_AM = HBREPORTED_RAC_AM_M + HBREPORTED_RAC_AM_F,
+    harassment_AS = HBREPORTED_RAC_AS_M + HBREPORTED_RAC_AS_F,
+    harassment_HP = HBREPORTED_RAC_HP_M + HBREPORTED_RAC_HP_F,
+    harassment_BL = HBREPORTED_RAC_BL_M + HBREPORTED_RAC_BL_F,
+    harassment_WH = HBREPORTED_RAC_WH_M + HBREPORTED_RAC_WH_F,
+    harassment_TR = HBREPORTED_RAC_TR_M + HBREPORTED_RAC_TR_F,
+
+    enrollment_HI = ENR_HI_M + ENR_HI_F,
+    enrollment_AM = ENR_AM_M + ENR_AM_F,
+    enrollment_AS = ENR_AS_M + ENR_AS_F,
+    enrollment_HP = ENR_HP_M + ENR_HP_F,
+    enrollment_BL = ENR_BL_M + ENR_BL_F,
+    enrollment_WH = ENR_WH_M + ENR_WH_F,
+    enrollment_TR = ENR_TR_M + ENR_TR_F
+  ) %>%
+  # Pivot into long format to have one row per race group per school
+  select(total_support, starts_with("harassment_"), starts_with("enrollment_")) %>%
+  pivot_longer(cols = -total_support,
+               names_to = c(".value", "Race"),
+               names_pattern = "(harassment|enrollment)_(.*)") %>%
+  filter(total_support > 0, enrollment > 10, harassment > 0) %>%
+  mutate(
+    per100 = 100 * harassment / enrollment,
+    log_per100 = log(per100),
+    log_support = log(total_support),
+    Race = factor(Race)
+  )
+
+# STEP 2: Set reference group if you want (optional)
+# data_model$Race <- relevel(data_model$Race, ref = "AS")  # example
+
+# STEP 3: Run regression
+model <- lm(log_per100 ~ log_support + Race, data = data_model)
+
+# STEP 4: Display the coefficients cleanly
+library(broom)
+
+tidy(model)
+
+library(ggplot2)
+
+# Optional: Set reference group for clarity in plot
+# data_model$Race <- relevel(data_model$Race, ref = "AS")
+
+# Plot
+ggplot(data_model, aes(x = log_support, y = log_per100, color = Race)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +
+  facet_wrap(~ Race, scales = "free_y") +
+  labs(
+    title = "Log-Log Regression of Allegations per 100 by Race",
+    x = "Log(Total School Support Staff)",
+    y = "Log(Harassment Allegations per 100 Students)"
+  ) +
+  theme_minimal()
+
+```
+
+
