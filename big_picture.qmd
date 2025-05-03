@@ -262,69 +262,7 @@ A 1% increase in support staff is associated with a **0.35% decrease** in race-b
 
 But the link is modest—and not all students benefit equally.
 
----
 
-## Try It Yourself: Interactive Map + Radar Chart
-
-We built an interactive dashboard that lets you explore:
-
-- State-level support staffing rates (counselors, nurses, psychologists, security)
-- Bullying and harassment rates across the U.S.
-- A radar chart to visualize Massachusetts staff profiles
-
-Due to size, the interactive lives on its own page:
-
-[**Launch the Interactive Dashboard**](interactive_graph.R)
-
-
----
-
-## Final Thoughts
-
-This interactive map reveals a consistent but complex story: **more support staffing appears to lower harassment**, especially in states like Massachusetts. But systemic disparities still exist. As we look forward, we ask:  
-
-> What else can we measure?  
-> Who’s still being left behind?  
-> And how can data like this shape more equitable school environments?
-
----
-
-Let me know if you’d like this bundled into a downloadable `.qmd` file!
-### Interactive
-
-Your Big Data page should also include a small interactive dashboard.
-The dashboard should be created either using Shinylive, as below.
-This interactive component should in some way support your thesis from your big picture page.
-Good interactives often provide both high-level understanding of the data while allowing a user to investigate specific scenarios, observations, subgroups, etc.
-
-To get the shinylive-r working.
-
-1.  Make sure your shiny app works as a regular r chunk.
-2.  Make sure that the chunk is completely self-contained. Meaning all packages and data are loaded inside that chunk. It can't rely on any other chunks.
-3.  For the data that you are using for shiny, copy the rds file or any other files into the scripts folder, and then publish your website.
-4.  Where you load in your data, change it to use a URL to the data set which will now be on your website. Something like read_rds("https://sussmanbu.github.io/ma-4615-fa24-final-project-group-a/scripts/dataset_for_shiny.rds")
-5.  Check that the chunk still works as a regular r chunk.
-6.  Change it to a shinylive-r chunk.
-7.  Commit and publish your work.
-
-I recommend keeping the data used for the shiny interactive relatively small, though this isn't completely necessary.
-
-------------------------------------------------------------------------
-
-## Rubric: On this page
-
--   Title
-    -   Your big picture page should have a creative/click-bait-y title/headline that provides a hint about your thesis.
--   Clarity of Explanation
-    -   You should have a clear thesis/goal for this page. What are you trying to show? Make sure that you explain your analysis in detail but don't go into top much mathematics or statistics. The audience for this page is the general public (to the extent possible). Your thesis should be a statement, not a question.
-    -   Each figure should be very polished and also not too complicated. There should be a clear interpretation of the figure so the figure has a clear purpose. Even something like a histogram can be difficult to interpret for non-experts.
--   Creativity
-    -   Do your best to make things interesting. Think of a how a news article or a magazine story might draw you in. Think of how each part of your analysis supports the previous part or provides a different perspective.
--   Interactive component
-    -   Quality and ease of use of the interactive components. Is it clear what can be explored using your interactive components? Does it enhance and reinforce your conclusions?
--   This page should be self-contained.
-
-**Note**: This page should have no code visible, i.e. use `#| echo: FALSE`.
 
 ## Rubric: Other components
 
