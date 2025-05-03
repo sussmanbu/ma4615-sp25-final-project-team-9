@@ -7,6 +7,7 @@ categories: [progress, interactive, project]
 editor: 
   markdown: 
     wrap: 72
+    
 ---
 
 ## Blog Post 7

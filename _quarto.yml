@@ -10,10 +10,17 @@ website:
   title: "MA [46]15 Final Project TEAM 9"
   navbar:
     right:
-      - about.qmd
-      - big_picture.qmd
-      - analysis.qmd
-      - data.qmd
+      - text: About
+        file: about.qmd
+      - text: Big Picture
+        file: big_picture.qmd
+      - text: Analysis
+        file: analysis.qmd
+      - text: Data
+        file: data.qmd
+      - text: Interactive
+        file: interactive_graph.qmd
+
 format:
   html:
     theme: cosmo

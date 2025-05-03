@@ -1,0 +1,10 @@
+name: interactive_app
+title:
+username: louiebelile
+account: louiebelile
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14678058
+bundleId: 10225384
+url: https://louiebelile.shinyapps.io/interactive_app/
+version: 1

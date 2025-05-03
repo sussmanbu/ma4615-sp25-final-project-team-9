@@ -1,118 +1,330 @@
 ---
-title: "Big Picture"
-description: "A 538/Upshot style article about the data."
+title: "Does School Support Improve Student Safety?"
+description: "Exploring the Relationship Between School Support Services, Environment, and Disciplinary Outcomes in K–12 Education"
 toc: true
-draft: FALSE
+draft: false
 filters:
   - shinylive
+editor: 
+  markdown: 
+    wrap: sentence
 ---
 
-![](images/The_Big_Picture_2.jpeg)
+![](images/TBP.png)
 
-This comes from the file `big_picture.qmd`.
+## Introduction
 
-Think of this page as your 538/Upshot style article. This means that you should try to tell a story through the data and your analysis. Read articles from those sites and similar sites to get a feeling for what they are like. Try to write in the style of a news or popular article. Importantly, this page should be geared towards the general public. You shouldn't assume the reader understands how to interpret a linear regression or a complicated plot. Focus on interpretation and visualizations.
+**SAFE SCHOOLS FOR ALL**: The foundational promise that schools are not only places of learning but also safe, inclusive environments where all students can thrive—regardless of race, disability, gender identity, or background.
+And yet, each year, thousands of students report experiencing bullying, harassment, and exclusion—often along lines of race, ability, or orientation.
+These are not isolated incidents, but part of a broader pattern that raises difficult questions: Why are some students disproportionately affected?
+What role does school infrastructure play?
+And perhaps most urgently—what can be done to disrupt this cycle?
 
+We must ask ourselves: Is every student truly safe at school?
+Are disciplinary measures addressing harm, or reinforcing inequality?
+And how do support resources—or the lack thereof—shape these outcomes?
 
+###Why is Analyzing Harassment and School Support Data Important?
 
----
+Analyzing public school data on harassment, bullying, and suspensions offers a critical lens into how educational environments succeed—or fail—to protect their most vulnerable students.
+By investigating the presence of school counselors, psychologists, and security staff alongside demographic and geographic variables, we can begin to identify patterns of disparity.
+Do more counselors correlate with fewer incidents?
+Are certain students more likely to be punished than protected?
 
+This analysis helps uncover whether school resources are distributed equitably and whether their presence meaningfully impacts student safety and discipline outcomes.
+In doing so, we aim to contribute to a broader conversation about educational equity, institutional accountability, and the urgent need for reform.
 
-### Interactive
+```{shinylive-r}
+#| echo: false
 
-Your Big Data page should also include a small interactive dashboard. The dashboard should be created either using Shinylive, as below. This interactive component should in some way support your thesis from your big picture page. Good interactives often provide both high-level understanding of the data while allowing a user to investigate specific scenarios, observations, subgroups, etc.
-
-
-
-
-```{r}
-#| eval: false
-#| standalone: true
-#| viewerHeight: 640 # You will have to adjust this to fit everything
-
-
+# 1. Load Libraries
 library(shiny)
-library(tidyverse)
-options("readr.edition" = 1) # keep this to ensure you can download the data
+library(plotly)
+library(highcharter)
+library(fmsb)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(stringr)
+library(viridisLite)
 
+# 2. Load dataset (keep it small!)
+merged <- read_csv("https://yourusername.github.io/yourrepo/scripts/merged_dataset_small.csv",
+                   col_types = cols(.default = col_double(),
+                                    LEA_STATE = col_character(),
+                                    LEA_STATE_NAME = col_character()))
 
-# Define UI for app that draws a histogram ----
+# Fix casing
+merged$LEA_STATE_NAME <- str_to_title(merged$LEA_STATE_NAME)
+
+# Create state name/abbreviation mapping
+state_codes <- data.frame(
+  LEA_STATE_NAME = state.name,
+  state_code = state.abb
+)
+
+# Compute total enrollment and staff per 100
+merged <- merged %>%
+  mutate(
+    total_enrollment = TOT_ENR_M + TOT_ENR_F + TOT_ENR_X
+  ) %>%
+  filter(!is.na(total_enrollment) & total_enrollment > 0) %>%
+  mutate(
+    counselors_per_100 = (SCH_FTECOUNSELORS / total_enrollment) * 100,
+    nurses_per_100 = (SCH_FTESERVICES_NUR / total_enrollment) * 100,
+    psychologists_per_100 = (SCH_FTESERVICES_PSY / total_enrollment) * 100,
+    security_per_100 = (SCH_FTESECURITY_GUA / total_enrollment) * 100
+  )
+
+# Prepare state summary
+state_summary <- merged %>%
+  group_by(LEA_STATE_NAME) %>%
+  summarise(
+    avg_counselors = mean(counselors_per_100, na.rm = TRUE),
+    avg_nurses = mean(nurses_per_100, na.rm = TRUE),
+    avg_psychologists = mean(psychologists_per_100, na.rm = TRUE),
+    avg_security = mean(security_per_100, na.rm = TRUE)
+  ) %>%
+  left_join(state_codes, by = "LEA_STATE_NAME") %>%
+  filter(!is.na(state_code))
+
+# Prepare harassment data for map
+enrollment_cols <- c(
+  "SCH_ENR_HI_M", "SCH_ENR_HI_F", "SCH_ENR_HI_X",
+  "SCH_ENR_AM_M", "SCH_ENR_AM_F", "SCH_ENR_AM_X",
+  "SCH_ENR_AS_M", "SCH_ENR_AS_F", "SCH_ENR_AS_X",
+  "SCH_ENR_HP_M", "SCH_ENR_HP_F", "SCH_ENR_HP_X",
+  "SCH_ENR_BL_M", "SCH_ENR_BL_F", "SCH_ENR_BL_X",
+  "SCH_ENR_WH_M", "SCH_ENR_WH_F", "SCH_ENR_WH_X",
+  "SCH_ENR_TR_M", "SCH_ENR_TR_F", "SCH_ENR_TR_X"
+)
+
+harassment_data <- merged %>%
+  mutate(TOTAL_ENROLLMENT = rowSums(across(all_of(enrollment_cols)), na.rm = TRUE))
+
+bullying_data <- harassment_data %>%
+  group_by(LEA_STATE) %>%
+  summarise(
+    total_allegations = sum(HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI, na.rm = TRUE),
+    total_students = sum(TOTAL_ENROLLMENT, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(rate_per_100 = round(total_allegations / total_students * 100, 2)) %>%
+  mutate(`hc-key` = paste0("us-", tolower(LEA_STATE)))
+
+# --- UI ---
 ui <- fluidPage(
-
-  # App title ----
-  titlePanel("Hello Shiny!"),
-
-  # Sidebar layout with input and output definitions ----
-  verticalLayout(
-      # Input: Slider for the number of bins ----
-      sliderInput(inputId = "bins",
-                  label = "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30),
-
-      # Output: Histogram ----
-      plotOutput(outputId = "distPlot")
-
+  titlePanel("School Staffing and Harassment Visualization"),
+  tabsetPanel(
+    tabPanel("Staffing Map",
+             sidebarLayout(
+               sidebarPanel(
+                 selectInput("map_metric", "Select Staff Type:", choices = c(
+                   "Counselors" = "avg_counselors",
+                   "Nurses" = "avg_nurses",
+                   "Psychologists" = "avg_psychologists",
+                   "Security Guards" = "avg_security"
+                 )),
+                 selectInput("selected_state", "Select a State for Radar Chart:",
+                             choices = sort(unique(merged$LEA_STATE_NAME)),
+                             selected = "Massachusetts")
+               ),
+               mainPanel(
+                 plotlyOutput("us_map"),
+                 plotOutput("radar_chart")
+               )
+             )
+    ),
+    tabPanel("Bullying Rate Map",
+             highchartOutput("bullying_map", height = "700px")
+    )
   )
 )
 
-# Define server logic required to draw a histogram ----
-server <- function(input, output) {
-  # The URL below has to point to a dataset on your github pages website
-  # I recommend creating a small-ish rds file that has only the data relevant to 
-  # the interactive.
-  data <- read_rds("https://sussmanbu.github.io/ma4615-final-project-quarto/dataset_for_shiny/combined_regional_data.rds")
+# --- Server ---
+server <- function(input, output, session) {
+  selected_state <- reactiveVal("Massachusetts")
   
-  output$distPlot <- renderPlot({
-    ggplot(data, aes(x = refusal_rate)) +
-      geom_histogram(bins = input$bins + 1)
-
+  output$us_map <- renderPlotly({
+    plot_ly(
+      data = state_summary,
+      type = "choropleth",
+      locations = ~state_code,
+      locationmode = "USA-states",
+      z = ~get(input$map_metric),
+      key = ~state_code,
+      text = ~paste(LEA_STATE_NAME, "<br>", round(get(input$map_metric), 2), "per 100 students"),
+      colorscale = "YlGnBu",
+      hoverinfo = "text",
+      colorbar = list(title = "Staff per 100")
+    ) %>%
+      layout(geo = list(scope = 'usa'), title = "Click a state to see staffing breakdown", clickmode = "event+select")
   })
-
+  
+  observeEvent(event_data("plotly_click"), {
+    click <- event_data("plotly_click")
+    if (!is.null(click)) {
+      state_name <- state_codes$LEA_STATE_NAME[state_codes$state_code == click$key]
+      if (length(state_name) > 0) {
+        updateSelectInput(session, "selected_state", selected = state_name)
+        selected_state(state_name)
+      }
+    }
+  })
+  
+  output$radar_chart <- renderPlot({
+    state_data <- merged %>%
+      filter(LEA_STATE_NAME == input$selected_state) %>%
+      summarise(
+        Counselors = mean(SCH_FTECOUNSELORS, na.rm = TRUE),
+        Nurses = mean(SCH_FTESERVICES_NUR, na.rm = TRUE),
+        Psychologists = mean(SCH_FTESERVICES_PSY, na.rm = TRUE),
+        Security_Guards = mean(SCH_FTESECURITY_GUA, na.rm = TRUE)
+      )
+    
+    chart_data <- rbind(
+      c(4, 2, 1.5, 3),
+      c(0, 0, 0, 0),
+      state_data
+    )
+    
+    radarchart(chart_data,
+               axistype = 1,
+               pcol = "darkblue",
+               pfcol = rgb(0.1, 0.4, 0.7, 0.5),
+               plwd = 2,
+               cglcol = "grey",
+               cglty = 1,
+               axislabcol = "black",
+               caxislabels = c(0, 1, 2, 3, 4),
+               vlcex = 0.9,
+               title = paste("Avg Staff per School in", input$selected_state))
+  })
+  
+  output$bullying_map <- renderHighchart({
+    hcmap(
+      "countries/us/us-all",
+      data = bullying_data,
+      name = "Allegations per 100 students",
+      value = "rate_per_100",
+      joinBy = c("hc-key", "hc-key"),
+      borderWidth = 0,
+      nullColor = "#d3d3d3"
+    ) %>%
+      hc_colorAxis(
+        stops = color_stops(colors = inferno(10)),
+        min = 0
+      ) %>%
+      hc_title(text = "Harassment/Bullying Allegations per 100 Students by State") %>%
+      hc_tooltip(pointFormat = "{point.name}: {point.value}")
+  })
 }
 
-# Create Shiny app ----
-shinyApp(ui = ui, server = server)
+# --- Launch App ---
+shinyApp(ui, server)
+
+
+
 ```
 
-To get the shinylive-r working.
- 
-1. Make sure your shiny app works as a regular r chunk.
-2. Make sure that the chunk is completely self-contained. Meaning all packages and data are loaded inside that chunk. It can't rely on any other chunks.
-3. For the data that you are using for shiny, copy the rds file or any other files into the scripts folder, and then publish your website.
-4. Where you load in your data, change it to use a URL to the data set which will now be on your website. Something like read_rds("https://sussmanbu.github.io/ma-4615-fa24-final-project-group-a/scripts/dataset_for_shiny.rds")
-5. Check that the chunk still works as a regular r chunk.
-6. Change it to a shinylive-r chunk.
-7. Commit and publish your work.
+## Thesis
 
-I recommend keeping the data used for the shiny interactive relatively small, though this isn't completely necessary.
+**The Support Gap**: Examining the Link Between School Resources and Race-Based Harassment in U.S.
+Schools Racially-based harassment in U.S. schools remains persistently high across all states, highlighting a nationwide equity challenge in educational environments.
+However, our analysis reveals a consistent inverse relationship between the level of school-based support—such as counselors, psychologists, and security staff—and the frequency of race-related harassment incidents.
+These findings suggest that strengthening student support infrastructure may play a critical role in reducing race-based harassment and fostering safer, more inclusive learning environments.
+
+
+
+
+## From a National Lens to a Massachusetts Focus
+
+Using data from the Civil Rights Data Collection (2021–2022), we observed that:
+
+- Harassment rates vary sharply by **identity and geography**
+- **Massachusetts** had the **highest normalized rate** of harassment allegations by race, religion, and orientation
+- Students of color, especially **Pacific Islander, Black, and Hispanic students**, experience higher harassment per 100 students
+
+These trends pushed us to zoom in on Massachusetts for a closer, state-level look.
 
 ---
 
+## Is There a Link Between Staff and Safety?
+
+We modeled harassment reports per 100 students against school support staffing using a log-log regression:
+
+```text
+log(harassment) = β₀ + β₁ × log(total_staff)
+```
+
+📉 **Key Result**:  
+A 1% increase in support staff is associated with a **0.35% decrease** in race-based harassment rates (β₁ = -0.352, R² = 0.08)
+
+But the link is modest—and not all students benefit equally.
+
+---
+
+## Try It Yourself: Interactive Map + Radar Chart
+
+We built an interactive dashboard that lets you explore:
+
+- State-level support staffing rates (counselors, nurses, psychologists, security)
+- Bullying and harassment rates across the U.S.
+- A radar chart to visualize Massachusetts staff profiles
+
+Due to size, the interactive lives on its own page:
+
+[**Launch the Interactive Dashboard**](interactive_graph.R)
 
 
+---
+
+## Final Thoughts
+
+This interactive map reveals a consistent but complex story: **more support staffing appears to lower harassment**, especially in states like Massachusetts. But systemic disparities still exist. As we look forward, we ask:  
+
+> What else can we measure?  
+> Who’s still being left behind?  
+> And how can data like this shape more equitable school environments?
+
+---
+
+Let me know if you’d like this bundled into a downloadable `.qmd` file!
+### Interactive
+
+Your Big Data page should also include a small interactive dashboard.
+The dashboard should be created either using Shinylive, as below.
+This interactive component should in some way support your thesis from your big picture page.
+Good interactives often provide both high-level understanding of the data while allowing a user to investigate specific scenarios, observations, subgroups, etc.
+
+To get the shinylive-r working.
+
+1.  Make sure your shiny app works as a regular r chunk.
+2.  Make sure that the chunk is completely self-contained. Meaning all packages and data are loaded inside that chunk. It can't rely on any other chunks.
+3.  For the data that you are using for shiny, copy the rds file or any other files into the scripts folder, and then publish your website.
+4.  Where you load in your data, change it to use a URL to the data set which will now be on your website. Something like read_rds("https://sussmanbu.github.io/ma-4615-fa24-final-project-group-a/scripts/dataset_for_shiny.rds")
+5.  Check that the chunk still works as a regular r chunk.
+6.  Change it to a shinylive-r chunk.
+7.  Commit and publish your work.
+
+I recommend keeping the data used for the shiny interactive relatively small, though this isn't completely necessary.
+
+------------------------------------------------------------------------
 
 ## Rubric: On this page
 
+-   Title
+    -   Your big picture page should have a creative/click-bait-y title/headline that provides a hint about your thesis.
+-   Clarity of Explanation
+    -   You should have a clear thesis/goal for this page. What are you trying to show? Make sure that you explain your analysis in detail but don't go into top much mathematics or statistics. The audience for this page is the general public (to the extent possible). Your thesis should be a statement, not a question.
+    -   Each figure should be very polished and also not too complicated. There should be a clear interpretation of the figure so the figure has a clear purpose. Even something like a histogram can be difficult to interpret for non-experts.
+-   Creativity
+    -   Do your best to make things interesting. Think of a how a news article or a magazine story might draw you in. Think of how each part of your analysis supports the previous part or provides a different perspective.
+-   Interactive component
+    -   Quality and ease of use of the interactive components. Is it clear what can be explored using your interactive components? Does it enhance and reinforce your conclusions?
+-   This page should be self-contained.
 
-* Title
-  * Your big picture page should have a creative/click-bait-y title/headline that provides a hint about your thesis.
-* Clarity of Explanation
-  * You should have a clear thesis/goal for this page. What are you trying to show? Make sure that you explain your analysis in detail but don't go into top much mathematics or statistics. The audience for this page is the general public (to the extent possible). Your thesis should be a statement, not a question.
-  * Each figure should be very polished and also not too complicated. There should be a clear interpretation of the figure so the figure has a clear purpose. Even something like a histogram can be difficult to interpret for non-experts.
-* Creativity
-  * Do your best to make things interesting. Think of a how a news article or a magazine story might draw you in. Think of how each part of your analysis supports the previous part or provides a different perspective.
-* Interactive component
-  * Quality and ease of use of the interactive components.
-Is it clear what can be explored using your interactive components?
-Does it enhance and reinforce your conclusions?
-* This page should be self-contained.
-  
-**Note**: This page should have no code visible, i.e. use `#| echo: FALSE`.  
-
-
-
+**Note**: This page should have no code visible, i.e. use `#| echo: FALSE`.
 
 ## Rubric: Other components
 
@@ -121,16 +333,16 @@ Does it enhance and reinforce your conclusions?
 Make a video recording (probably using Zoom) demonstrating your interactive components.
 You should provide a quick explanation of your data and demonstrate some of the conclusions from your EDA.
 This video should be no longer than 4 minutes.
-Include a link to your video (and password if needed) in your README.md file on your Github repository. You are not required to provide a link on the website.
+Include a link to your video (and password if needed) in your README.md file on your Github repository.
+You are not required to provide a link on the website.
 This can be presented by any subset of the team members.
-
 
 ### Rest of the Site
 
-Finally, here are important things to keep in mind for the rest of the site. 
+Finally, here are important things to keep in mind for the rest of the site.
 
 The main title of your page is informative.
-Each post has an author/description/informative title.
+Each post has an author/descr iption/informative title.
 All lab required posts are present.
 Each page (including the home page) has a nice featured image associated with it.
 Your about page is up to date and clean.
