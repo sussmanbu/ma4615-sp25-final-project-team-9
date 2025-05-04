@@ -3,101 +3,362 @@ title: Analysis
 description: Here we provide a detailed analysis using more sophisticated statistics techniques.
 toc: true
 draft: false
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
 ![](images/cover_pic.png)
 
-
 # Motivation for Data Analysis
-Our project aims to understand the complex factors influencing harassment, and bullying incidents across public schools in the United States. We start off our analysis on a high-level view of harassment and bullying nationally, but end up particularly focusing on how school-level resources (counselors, psychologists, security staff), student demographics, and geographic location contribute to reported incidents.
 
-Given persistent racial, disability-related, and orientation-based disparities, our goal is to identify actionable patterns that can inform equity-focused educational reforms.
+Our project aims to understand the complex factors influencing
+harassment, and bullying incidents across public schools in the United
+States. We start off our analysis on a high-level view of harassment and
+bullying nationally, but end up particularly focusing on how
+school-level resources (counselors, psychologists, security staff),
+student demographics, and geographic location contribute to reported
+incidents.
+
+Given persistent racial, disability-related, and orientation-based
+disparities, our goal is to identify actionable patterns that can inform
+equity-focused educational reforms.
 
 # Research Questions
-- Do schools with more support staff report fewer harassment incidents?
-- How does harassment rate vary across different identity categories (e.g., race, disability, religion, sexual orientation)?
-- Are geographic patterns evident - do some states or regions report higher normalized rates?
+
+-   Do schools with more support staff report fewer harassment
+    incidents?
+-   How does harassment rate vary across different identity categories
+    (e.g., race, disability, religion, sexual orientation)?
+-   Are geographic patterns evident - do some states or regions report
+    higher normalized rates?
 
 # Exploration
-One of the most pressing concerns that led us to analyze this data was to understand the groups (based on race, disability, religion, sexual orientation, etc.) that were most affected nationwide. 
+
+One of the most pressing concerns that led us to analyze this data was
+to understand the groups (based on race, disability, religion, sexual
+orientation, etc.) that were most affected nationwide.
 
 # National-Level View
 
-![Normalized rate of harassment allegations based on sexual orientation across U.S. states](images/sex_orientation.png)
+![Normalized rate of harassment allegations based on sexual orientation
+across U.S. states](images/sex_orientation.png)
 
+This map shows the normalized rate of allegations based on sexual
+orientation. Massachusetts, New York, and New Jersey all had high rates
+with closer to 10%. The northwest region showed very few or no reported
+cases.
 
-This map shows the normalized rate of allegations based on sexual orientation. Massachusetts, New York, and New Jersey all had high rates with closer to 10%. The northwest region showed very few or no reported cases. 
+![Normalized rate of harassment allegations based on religion across
+U.S. states](images/religion.png)
 
-![Normalized rate of harassment allegations based on religion across U.S. states](images/religion.png)
+This map highlights religion-based harassment allegations. While overall
+rates were lower compared to other categories, Massachusetts again
+stands out. States like Utah and Idaho had zero or near-zero cases.
 
-This map highlights religion-based harassment allegations. While overall rates were lower compared to other categories, Massachusetts again stands out. States like Utah and Idaho had zero or near-zero cases.
+![Normalized rate of harassment allegations based on race across U.S.
+states](images/race.png)
 
-![Normalized rate of harassment allegations based on race across U.S. states](images/race.png)
-
-This map displays allegations of harassment due to race, color, or national origin. Massachusetts once again leads with the highest number of allegations, followed closely by New York and California. The southeast and parts of the northwest had lower reported rates.
-However, these graphs fail to provide an accurate representation of the number of allegations within each of these categories (race, religion, sex) as this is only depicting the reported incidents. Unreported incidents likely in the northwestern states are not depicted in the data itself so we fail to make appropriate inferences and comparisons between the states themselves. 
+This map displays allegations of harassment due to race, color, or
+national origin. Massachusetts once again leads with the highest number
+of allegations, followed closely by New York and California. The
+southeast and parts of the northwest had lower reported rates. However,
+these graphs fail to provide an accurate representation of the number of
+allegations within each of these categories (race, religion, sex) as
+this is only depicting the reported incidents. Unreported incidents
+likely in the northwestern states are not depicted in the data itself so
+we fail to make appropriate inferences and comparisons between the
+states themselves.
 
 # Relationship between School Support and Harassment Reports
 
-![](images/graph1.png) 
+```{r echo=FALSE}
+#| warning: false
+library(tidyverse)
+library(ggpmisc)
+library(broom)
+library(knitr)
 
-- Slope (β1): β1​=−0.352, it indicates that a 1% increase in total support staff is associated with a 0.352% decrease in harassment allegations per 100 students. This negative elasticity suggests that more support staff correlates with fewer reported incidents.​
+# Load and process data
+data <- read_csv("dataset/clean_data file/final_clean_data.csv")
 
-- Intercept (β0​): This represents the expected log of allegations per 100 students when the log of total support staff is zero.
+data <- data %>%
+  mutate(
+    total_support = FTECOUNSELORS + FTESERVICES_PSY + FTESECURITY_GUA,
+    total_enrollment = ENR_HI_M + ENR_HI_F + ENR_AM_M + ENR_AM_F +
+                       ENR_AS_M + ENR_AS_F + ENR_HP_M + ENR_HP_F +
+                       ENR_BL_M + ENR_BL_F + ENR_WH_M + ENR_WH_F +
+                       ENR_TR_M + ENR_TR_F,
+    allegations_per_100 = (HBALLEGATIONS_RAC + HBALLEGATIONS_REL +
+                           HBALLEGATIONS_SEX + HBALLEGATIONS_DIS) / total_enrollment * 100
+  ) %>%
+  # Filter to ensure log transformation is valid
+  filter(total_support > 0, allegations_per_100 > 0)
+
+# Plot with regression equation and R²
+ggplot(data, aes(x = total_support, y = allegations_per_100)) +
+  geom_point(alpha = 0.3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "forestgreen", se = TRUE) +
+  stat_poly_eq(
+    aes(label = after_stat(paste(eq.label, rr.label, sep = "~~~"))),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "top",
+    size = 5,
+    color = "black"
+  ) +
+  labs(
+    x = "Log(Total School Support Staff)",
+    y = "Log(Harassment Allegations per 100 Students)",
+    title = "Log-Log Relationship Between School Support and Harassment Reports"
+  ) +
+  theme_minimal()
+```
+
+\`\`\`
+
+-   Slope (β1): β1=−0.352, it indicates that a 1% increase in total
+    support staff is associated with a 0.352% decrease in harassment
+    allegations per 100 students. This negative elasticity suggests that
+    more support staff correlates with fewer reported incidents.
+
+-   Intercept (β0): This represents the expected log of allegations per
+    100 students when the log of total support staff is zero.
+
+-   R\^2 = 0.08 : This means that approximately 8% of the variability in
+    harassment allegations per 100 students is explained by the model.
+    While the relationship is statistically significant, other factors
+    not included in the model likely influence the number of
+    allegations.
+
+```{r echo=FALSE}
+
+#Model Evaluation
+model <- lm(log(allegations_per_100) ~ log(total_support), data = data)
+
+model_stats <- glance(model) %>%
+  transmute(
+    `R-squared` = r.squared,
+    `Adjusted R-squared` = adj.r.squared,
+    Sigma = sigma,
+    `F-statistic` = statistic,
+    `p-value` = p.value,
+    `Degrees of Freedom` = df
+  ) %>%
+  pivot_longer(everything(), names_to = "Metric", values_to = "Value")
+
+kable(model_stats, caption = "Model Fit Statistics Table")
+```
+
+The linear regression model reveals a statistically significant
+relationship between log total school support staff and log harassment
+allegations per 100 students. With an R-squared of 0.0805, the model
+explains approximately 8% of the variation in the outcome, suggesting a
+modest explanatory power. The adjusted R-squared is nearly identical,
+indicating that the model is not overfitting despite its simplicity. The
+F-statistic is high (1742.04) with a p-value effectively zero,
+confirming that the predictor contributes meaningfully to explaining
+variation in the response variable. The residual standard error (sigma)
+is about 1.05 on the log scale, indicating the typical prediction error.
+Overall, while the model is statistically strong, its predictive power
+is limited, highlighting the need for additional explanatory variables
+to better understand harassment reports in schools.
+
+```{r echo=FALSE}
+
+#Redisual VS Fitted
+model_diag <- augment(model)
+# Plot using ggplot
+ggplot(model_diag, aes(.fitted, .resid)) +
+  geom_point(alpha = 0.4) +
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
+  labs(
+    x = "Fitted Values",
+    y = "Residuals",
+    title = "Residuals vs Fitted Plot"
+  ) +
+  theme_minimal()
+
+ggplot(model_diag, aes(sample = .resid)) +
+  stat_qq(alpha = 0.4) +
+  stat_qq_line(color = "red") +
+  labs(
+    title = "Q-Q Plot of Model Residuals",
+    x = "Theoretical Quantiles",
+    y = "Sample Quantiles"
+  ) +
+  theme_minimal()
+```
+
+Our model residuals are mostly normal, especially in the center, which
+is reassuring for coefficient inference. But the tail deviations suggest
+the presence of outliers or non-normality in extreme values. Thus,
+Inferences involving prediction intervals or extreme outcomes may be
+less reliable. Therefore, though the model appears reasonable in form,
+but the presence of heteroskedasticity suggests we might consider using
+robust standard errors when reporting p-values and confidence intervals.
+
+## How School Support and Student Race Predict Harassment Allegation Rates
 
 
-- R^2 = 0.08 : This means that approximately 8% of the variability in harassment allegations per 100 students is explained by the model. While the relationship is statistically significant, other factors not included in the model likely influence the number of allegations.​
 
-![](images/stats-table.png) 
+```{r echo=FALSE}
+library(tidyverse)
 
-The linear regression model reveals a statistically significant relationship between log total school support staff and log harassment allegations per 100 students. With an R-squared of 0.0805, the model explains approximately 8% of the variation in the outcome, suggesting a modest explanatory power. The adjusted R-squared is nearly identical, indicating that the model is not overfitting despite its simplicity. The F-statistic is high (1742.04) with a p-value effectively zero, confirming that the predictor contributes meaningfully to explaining variation in the response variable. The residual standard error (sigma) is about 1.05 on the log scale, indicating the typical prediction error. Overall, while the model is statistically strong, its predictive power is limited, highlighting the need for additional explanatory variables to better understand harassment reports in schools.
-![Residuals VS Fitted Plot](images/graph2.png) 
+# STEP 1: Create the dataset for modeling
+data_model <- data %>%
+  mutate(
+    total_support = FTECOUNSELORS + FTESERVICES_PSY + FTESECURITY_GUA,
+    
+    harassment_HI = HBREPORTED_RAC_HI_M + HBREPORTED_RAC_HI_F,
+    harassment_AM = HBREPORTED_RAC_AM_M + HBREPORTED_RAC_AM_F,
+    harassment_AS = HBREPORTED_RAC_AS_M + HBREPORTED_RAC_AS_F,
+    harassment_HP = HBREPORTED_RAC_HP_M + HBREPORTED_RAC_HP_F,
+    harassment_BL = HBREPORTED_RAC_BL_M + HBREPORTED_RAC_BL_F,
+    harassment_WH = HBREPORTED_RAC_WH_M + HBREPORTED_RAC_WH_F,
+    harassment_TR = HBREPORTED_RAC_TR_M + HBREPORTED_RAC_TR_F,
 
-Our model appears reasonable in form, but the presence of heteroskedasticity suggests we might consider using robust standard errors when reporting p-values and confidence intervals.
+    enrollment_HI = ENR_HI_M + ENR_HI_F,
+    enrollment_AM = ENR_AM_M + ENR_AM_F,
+    enrollment_AS = ENR_AS_M + ENR_AS_F,
+    enrollment_HP = ENR_HP_M + ENR_HP_F,
+    enrollment_BL = ENR_BL_M + ENR_BL_F,
+    enrollment_WH = ENR_WH_M + ENR_WH_F,
+    enrollment_TR = ENR_TR_M + ENR_TR_F
+  ) %>%
+  # Pivot into long format to have one row per race group per school
+  select(total_support, starts_with("harassment_"), starts_with("enrollment_")) %>%
+  pivot_longer(cols = -total_support,
+               names_to = c(".value", "Race"),
+               names_pattern = "(harassment|enrollment)_(.*)") %>%
+  filter(total_support > 0, enrollment > 10, harassment > 0) %>%
+  mutate(
+    per100 = 100 * harassment / enrollment,
+    log_per100 = log(per100),
+    log_support = log(total_support),
+    Race = factor(Race)
+  )
 
-![](images/graph3.png) 
+# STEP 2: Set reference group if you want (optional)
+# data_model$Race <- relevel(data_model$Race, ref = "AS")  # example
 
-Our model residuals are mostly normal, especially in the center, which is reassuring for coefficient inference. But the tail deviations suggest the presence of outliers or non-normality in extreme values. Thus, Inferences involving prediction intervals or extreme outcomes may be less reliable.
+# STEP 3: Run regression
+model <- lm(log_per100 ~ log_support + Race, data = data_model)
 
-# How School Support and Student Race Predict Harassment Allegation Rates 
+# STEP 4: Display the coefficients cleanly
+library(broom)
 
-![](images/prediction.png) 
-![](images/table1.png)
-![](images/log_reg.png) 
+tidy(model)
 
-# Trends and Correlations
+library(ggplot2)
 
-- AM (Red): Shows a weak and slightly negative correlation between school support and harassment rates. Increased support does not significantly change allegations among American Indian/Alaska Native students.
-- AS (Brown): Displays a slight negative correlation. Allegation rates decrease with more support, though the relationship is not statistically strong.
-- BL (Green): Shows a modest downward trend, suggesting that increased support staff may be linked to lower harassment allegations among Black students, though with considerable variability.
-- HI (Teal): Exhibits a clearer negative correlation. Schools with higher support tend to report fewer harassment cases involving Hispanic students.
-- HP (Light Blue): Shows a near-flat to slightly positive slope. This group reports higher baseline harassment rates, and increased support staff does not appear to lower the rate significantly.
-- TR (Purple): Displays a moderately negative trend, implying a potential benefit of school support staff in reducing harassment against multiracial students.
-- WH (Pink): Has one of the steepest negative slopes. Greater support staff presence is strongly associated with fewer allegations among White students.
+# Optional: Set reference group for clarity in plot
+# data_model$Race <- relevel(data_model$Race, ref = "AS")
 
-Across racial groups, schools with greater staff support — including counselors, psychologists, and security, tend to report fewer race-based harassment allegations per 100 students. This trend suggests that investments in support personnel may contribute to safer, more inclusive school environments, particularly for groups like White, Hispanic, and Multiracial students. However, the impact is not uniform, and further investigation may be needed for groups such as Native Hawaiian/Pacific Islanders, who experience high baseline rates and limited benefit from staffing increases.
+# Plot
+ggplot(data_model, aes(x = log_support, y = log_per100, color = Race)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE) +
+  facet_wrap(~ Race, scales = "free_y") +
+  labs(
+    title = "Log-Log Regression of Allegations per 100 by Race",
+    x = "Log(Total School Support Staff)",
+    y = "Log(Harassment Allegations per 100 Students)"
+  ) +
+  theme_minimal()
+
+```
+
+![](images/prediction.png) ![](images/table1.png)
+![](images/log_reg.png)
+
+## Trends and Correlations
+
+-   AM (Red): Shows a weak and slightly negative correlation between
+    school support and harassment rates. Increased support does not
+    significantly change allegations among American Indian/Alaska Native
+    students.
+-   AS (Brown): Displays a slight negative correlation. Allegation rates
+    decrease with more support, though the relationship is not
+    statistically strong.
+-   BL (Green): Shows a modest downward trend, suggesting that increased
+    support staff may be linked to lower harassment allegations among
+    Black students, though with considerable variability.
+-   HI (Teal): Exhibits a clearer negative correlation. Schools with
+    higher support tend to report fewer harassment cases involving
+    Hispanic students.
+-   HP (Light Blue): Shows a near-flat to slightly positive slope. This
+    group reports higher baseline harassment rates, and increased
+    support staff does not appear to lower the rate significantly.
+-   TR (Purple): Displays a moderately negative trend, implying a
+    potential benefit of school support staff in reducing harassment
+    against multiracial students.
+-   WH (Pink): Has one of the steepest negative slopes. Greater support
+    staff presence is strongly associated with fewer allegations among
+    White students.
+
+Across racial groups, schools with greater staff support — including
+counselors, psychologists, and security, tend to report fewer race-based
+harassment allegations per 100 students. This trend suggests that
+investments in support personnel may contribute to safer, more inclusive
+school environments, particularly for groups like White, Hispanic, and
+Multiracial students. However, the impact is not uniform, and further
+investigation may be needed for groups such as Native Hawaiian/Pacific
+Islanders, who experience high baseline rates and limited benefit from
+staffing increases.
 
 # Massachusetts Focus
-Regardless of the missing data across multiple states, we noticed that Massachusetts had a lot of data, and also had the highest proportion of allegations compared to all states. Therefore, from these observations, we narrowed our focus down to the state of Massachusetts, and identified key trends in relation to school support resources (counselors, psychologists, security), and demographics. 
 
+Regardless of the missing data across multiple states, we noticed that
+Massachusetts had a lot of data, and also had the highest proportion of
+allegations compared to all states. Therefore, from these observations,
+we narrowed our focus down to the state of Massachusetts, and identified
+key trends in relation to school support resources (counselors,
+psychologists, security), and demographics.
 
-![](images/Ma_1.png) 
-This log-log regression focuses on schools in Massachusetts and shows a modest negative association between school support staffing and harassment allegations per 100 students. The downward slope (𝑦 = −0.376 − 0.325𝑥, 𝑅² = 0.08) suggests that schools with more counselors, psychologists, and security staff tend to report fewer harassment incidents, though the relationship is relatively weak. Still, the trend aligns with our broader hypothesis that greater support infrastructure may help create safer school environments
+![](images/Ma_1.png) This log-log regression focuses on schools in
+Massachusetts and shows a modest negative association between school
+support staffing and harassment allegations per 100 students. The
+downward slope (𝑦 = −0.376 − 0.325𝑥, 𝑅² = 0.08) suggests that schools
+with more counselors, psychologists, and security staff tend to report
+fewer harassment incidents, though the relationship is relatively weak.
+Still, the trend aligns with our broader hypothesis that greater support
+infrastructure may help create safer school environments
 
-![](images/demo1.png)
-![](images/demo2.png) 
+![](images/demo1.png) ![](images/demo2.png)
 
-The first graph shows that schools in Massachusetts with the lowest levels of school support staff tend to serve predominantly Black and Hispanic student populations, with very low proportions of White or Asian students. In contrast, the second graph reveals that schools with the highest levels of support staff exhibit more racial diversity, with some having a significantly higher proportion of White and Asian students. This contrast suggests a potential equity gap, where schools serving more students of color have less access to support resources.
+The first graph shows that schools in Massachusetts with the lowest
+levels of school support staff tend to serve predominantly Black and
+Hispanic student populations, with very low proportions of White or
+Asian students. In contrast, the second graph reveals that schools with
+the highest levels of support staff exhibit more racial diversity, with
+some having a significantly higher proportion of White and Asian
+students. This contrast suggests a potential equity gap, where schools
+serving more students of color have less access to support resources.
 
 # Conclusion
-Our analysis finds that schools with more support staff (counselors, psychologists, and security) tend to report slightly fewer harassment incidents, particularly in Massachusetts, although the effect is modest. Racial disparities are also evident: schools with high proportions of non-White students often have fewer support resources, raising equity concerns. While increased staffing is weakly correlated with improved outcomes, this analysis highlights the importance of targeted, equity-focused interventions to address harassment and disciplinary disparities across student demographics.
+
+Our analysis finds that schools with more support staff (counselors,
+psychologists, and security) tend to report slightly fewer harassment
+incidents, particularly in Massachusetts, although the effect is modest.
+Racial disparities are also evident: schools with high proportions of
+non-White students often have fewer support resources, raising equity
+concerns. While increased staffing is weakly correlated with improved
+outcomes, this analysis highlights the importance of targeted,
+equity-focused interventions to address harassment and disciplinary
+disparities across student demographics.
 
 # Challenges and Limitations
 
-One key limitation is the underreporting of incidents, particularly in states with low reported rates (e.g., northwestern states), which may skew comparisons. Additionally, the data only reflects documented cases, leaving gaps in understanding the full scope of harassment and bullying. Another challenge is the lack of granularity in school-level resource allocation, making it difficult to directly correlate support staff presence with incident rates. Finally, demographic disparities in reporting (e.g., male vs. female reports) may introduce bias in interpreting which groups are most affected.
-
-
-
-
-
-
+One key limitation is the underreporting of incidents, particularly in
+states with low reported rates (e.g., northwestern states), which may
+skew comparisons. Additionally, the data only reflects documented cases,
+leaving gaps in understanding the full scope of harassment and bullying.
+Another challenge is the lack of granularity in school-level resource
+allocation, making it difficult to directly correlate support staff
+presence with incident rates. Finally, demographic disparities in
+reporting (e.g., male vs. female reports) may introduce bias in
+interpreting which groups are most affected.
