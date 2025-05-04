@@ -10,10 +10,17 @@ library(stringr)
 library(viridisLite)
 
 # Load and fix dataset
-merged <- read_csv("merged_harassment_dataset.csv",
-                   col_types = cols(.default = col_double(),
-                                    LEA_STATE = col_character(),
-                                    LEA_STATE_NAME = col_character()))
+merged <- read_csv(
+  "merged_harassment_dataset.csv",
+  col_types = cols(
+    LEA_STATE = col_character(),
+    LEA_STATE_NAME = col_character(),
+    LEA_NAME = col_character(),         # fix
+    NAME = col_character(),             # fix
+    JJ = col_character(),               # fix
+    .default = col_double()
+  )
+)
 
 # Fix casing
 merged$LEA_STATE_NAME <- str_to_title(merged$LEA_STATE_NAME)
