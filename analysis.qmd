@@ -365,7 +365,7 @@ incidents, though the relationship is relatively weak. Still, the trend
 aligns with our broader hypothesis that greater support infrastructure
 may help create safer school environments.
 
-```{r}
+```{r echo=FALSE}
 library(tidyverse)
 
 # Load school support data
