@@ -18,8 +18,6 @@ website:
         file: analysis.qmd
       - text: Data
         file: data.qmd
-      - text: Interactive
-        file: interactive_graph.qmd
 
 format:
   html:
