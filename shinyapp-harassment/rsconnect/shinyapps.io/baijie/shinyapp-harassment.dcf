@@ -5,6 +5,6 @@ account: baijie
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14678900
-bundleId: 10226161
+bundleId: 10226615
 url: https://baijie.shinyapps.io/shinyapp-harassment/
 version: 1

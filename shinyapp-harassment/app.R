@@ -1,75 +1,3 @@
-#Harassment Allegations per 100 Students by State
-library(highcharter)
-library(dplyr)
-library(readr)
-library(viridisLite)
-harassment_data <-read_csv("merged_harassment_dataset.csv")
-
-# Define the enrollment columns
-enrollment_cols <- c(
-  "SCH_ENR_HI_M", "SCH_ENR_HI_F", 
-  "SCH_ENR_AM_M", "SCH_ENR_AM_F", 
-  "SCH_ENR_AS_M", "SCH_ENR_AS_F",
-  "SCH_ENR_HP_M", "SCH_ENR_HP_F",
-  "SCH_ENR_BL_M", "SCH_ENR_BL_F",
-  "SCH_ENR_WH_M", "SCH_ENR_WH_F",
-  "SCH_ENR_TR_M", "SCH_ENR_TR_F"
-)
-
-# Calculate total enrollment per school
-harassment_data <- harassment_data %>%
-  mutate(TOTAL_ENROLLMENT = rowSums(across(all_of(enrollment_cols)), na.rm = TRUE))
-
-# Aggregate by state and calculate rate per 100 students
-bullying_data <- harassment_data %>%
-  group_by(LEA_STATE) %>%
-  summarise(
-    total_allegations = sum(HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI, na.rm = TRUE),
-    total_students = sum(TOTAL_ENROLLMENT, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  mutate(rate_per_100 = round(total_allegations / total_students * 100, 2))
-# Create a key that matches highmaps "hc-key" format
-bullying_data <- bullying_data %>%
-  mutate(`hc-key` = paste0("us-", tolower(LEA_STATE)))
-library(highcharter)
-library(viridisLite)
-
-# Load map data FIRST
-usgeojson <- get_data_from_map(download_map_data("countries/us/us-all"))
-
-# Plot using hcmap instead of hchart
-hcmap(
-  "countries/us/us-all",     # Built-in Highmaps map
-  data = bullying_data,
-  name = "Allegations per 100 students",
-  value = "rate_per_100",
-  joinBy = c("hc-key", "hc-key"),  # key match for map + data
-  borderWidth = 0,
-  nullColor = "#d3d3d3"
-) %>%
-  hc_colorAxis(
-    stops = color_stops(colors = viridisLite::inferno(10)),
-    min = 0
-  ) %>%
-  hc_title(text = "Harassment/Bullying Allegations per 100 Students by State") %>%
-  hc_tooltip(pointFormat = "{point.name}: {point.value}")
-
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-```{r}
 # Load Libraries
 library(shiny)
 library(plotly)
@@ -82,7 +10,7 @@ library(stringr)
 library(viridisLite)
 
 # Load dataset
-merged <- read_csv("dataset/clean_data file/merged_harassment_dataset.csv",
+merged <- read_csv("merged_harassment_dataset.csv",
                    col_types = cols(.default = col_double(),
                                     LEA_STATE = col_character(),
                                     LEA_STATE_NAME = col_character()))
@@ -225,6 +153,10 @@ server <- function(input, output, session) {
         Psychologists = mean(SCH_FTESERVICES_PSY, na.rm = TRUE),
         Security_Guards = mean(SCH_FTESECURITY_GUA, na.rm = TRUE)
       )
+    
+    if (nrow(state_data) == 0 || any(is.na(state_data))) {
+      return(NULL)
+    }
     
     chart_data <- rbind(
       c(4, 2, 1.5, 3),

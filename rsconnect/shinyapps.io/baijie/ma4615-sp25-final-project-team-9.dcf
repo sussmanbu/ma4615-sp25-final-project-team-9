@@ -5,6 +5,6 @@ account: baijie
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14678813
-bundleId: 10226048
+bundleId: 10226610
 url: https://baijie.shinyapps.io/ma4615-sp25-final-project-team-9/
 version: 1
