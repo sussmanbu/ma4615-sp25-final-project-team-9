@@ -444,6 +444,13 @@ race_table_bottom_clean <- race_table_bottom %>%
 # === Step 2: Convert to long format for plotting
 race_long_bottom <- race_table_bottom_clean %>%
   pivot_longer(cols = Asian:Other, names_to = "Race", values_to = "Percent")
+race_colors <- c(
+  "Asian" = "#66c2a5",     
+  "Black" = "#fc8d62",     
+  "Hispanic" = "#8da0cb", 
+  "Other" = "#a6d854",     
+  "White" = "#e78ac3"     
+)
 
 # === Step 3: Plot
 ggplot(race_long_bottom, aes(x = SCH_NAME, y = Percent, fill = Race)) +
