@@ -309,7 +309,7 @@ staffing increases.
 
 ```{r}
 #| echo: false
-#| message: false
+#| warning: false
 library(tidyverse)
 library(ggpmisc)
 
