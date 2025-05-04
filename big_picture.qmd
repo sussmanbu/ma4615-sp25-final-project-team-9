@@ -36,11 +36,7 @@ In doing so, we aim to contribute to a broader conversation about educational eq
 
 [interactive graph](https://baijie.shinyapps.io/shinyapp-harassment/)
 
-```{shinylive-r}
-#| echo: false
-
-# 1. Load Libraries
-library(shiny)
+```{library(shiny)}
 library(plotly)
 library(highcharter)
 library(fmsb)
