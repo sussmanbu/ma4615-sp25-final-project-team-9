@@ -24,7 +24,7 @@ We must ask ourselves: Is every student truly safe at school?
 Are disciplinary measures addressing harm, or reinforcing inequality?
 And how do support resources—or the lack thereof—shape these outcomes?
 
-###Why is Analyzing Harassment and School Support Data Important?
+## Why is Analyzing Harassment and School Support Data Important?
 
 Analyzing public school data on harassment, bullying, and suspensions offers a critical lens into how educational environments succeed—or fail—to protect their most vulnerable students.
 By investigating the presence of school counselors, psychologists, and security staff alongside demographic and geographic variables, we can begin to identify patterns of disparity.
