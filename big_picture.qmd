@@ -34,6 +34,8 @@ Are certain students more likely to be punished than protected?
 This analysis helps uncover whether school resources are distributed equitably and whether their presence meaningfully impacts student safety and discipline outcomes.
 In doing so, we aim to contribute to a broader conversation about educational equity, institutional accountability, and the urgent need for reform.
 
+[interactive graph](https://baijie.shinyapps.io/shinyapp-harassment/)
+
 ```{shinylive-r}
 #| echo: false
 
@@ -234,35 +236,30 @@ Schools Racially-based harassment in U.S. schools remains persistently high acro
 However, our analysis reveals a consistent inverse relationship between the level of school-based support—such as counselors, psychologists, and security staff—and the frequency of race-related harassment incidents.
 These findings suggest that strengthening student support infrastructure may play a critical role in reducing race-based harassment and fostering safer, more inclusive learning environments.
 
-
-
-
 ## From a National Lens to a Massachusetts Focus
 
 Using data from the Civil Rights Data Collection (2021–2022), we observed that:
 
-- Harassment rates vary sharply by **identity and geography**
-- **Massachusetts** had the **highest normalized rate** of harassment allegations by race, religion, and orientation
-- Students of color, especially **Pacific Islander, Black, and Hispanic students**, experience higher harassment per 100 students
+-   Harassment rates vary sharply by **identity and geography**
+-   **Massachusetts** had the **highest normalized rate** of harassment allegations by race, religion, and orientation
+-   Students of color, especially **Pacific Islander, Black, and Hispanic students**, experience higher harassment per 100 students
 
 These trends pushed us to zoom in on Massachusetts for a closer, state-level look.
 
----
+------------------------------------------------------------------------
 
 ## Is There a Link Between Staff and Safety?
 
 We modeled harassment reports per 100 students against school support staffing using a log-log regression:
 
-```text
+``` text
 log(harassment) = β₀ + β₁ × log(total_staff)
 ```
 
-📉 **Key Result**:  
+📉 **Key Result**:\
 A 1% increase in support staff is associated with a **0.35% decrease** in race-based harassment rates (β₁ = -0.352, R² = 0.08)
 
 But the link is modest—and not all students benefit equally.
-
-
 
 ## Rubric: Other components
 

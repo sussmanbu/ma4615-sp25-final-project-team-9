@@ -3,13 +3,9 @@ title: Data
 description: We describe the sources of our data and the cleaning process.
 toc: true
 draft: false
-<<<<<<< HEAD
 editor:
   name: Jiayi Zhang and Baijie Li
 
-
-=======
->>>>>>> 7b7a05ac537bf4c0917ca9da73643c6410d0d747
 ---
 
 ![](images/dataqmd.PNG)
