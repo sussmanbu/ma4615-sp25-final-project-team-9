@@ -54,3 +54,4 @@ plot_usmap(data = bullying_by_state, values = "total_bullying", regions = "state
   scale_fill_viridis(name = "Total Incidents", option = "C") +
   labs(title = "Total Harassment & Bullying Incidents by State") +
   theme(legend.position = "right")
+

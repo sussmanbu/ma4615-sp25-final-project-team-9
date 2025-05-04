@@ -1,0 +1,481 @@
+
+---
+title: "Suspension Analysis by State"
+format: html
+execute:
+  freeze: auto
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(ggpmisc)
+
+# Load datasets
+suspensions <- read_csv("dataset/Suspensions.csv")
+support <- read_csv("dataset/School Support.csv")
+
+# Clean and prepare numeric fields
+suspensions <- suspensions %>%
+  mutate(
+    SCH_PSOOSINSTANCES_ALL = as.numeric(SCH_PSOOSINSTANCES_ALL),
+    TOTAL_ENROLLMENT = as.numeric(TOT_PSDISC_SINGOOS_M + TOT_PSDISC_SINGOOS_F)
+  ) %>%
+  filter(
+    !is.na(SCH_PSOOSINSTANCES_ALL), SCH_PSOOSINSTANCES_ALL >= 0,
+    !is.na(TOTAL_ENROLLMENT), TOTAL_ENROLLMENT > 0
+  ) %>%
+  mutate(
+    suspensions_per_100 = SCH_PSOOSINSTANCES_ALL / TOTAL_ENROLLMENT * 100
+  )
+
+support <- support %>%
+  mutate(
+    SCH_FTECOUNSELORS = as.numeric(SCH_FTECOUNSELORS),
+    SCH_FTESERVICES_PSY = as.numeric(SCH_FTESERVICES_PSY),
+    SCH_FTESECURITY_GUA = as.numeric(SCH_FTESECURITY_GUA),
+    TOTAL_SUPPORT = SCH_FTECOUNSELORS + SCH_FTESERVICES_PSY + SCH_FTESECURITY_GUA
+  ) %>%
+  filter(!is.na(TOTAL_SUPPORT), TOTAL_SUPPORT > 0)
+
+# Merge datasets by SCHID
+merged <- inner_join(suspensions, support, by = "SCHID") %>%
+  filter(!is.na(suspensions_per_100), !is.na(TOTAL_SUPPORT), TOTAL_SUPPORT > 0)
+
+# Create log-log plot
+merged %>%
+  ggplot(aes(x = TOTAL_SUPPORT, y = suspensions_per_100)) +
+  geom_point(alpha = 0.3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "darkgreen", se = TRUE) +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "top",
+    size = 5,
+    color = "black"
+  ) +
+  labs(
+    x = "Log(Total School Support Staff)",
+    y = "Log(Suspensions per 100 Students)",
+    title = "Log-Log Relationship Between School Support and Suspension Rates"
+  ) +
+  theme_minimal()
+```
+
+## Interpretation
+This plot explores the log-log relationship between the total number of support staff (counselors, psychologists, and security guards) and the rate of out-of-school suspensions per 100 students. The regression line and R² value help evaluate whether increased support staffing is associated with lower suspension rates. A weak or flat slope would suggest limited association, while a downward trend might indicate that more support staff correlates with fewer suspensions. This analysis remains observational, and causality should not be inferred
+
+
+---
+title: "Suspension Analysis by State"
+format: html
+execute:
+  freeze: auto
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(ggpmisc)
+
+# Load datasets
+suspensions <- read_csv("dataset/Suspensions.csv")
+support <- read_csv("dataset/School Support.csv")
+harassment <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
+
+# === MASSACHUSETTS ANALYSIS === #
+
+# Prepare suspensions data (Massachusetts only)
+susp_ma <- suspensions %>%
+  filter(LEA_STATE == "MA") %>%
+  mutate(
+    SCHID = as.character(SCHID),
+    SCH_PSOOSINSTANCES_ALL = as.numeric(SCH_PSOOSINSTANCES_ALL),
+    TOTAL_ENROLLMENT = as.numeric(TOT_PSDISC_SINGOOS_M + TOT_PSDISC_SINGOOS_F)
+  ) %>%
+  filter(!is.na(SCH_PSOOSINSTANCES_ALL), !is.na(TOTAL_ENROLLMENT), TOTAL_ENROLLMENT > 0) %>%
+  mutate(suspensions_per_100 = SCH_PSOOSINSTANCES_ALL / TOTAL_ENROLLMENT * 100)
+
+# Prepare support data
+support <- support %>%
+  mutate(
+    SCH_FTECOUNSELORS = as.numeric(SCH_FTECOUNSELORS),
+    SCH_FTESERVICES_PSY = as.numeric(SCH_FTESERVICES_PSY),
+    SCH_FTESECURITY_GUA = as.numeric(SCH_FTESECURITY_GUA),
+    TOTAL_SUPPORT = SCH_FTECOUNSELORS + SCH_FTESERVICES_PSY + SCH_FTESECURITY_GUA
+  ) %>%
+  filter(!is.na(SCHID), !is.na(TOTAL_SUPPORT), TOTAL_SUPPORT > 0)
+
+# Merge suspension + support for MA
+merged_susp_ma <- inner_join(susp_ma, support, by = "SCHID")
+
+# Plot 1: School Support vs Suspensions in Massachusetts
+merged_susp_ma %>%
+  ggplot(aes(x = TOTAL_SUPPORT, y = suspensions_per_100)) +
+  geom_point(alpha = 0.3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "darkgreen", se = TRUE) +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "top",
+    size = 5,
+    color = "black"
+  ) +
+  labs(
+    x = "Log(Total School Support Staff)",
+    y = "Log(Suspensions per 100 Students)",
+    title = "MA: Log-Log Relationship Between School Support and Suspensions"
+  ) +
+  theme_minimal()
+
+# === HARASSMENT ANALYSIS FOR MA === #
+
+# Prepare harassment dataset (Massachusetts only)
+harass_ma <- harassment %>%
+  filter(LEA_STATE == "MA") %>%
+  mutate(
+    SCHID = as.character(SCHID),
+    HBALLEGATIONS_TOTAL = HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI,
+    TOTAL_ENROLLMENT = rowSums(across(starts_with("SCH_ENR_")), na.rm = TRUE),
+    allegations_per_100 = HBALLEGATIONS_TOTAL / TOTAL_ENROLLMENT * 100
+  ) %>%
+  filter(!is.na(SCHID), !is.na(allegations_per_100), allegations_per_100 >= 0)
+
+# Merge harassment + support
+merged_harass_ma <- inner_join(harass_ma, support, by = "SCHID") %>%
+  filter(!is.na(TOTAL_SUPPORT), TOTAL_SUPPORT > 0)
+
+# Plot 2: School Support vs Harassment in Massachusetts
+merged_harass_ma %>%
+  ggplot(aes(x = TOTAL_SUPPORT, y = allegations_per_100)) +
+  geom_point(alpha = 0.3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "firebrick", se = TRUE) +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "top",
+    size = 5,
+    color = "black"
+  ) +
+  labs(
+    x = "Log(Total School Support Staff)",
+    y = "Log(Harassment Allegations per 100 Students)",
+    title = "MA: Log-Log Relationship Between School Support and Harassment"
+  ) +
+  theme_minimal()
+```
+
+## Interpretation
+These two plots explore the relationship between school support staffing and student outcomes in **Massachusetts**. The first chart looks at how suspensions vary with support levels, while the second does the same for harassment and bullying allegations. Although the visualizations use a log-log scale to highlight proportional trends, any observed patterns should be interpreted cautiously given the observational nature of the data.
+
+```{r}
+library(tidyverse)
+library(ggpmisc)
+
+# Load the dataset
+data <- read_csv("dataset/clean_data file/merged_harassment_dataset.csv")
+
+# Filter for Massachusetts and compute necessary fields
+data_ma <- data %>%
+  filter(LEA_STATE == "MA") %>%
+  mutate(
+    total_support = SCH_FTECOUNSELORS + SCH_FTESERVICES_PSY + SCH_FTESECURITY_GUA,
+    total_enrollment = rowSums(across(starts_with("SCH_ENR_")), na.rm = TRUE),
+    allegations_per_100 = (HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI) / total_enrollment * 100
+  ) %>%
+  filter(total_support > 0, total_enrollment > 0, allegations_per_100 > 0)
+
+# Plot: School Support vs Harassment in MA
+ggplot(data_ma, aes(x = total_support, y = allegations_per_100)) +
+  geom_point(alpha = 0.3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "forestgreen", se = TRUE) +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "top",
+    size = 5,
+    color = "black"
+  ) +
+  labs(
+    x = "Log(Total School Support Staff)",
+    y = "Log(Harassment Allegations per 100 Students)",
+    title = "MA: Log-Log Relationship Between School Support and Harassment Reports"
+  ) +
+  theme_minimal()
+
+
+```
+```{r}
+library(tidyverse)
+
+# Load school support data
+support <- read_csv("dataset/School Support.csv")
+
+# Filter for Massachusetts and compute total support
+support_ma <- support %>%
+  filter(LEA_STATE == "MA") %>%
+  mutate(
+    TOTAL_SUPPORT = as.numeric(SCH_FTECOUNSELORS) +
+                    as.numeric(SCH_FTESERVICES_PSY) +
+                    as.numeric(SCH_FTESECURITY_GUA)
+  ) %>%
+  filter(!is.na(TOTAL_SUPPORT))  # Remove missing values
+
+# View summary of support levels
+summary(support_ma$TOTAL_SUPPORT)
+
+# Optional: Top 10 schools by support staff
+support_ma %>%
+  select(SCH_NAME, TOTAL_SUPPORT) %>%
+  arrange(desc(TOTAL_SUPPORT)) %>%
+  slice_head(n = 10)
+
+```
+```{r}
+# Define consistent race color palette
+race_colors <- c(
+  "Asian" = "#66c2a5",
+  "Black" = "#fc8d62",
+  "Hispanic" = "#8da0cb",
+  "White" = "#e78ac3",
+  "Other" = "#a6d854",
+  "Native American" = "#ffd92f",
+  "Hawaiian Pi" = "#e5c494",
+  "Two Or More" = "#b3b3b3"
+)
+
+library(tidyverse)
+
+# Load datasets
+support <- read_csv("dataset/School Support.csv")
+enrollment <- read_csv("dataset/Enrollment.csv")
+
+# === Step 1: Prepare Support Data ===
+support_ma <- support %>%
+  filter(LEA_STATE == "MA") %>%
+  mutate(
+    TOTAL_SUPPORT = as.numeric(SCH_FTECOUNSELORS) +
+                    as.numeric(SCH_FTESERVICES_PSY) +
+                    as.numeric(SCH_FTESECURITY_GUA)
+  ) %>%
+  filter(!is.na(TOTAL_SUPPORT)) %>%
+  select(SCHID, SCH_NAME, TOTAL_SUPPORT)
+
+# === Step 2: Get Top 5 Schools by Support Staff ===
+top5_support <- support_ma %>%
+  arrange(desc(TOTAL_SUPPORT)) %>%
+  slice_head(n = 5)
+
+# === Step 3: Prepare Enrollment Data ===
+enrollment_cols <- c(
+  "SCH_ENR_HI_M", "SCH_ENR_HI_F",
+  "SCH_ENR_AM_M", "SCH_ENR_AM_F",
+  "SCH_ENR_AS_M", "SCH_ENR_AS_F",
+  "SCH_ENR_HP_M", "SCH_ENR_HP_F",
+  "SCH_ENR_BL_M", "SCH_ENR_BL_F",
+  "SCH_ENR_WH_M", "SCH_ENR_WH_F",
+  "SCH_ENR_TR_M", "SCH_ENR_TR_F"
+)
+
+enroll_ma <- enrollment %>%
+  filter(SCHID %in% top5_support$SCHID) %>%
+  mutate(
+    Hispanic = SCH_ENR_HI_M + SCH_ENR_HI_F,
+    Native_American = SCH_ENR_AM_M + SCH_ENR_AM_F,
+    Asian = SCH_ENR_AS_M + SCH_ENR_AS_F,
+    Hawaiian_PI = SCH_ENR_HP_M + SCH_ENR_HP_F,
+    Black = SCH_ENR_BL_M + SCH_ENR_BL_F,
+    White = SCH_ENR_WH_M + SCH_ENR_WH_F,
+    Two_or_More = SCH_ENR_TR_M + SCH_ENR_TR_F,
+    TOTAL_ENROLLMENT = rowSums(across(all_of(enrollment_cols)), na.rm = TRUE)
+  ) %>%
+  mutate(across(Hispanic:Two_or_More, ~ (. / TOTAL_ENROLLMENT) * 100, .names = "{.col}_pct")) %>%
+  select(SCHID, Hispanic_pct, Native_American_pct, Asian_pct, Hawaiian_PI_pct,
+         Black_pct, White_pct, Two_or_More_pct)
+
+# === Step 4: Merge and Reshape ===
+merged_demo <- left_join(top5_support, enroll_ma, by = "SCHID")
+
+demo_long <- merged_demo %>%
+  select(SCH_NAME, ends_with("_pct")) %>%
+  pivot_longer(
+    cols = -SCH_NAME,
+    names_to = "Race",
+    values_to = "Percent"
+  ) %>%
+  mutate(Race = str_remove(Race, "_pct") %>% str_replace_all("_", " ") %>% str_to_title())
+
+# === Step 5: Plot ===
+ggplot(demo_long, aes(x = SCH_NAME, y = Percent, fill = Race)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_y_continuous(limits = c(0, 100), labels = scales::percent_format(scale = 1)) +
+  labs(
+    title = "Top 5 MA Schools by Support Staff: Racial Demographic Breakdown",
+    x = "School Name",
+    y = "Percent of Total Enrollment"
+  ) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set3") +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+
+```
+```{r}
+library(tidyverse)
+
+# Load datasets
+support <- read_csv("dataset/School Support.csv")
+enrollment <- read_csv("dataset/Enrollment.csv")
+
+# Filter for Massachusetts only
+support_ma <- support %>% filter(LEA_STATE == "MA")
+enrollment_ma <- enrollment %>% filter(LEA_STATE == "MA")
+
+# Calculate total support staff
+support_ma <- support_ma %>%
+  mutate(Total_Support = rowSums(select(., starts_with("SCH_FTE")), na.rm = TRUE)) %>%
+  select(SCHID, SCH_NAME, Total_Support)
+
+# Get bottom 5 schools with lowest support staff
+bottom5 <- support_ma %>%
+  arrange(Total_Support) %>%
+  slice_head(n = 5)
+
+# Filter enrollment for bottom 5 schools
+enrollment_bottom5 <- enrollment_ma %>% filter(SCHID %in% bottom5$SCHID)
+
+# Calculate racial breakdown with safe sums
+race_table_bottom <- enrollment_bottom5 %>%
+  mutate(
+    Total_Enrollment = pmax(rowSums(select(., TOT_ENR_M, TOT_ENR_F, TOT_ENR_X), na.rm = TRUE), 1),
+    Asian = pmax(rowSums(select(., SCH_ENR_AS_M, SCH_ENR_AS_F, SCH_ENR_AS_X), na.rm = TRUE), 0),
+    Black = pmax(rowSums(select(., SCH_ENR_BL_M, SCH_ENR_BL_F, SCH_ENR_BL_X), na.rm = TRUE), 0),
+    Hispanic = pmax(rowSums(select(., SCH_ENR_HI_M, SCH_ENR_HI_F, SCH_ENR_HI_X), na.rm = TRUE), 0),
+    White = pmax(rowSums(select(., SCH_ENR_WH_M, SCH_ENR_WH_F, SCH_ENR_WH_X), na.rm = TRUE), 0),
+    Other = pmax(rowSums(select(., SCH_ENR_AM_M, SCH_ENR_AM_F, SCH_ENR_AM_X,
+                                SCH_ENR_HP_M, SCH_ENR_HP_F, SCH_ENR_HP_X,
+                                SCH_ENR_TR_M, SCH_ENR_TR_F, SCH_ENR_TR_X), na.rm = TRUE), 0)
+  ) %>%
+  mutate(
+    Asian = round(Asian / Total_Enrollment * 100, 1),
+    Black = round(Black / Total_Enrollment * 100, 1),
+    Hispanic = round(Hispanic / Total_Enrollment * 100, 1),
+    White = round(White / Total_Enrollment * 100, 1),
+    Other = round(Other / Total_Enrollment * 100, 1)
+  ) %>%
+  select(SCH_NAME, Asian, Black, Hispanic, White, Other) %>%
+  arrange(match(SCH_NAME, bottom5$SCH_NAME))  # Match order
+
+# Print the table
+print(race_table_bottom)
+
+# === Step 1: Filter out rows with all race counts == 0
+race_table_bottom_clean <- race_table_bottom %>%
+  filter(Asian + Black + Hispanic + White + Other > 0)
+
+# === Step 2: Convert to long format for plotting
+race_long_bottom <- race_table_bottom_clean %>%
+  pivot_longer(cols = Asian:Other, names_to = "Race", values_to = "Percent")
+
+# === Step 3: Plot
+ggplot(race_long_bottom, aes(x = SCH_NAME, y = Percent, fill = Race)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
+  labs(
+    title = "Racial Demographics of MA Schools with Top 5 Lowest School Support Staff",
+    x = "School Name",
+    y = "Percent of Total Enrollment"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = race_colors) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+
+
+```
+
+```{r}
+library(tidyverse)
+
+# Load datasets
+support <- read_csv("dataset/School Support.csv")
+enrollment <- read_csv("dataset/Enrollment.csv")
+
+# Filter for Massachusetts
+support_ma <- support %>% filter(LEA_STATE == "MA")
+enrollment_ma <- enrollment %>% filter(LEA_STATE == "MA")
+
+# Calculate total support staff per school
+support_ma <- support_ma %>%
+  mutate(Total_Support = rowSums(select(., starts_with("SCH_FTE")), na.rm = TRUE)) %>%
+  select(SCHID, SCH_NAME, Total_Support)
+
+# Get top 5 schools with highest support staff
+top5 <- support_ma %>%
+  arrange(desc(Total_Support)) %>%
+  slice_head(n = 5)
+
+# Filter enrollment for those schools
+enrollment_top5 <- enrollment_ma %>% filter(SCHID %in% top5$SCHID)
+
+# Clean and calculate race counts and percentages
+race_table <- enrollment_top5 %>%
+  mutate(
+    Total_Enrollment = pmax(rowSums(select(., TOT_ENR_M, TOT_ENR_F, TOT_ENR_X), na.rm = TRUE), 1),
+    Asian = pmax(rowSums(select(., SCH_ENR_AS_M, SCH_ENR_AS_F, SCH_ENR_AS_X), na.rm = TRUE), 0),
+    Black = pmax(rowSums(select(., SCH_ENR_BL_M, SCH_ENR_BL_F, SCH_ENR_BL_X), na.rm = TRUE), 0),
+    Hispanic = pmax(rowSums(select(., SCH_ENR_HI_M, SCH_ENR_HI_F, SCH_ENR_HI_X), na.rm = TRUE), 0),
+    White = pmax(rowSums(select(., SCH_ENR_WH_M, SCH_ENR_WH_F, SCH_ENR_WH_X), na.rm = TRUE), 0),
+    Other = pmax(rowSums(select(., SCH_ENR_AM_M, SCH_ENR_AM_F, SCH_ENR_AM_X,
+                                SCH_ENR_HP_M, SCH_ENR_HP_F, SCH_ENR_HP_X,
+                                SCH_ENR_TR_M, SCH_ENR_TR_F, SCH_ENR_TR_X), na.rm = TRUE), 0)
+  ) %>%
+  mutate(
+    Asian = round(Asian / Total_Enrollment * 100, 1),
+    Black = round(Black / Total_Enrollment * 100, 1),
+    Hispanic = round(Hispanic / Total_Enrollment * 100, 1),
+    White = round(White / Total_Enrollment * 100, 1),
+    Other = round(Other / Total_Enrollment * 100, 1)
+  ) %>%
+  select(SCH_NAME, Asian, Black, Hispanic, White, Other) %>%
+  arrange(match(SCH_NAME, top5$SCH_NAME))  # Match order
+
+# Print final racial breakdown table
+print(race_table)
+
+# Reshape data to long format for ggplot
+race_long <- race_table %>%
+  pivot_longer(cols = Asian:Other, names_to = "Race", values_to = "Percent")
+
+# Plot stacked bar chart
+ggplot(race_long, aes(x = reorder(SCH_NAME, -Percent), y = Percent, fill = Race)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Racial Demographics of MA Schools with Top 5 Highest School Support Staff",
+    x = "School Name",
+    y = "Percentage of Enrollment",
+    fill = "Race"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  scale_fill_manual(values = race_colors)+ 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
