@@ -272,9 +272,6 @@ ggplot(data_model, aes(x = log_support, y = log_per100, color = Race)) +
 
 ```
 
-![](images/prediction.png) ![](images/table1.png)
-![](images/log_reg.png) 
-
 ## Trends and Correlations
 
 -   AM (Red): Shows a weak and slightly negative correlation between
