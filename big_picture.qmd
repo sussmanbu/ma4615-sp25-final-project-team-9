@@ -187,24 +187,3 @@ We must also focus on:
 
 As debates about school safety continue across the U.S., this work underscores a deeper need—not just for resources, but for reform rooted in justice, empathy, and community care.
 
-## Rubric: Other components
-
-### Video Recording
-
-Make a video recording (probably using Zoom) demonstrating your interactive components.
-You should provide a quick explanation of your data and demonstrate some of the conclusions from your EDA.
-This video should be no longer than 4 minutes.
-Include a link to your video (and password if needed) in your README.md file on your Github repository.
-You are not required to provide a link on the website.
-This can be presented by any subset of the team members.
-
-### Rest of the Site
-
-Finally, here are important things to keep in mind for the rest of the site.
-
-The main title of your page is informative.
-Each post has an author/descr iption/informative title.
-All lab required posts are present.
-Each page (including the home page) has a nice featured image associated with it.
-Your about page is up to date and clean.
-You have removed the generic posts from the initial site template.

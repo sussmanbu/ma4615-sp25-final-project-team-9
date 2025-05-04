@@ -531,6 +531,7 @@ ggplot(race_long, aes(x = reorder(SCH_NAME, -Percent), y = Percent, fill = Race)
 
 
 ```
+
 The first graph shows that schools in Massachusetts with the lowest
 levels of school support staff tend to serve predominantly Black and
 Hispanic student populations, with very low proportions of White or
