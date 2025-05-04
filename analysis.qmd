@@ -118,8 +118,6 @@ ggplot(data, aes(x = total_support, y = allegations_per_100)) +
   theme_minimal()
 ```
 
-\`\`\`
-
 -   Slope (β1): β1=−0.352, it indicates that a 1% increase in total
     support staff is associated with a 0.352% decrease in harassment
     allegations per 100 students. This negative elasticity suggests that
@@ -307,7 +305,49 @@ investigation may be needed for groups such as Native Hawaiian/Pacific
 Islanders, who experience high baseline rates and limited benefit from
 staffing increases.
 
-# Massachusetts Focus
+## Massachusetts Focus
+
+```{r echo=FALSE}
+library(tidyverse)
+library(ggpmisc)
+
+# Load the dataset
+data <- read_csv("dataset/clean_data file/merged_harassment_dataset.csv")
+
+# Filter for Massachusetts and compute necessary fields
+data_ma <- data %>%
+  filter(LEA_STATE == "MA") %>%
+  mutate(
+    total_support = SCH_FTECOUNSELORS + SCH_FTESERVICES_PSY + SCH_FTESECURITY_GUA,
+    total_enrollment = rowSums(across(starts_with("SCH_ENR_")), na.rm = TRUE),
+    allegations_per_100 = (HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI) / total_enrollment * 100
+  ) %>%
+  filter(total_support > 0, total_enrollment > 0, allegations_per_100 > 0)
+
+# Plot: School Support vs Harassment in MA
+ggplot(data_ma, aes(x = total_support, y = allegations_per_100)) +
+  geom_point(alpha = 0.3) +
+  scale_x_log10() +
+  scale_y_log10() +
+  geom_smooth(method = "lm", formula = y ~ x, color = "forestgreen", se = TRUE) +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "top",
+    size = 5,
+    color = "black"
+  ) +
+  labs(
+    x = "Log(Total School Support Staff)",
+    y = "Log(Harassment Allegations per 100 Students)",
+    title = "MA: Log-Log Relationship Between School Support and Harassment Reports"
+  ) +
+  theme_minimal()
+
+
+```
 
 Regardless of the missing data across multiple states, we noticed that
 Massachusetts had a lot of data, and also had the highest proportion of
@@ -316,17 +356,174 @@ we narrowed our focus down to the state of Massachusetts, and identified
 key trends in relation to school support resources (counselors,
 psychologists, security), and demographics.
 
-![](images/Ma_1.png) This log-log regression focuses on schools in
-Massachusetts and shows a modest negative association between school
-support staffing and harassment allegations per 100 students. The
-downward slope (𝑦 = −0.376 − 0.325𝑥, 𝑅² = 0.08) suggests that schools
-with more counselors, psychologists, and security staff tend to report
-fewer harassment incidents, though the relationship is relatively weak.
-Still, the trend aligns with our broader hypothesis that greater support
-infrastructure may help create safer school environments
+This log-log regression focuses on schools in Massachusetts and shows a
+modest negative association between school support staffing and
+harassment allegations per 100 students. The downward slope (𝑦 = −0.376
+− 0.325𝑥, 𝑅² = 0.08) suggests that schools with more counselors,
+psychologists, and security staff tend to report fewer harassment
+incidents, though the relationship is relatively weak. Still, the trend
+aligns with our broader hypothesis that greater support infrastructure
+may help create safer school environments.
 
-![](images/demo1.png) ![](images/demo2.png)
+```{r}
+library(tidyverse)
 
+# Load school support data
+support <- read_csv("dataset/School Support.csv")
+
+# Filter for Massachusetts and compute total support
+support_ma <- support %>%
+  filter(LEA_STATE == "MA") %>%
+  mutate(
+    TOTAL_SUPPORT = as.numeric(SCH_FTECOUNSELORS) +
+                    as.numeric(SCH_FTESERVICES_PSY) +
+                    as.numeric(SCH_FTESECURITY_GUA)
+  ) %>%
+  filter(!is.na(TOTAL_SUPPORT))  # Remove missing values
+
+# View summary of support levels
+summary(support_ma$TOTAL_SUPPORT)
+
+# Optional: Top 10 schools by support staff
+support_ma %>%
+  select(SCH_NAME, TOTAL_SUPPORT) %>%
+  arrange(desc(TOTAL_SUPPORT)) %>%
+  slice_head(n = 10)
+
+
+# Load datasets
+support <- read_csv("dataset/School Support.csv")
+enrollment <- read_csv("dataset/Enrollment.csv")
+
+# Filter for Massachusetts only
+support_ma <- support %>% filter(LEA_STATE == "MA")
+enrollment_ma <- enrollment %>% filter(LEA_STATE == "MA")
+
+# Calculate total support staff
+support_ma <- support_ma %>%
+  mutate(Total_Support = rowSums(select(., starts_with("SCH_FTE")), na.rm = TRUE)) %>%
+  select(SCHID, SCH_NAME, Total_Support)
+
+# Get bottom 5 schools with lowest support staff
+bottom5 <- support_ma %>%
+  arrange(Total_Support) %>%
+  slice_head(n = 5)
+
+# Filter enrollment for bottom 5 schools
+enrollment_bottom5 <- enrollment_ma %>% filter(SCHID %in% bottom5$SCHID)
+
+# Calculate racial breakdown with safe sums
+race_table_bottom <- enrollment_bottom5 %>%
+  mutate(
+    Total_Enrollment = pmax(rowSums(select(., TOT_ENR_M, TOT_ENR_F, TOT_ENR_X), na.rm = TRUE), 1),
+    Asian = pmax(rowSums(select(., SCH_ENR_AS_M, SCH_ENR_AS_F, SCH_ENR_AS_X), na.rm = TRUE), 0),
+    Black = pmax(rowSums(select(., SCH_ENR_BL_M, SCH_ENR_BL_F, SCH_ENR_BL_X), na.rm = TRUE), 0),
+    Hispanic = pmax(rowSums(select(., SCH_ENR_HI_M, SCH_ENR_HI_F, SCH_ENR_HI_X), na.rm = TRUE), 0),
+    White = pmax(rowSums(select(., SCH_ENR_WH_M, SCH_ENR_WH_F, SCH_ENR_WH_X), na.rm = TRUE), 0),
+    Other = pmax(rowSums(select(., SCH_ENR_AM_M, SCH_ENR_AM_F, SCH_ENR_AM_X,
+                                SCH_ENR_HP_M, SCH_ENR_HP_F, SCH_ENR_HP_X,
+                                SCH_ENR_TR_M, SCH_ENR_TR_F, SCH_ENR_TR_X), na.rm = TRUE), 0)
+  ) %>%
+  mutate(
+    Asian = round(Asian / Total_Enrollment * 100, 1),
+    Black = round(Black / Total_Enrollment * 100, 1),
+    Hispanic = round(Hispanic / Total_Enrollment * 100, 1),
+    White = round(White / Total_Enrollment * 100, 1),
+    Other = round(Other / Total_Enrollment * 100, 1)
+  ) %>%
+  select(SCH_NAME, Asian, Black, Hispanic, White, Other) %>%
+  arrange(match(SCH_NAME, bottom5$SCH_NAME))  # Match order
+
+# Print the table
+print(race_table_bottom)
+
+# === Step 1: Filter out rows with all race counts == 0
+race_table_bottom_clean <- race_table_bottom %>%
+  filter(Asian + Black + Hispanic + White + Other > 0)
+
+# === Step 2: Convert to long format for plotting
+race_long_bottom <- race_table_bottom_clean %>%
+  pivot_longer(cols = Asian:Other, names_to = "Race", values_to = "Percent")
+
+# === Step 3: Plot
+ggplot(race_long_bottom, aes(x = SCH_NAME, y = Percent, fill = Race)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1), limits = c(0, 100)) +
+  labs(
+    title = "Racial Demographics of MA Schools with Top 5 Lowest School Support Staff",
+    x = "School Name",
+    y = "Percent of Total Enrollment"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = race_colors) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+# Load datasets
+support <- read_csv("dataset/School Support.csv")
+enrollment <- read_csv("dataset/Enrollment.csv")
+
+# Filter for Massachusetts
+support_ma <- support %>% filter(LEA_STATE == "MA")
+enrollment_ma <- enrollment %>% filter(LEA_STATE == "MA")
+
+# Calculate total support staff per school
+support_ma <- support_ma %>%
+  mutate(Total_Support = rowSums(select(., starts_with("SCH_FTE")), na.rm = TRUE)) %>%
+  select(SCHID, SCH_NAME, Total_Support)
+
+# Get top 5 schools with highest support staff
+top5 <- support_ma %>%
+  arrange(desc(Total_Support)) %>%
+  slice_head(n = 5)
+
+# Filter enrollment for those schools
+enrollment_top5 <- enrollment_ma %>% filter(SCHID %in% top5$SCHID)
+
+# Clean and calculate race counts and percentages
+race_table <- enrollment_top5 %>%
+  mutate(
+    Total_Enrollment = pmax(rowSums(select(., TOT_ENR_M, TOT_ENR_F, TOT_ENR_X), na.rm = TRUE), 1),
+    Asian = pmax(rowSums(select(., SCH_ENR_AS_M, SCH_ENR_AS_F, SCH_ENR_AS_X), na.rm = TRUE), 0),
+    Black = pmax(rowSums(select(., SCH_ENR_BL_M, SCH_ENR_BL_F, SCH_ENR_BL_X), na.rm = TRUE), 0),
+    Hispanic = pmax(rowSums(select(., SCH_ENR_HI_M, SCH_ENR_HI_F, SCH_ENR_HI_X), na.rm = TRUE), 0),
+    White = pmax(rowSums(select(., SCH_ENR_WH_M, SCH_ENR_WH_F, SCH_ENR_WH_X), na.rm = TRUE), 0),
+    Other = pmax(rowSums(select(., SCH_ENR_AM_M, SCH_ENR_AM_F, SCH_ENR_AM_X,
+                                SCH_ENR_HP_M, SCH_ENR_HP_F, SCH_ENR_HP_X,
+                                SCH_ENR_TR_M, SCH_ENR_TR_F, SCH_ENR_TR_X), na.rm = TRUE), 0)
+  ) %>%
+  mutate(
+    Asian = round(Asian / Total_Enrollment * 100, 1),
+    Black = round(Black / Total_Enrollment * 100, 1),
+    Hispanic = round(Hispanic / Total_Enrollment * 100, 1),
+    White = round(White / Total_Enrollment * 100, 1),
+    Other = round(Other / Total_Enrollment * 100, 1)
+  ) %>%
+  select(SCH_NAME, Asian, Black, Hispanic, White, Other) %>%
+  arrange(match(SCH_NAME, top5$SCH_NAME))  # Match order
+
+# Print final racial breakdown table
+print(race_table)
+
+# Reshape data to long format for ggplot
+race_long <- race_table %>%
+  pivot_longer(cols = Asian:Other, names_to = "Race", values_to = "Percent")
+
+# Plot stacked bar chart
+ggplot(race_long, aes(x = reorder(SCH_NAME, -Percent), y = Percent, fill = Race)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Racial Demographics of MA Schools with Top 5 Highest School Support Staff",
+    x = "School Name",
+    y = "Percentage of Enrollment",
+    fill = "Race"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  scale_fill_manual(values = race_colors)+ 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
 The first graph shows that schools in Massachusetts with the lowest
 levels of school support staff tend to serve predominantly Black and
 Hispanic student populations, with very low proportions of White or
