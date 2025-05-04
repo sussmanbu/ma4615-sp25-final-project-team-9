@@ -1,5 +1,5 @@
 # Bullying Data Analysis
-
+```{r}
 library(dplyr)
 # Read the bullying data
 bullying_data <- read.csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv", stringsAsFactors = FALSE)
@@ -54,3 +54,5 @@ plot_usmap(data = bullying_by_state, values = "total_bullying", regions = "state
   scale_fill_viridis(name = "Total Incidents", option = "C") +
   labs(title = "Total Harassment & Bullying Incidents by State") +
   theme(legend.position = "right")
+```
+

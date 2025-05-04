@@ -203,7 +203,7 @@ robust standard errors when reporting p-values and confidence intervals.
 
 ## How School Support and Student Race Predict Harassment Allegation Rates
 
-
+![](images/Allegation.PNG)
 
 ```{r echo=FALSE}
 library(tidyverse)
