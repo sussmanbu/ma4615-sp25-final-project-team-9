@@ -1,7 +1,0 @@
-```{r}
-library(dplyr)
-
-bullying <- read_csv("dataset/clean_data file/Harassment_and_Bullying_clean.csv")
-support <- read_csv("dataset/)
-```
-
