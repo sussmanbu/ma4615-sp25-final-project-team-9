@@ -307,7 +307,9 @@ staffing increases.
 
 ## Massachusetts Focus
 
-```{r echo=FALSE}
+```{r}
+#| echo: false
+#| message: false
 library(tidyverse)
 library(ggpmisc)
 
@@ -366,6 +368,7 @@ aligns with our broader hypothesis that greater support infrastructure
 may help create safer school environments.
 
 ```{r echo=FALSE}
+#| warning: false
 library(tidyverse)
 
 # Load school support data
