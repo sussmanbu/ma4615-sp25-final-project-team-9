@@ -34,14 +34,11 @@ Are certain students more likely to be punished than protected?
 This analysis helps uncover whether school resources are distributed equitably and whether their presence meaningfully impacts student safety and discipline outcomes.
 In doing so, we aim to contribute to a broader conversation about educational equity, institutional accountability, and the urgent need for reform.
 
+# Bully Data Analysis
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-
-
-# Bullying Data Analysis
-
-# Load required packages
+```{r}
+#| echo: false
+#| warning: false
 library(dplyr)
 library(ggplot2)
 library(usmap)
@@ -105,9 +102,12 @@ However, our analysis reveals a consistent inverse relationship between the leve
 These findings suggest that strengthening student support infrastructure may play a critical role in reducing race-based harassment and fostering safer, more inclusive learning environments.
 
 ## Interact with our Preliminary Analysis
+
 [interactive graph](https://baijie.shinyapps.io/shinyapp-harassment/)
 
-This interactive dashboard allowed us to explore the relationship between school staffing levels and reported harassment across different states in a dynamic, user-driven way. By visualizing the average number of counselors, nurses, psychologists, and security guards per 100 students alongside racial harassment incident rates, we were able to surface clear geographic patterns and disparities. These insights helped validate our thesis—that more robust support infrastructure correlates with lower rates of race-based harassment—and gave us the tools to investigate outliers and high-risk regions more deeply.
+This interactive dashboard allowed us to explore the relationship between school staffing levels and reported harassment across different states in a dynamic, user-driven way.
+By visualizing the average number of counselors, nurses, psychologists, and security guards per 100 students alongside racial harassment incident rates, we were able to surface clear geographic patterns and disparities.
+These insights helped validate our thesis—that more robust support infrastructure correlates with lower rates of race-based harassment—and gave us the tools to investigate outliers and high-risk regions more deeply.
 ## From a National Lens to a Massachusetts Focus
 
 Using data from the Civil Rights Data Collection (2021–2022), we observed that:
@@ -117,8 +117,6 @@ Using data from the Civil Rights Data Collection (2021–2022), we observed that
 -   Students of color, especially **Pacific Islander, Black, and Hispanic students**, experience higher harassment per 100 students
 
 These trends pushed us to zoom in on Massachusetts for a closer, state-level look.
-
-
 
 ## Is There a Link Between Staff and Safety?
 
@@ -130,24 +128,25 @@ log(harassment) = β₀ + β₁ × log(total_staff)
 
 ## Key Finding: Staff Presence Reduces Harassment—but Only Partially
 
-A **1% increase** in total support staff correlates with a **0.35% decrease** in harassment rates per 100 students  
+A **1% increase** in total support staff correlates with a **0.35% decrease** in harassment rates per 100 students\
 (**β₁ = -0.352, R² = 0.08**)
 
-While the effect size is modest, the relationship is **statistically significant**—indicating that the presence of counselors, psychologists, nurses, and security staff has a measurable impact on student safety. However, this finding should be interpreted carefully:
+While the effect size is modest, the relationship is **statistically significant**—indicating that the presence of counselors, psychologists, nurses, and security staff has a measurable impact on student safety.
+However, this finding should be interpreted carefully:
 
-- Staff presence alone doesn’t guarantee safety, and the small R² suggests that many other factors influence harassment rates—such as school climate, leadership, community context, and training.  
-- The decrease in harassment is not uniform across all student groups—highlighting the need for targeted, culturally responsive interventions.
+-   Staff presence alone doesn’t guarantee safety, and the small R² suggests that many other factors influence harassment rates—such as school climate, leadership, community context, and training.\
+-   The decrease in harassment is not uniform across all student groups—highlighting the need for targeted, culturally responsive interventions.
 
 ## Suspensions: A Different Story
 
-No meaningful correlation was found between total support staff and suspension rates (**R² < 0.01**).
+No meaningful correlation was found between total support staff and suspension rates (**R² \< 0.01**).
 
-In fact, **in Massachusetts**, the data showed a **slight increase** in suspension rates with higher support staffing.  
+In fact, **in Massachusetts**, the data showed a **slight increase** in suspension rates with higher support staffing.\
 This counterintuitive result suggests that the role of support staff is more complex than simply acting as a buffer or moderator:
 
-- Are support staff being used to support or to discipline?
-- Could better reporting mechanisms (from more staff) be driving reported suspension increases?
-- Do systemic biases in school discipline still override the protective effect of staff presence?
+-   Are support staff being used to support or to discipline?
+-   Could better reporting mechanisms (from more staff) be driving reported suspension increases?
+-   Do systemic biases in school discipline still override the protective effect of staff presence?
 
 These are critical questions that require deeper, perhaps qualitative, follow-up research.
 
@@ -155,22 +154,23 @@ These are critical questions that require deeper, perhaps qualitative, follow-up
 
 Massachusetts reflects national patterns—but also reveals tensions:
 
-- **Harassment** and support staff show a **negative correlation**  
-  _y = -0.376 - 0.325x, R² = 0.08_, suggesting more staff likely reduces bullying and harassment.
+-   **Harassment** and support staff show a **negative correlation**\
+    *y = -0.376 - 0.325x, R² = 0.08*, suggesting more staff likely reduces bullying and harassment.
 
-- **Suspensions** show a **slight positive correlation**  
-  _y = 2.14 + 0.064x, R² = 0.02_—which, while not strong, suggests support staff may be embedded in systems that perpetuate punitive discipline.
+-   **Suspensions** show a **slight positive correlation**\
+    *y = 2.14 + 0.064x, R² = 0.02*—which, while not strong, suggests support staff may be embedded in systems that perpetuate punitive discipline.
 
 ### Racial Disaggregation Reveals Inequity
 
-- **White, Hispanic, and Multiracial** students appear to benefit the most from higher staffing levels.
-- **Native Hawaiian/Pacific Islander** students show **no clear benefit**, despite experiencing the **highest rates of harassment**.
+-   **White, Hispanic, and Multiracial** students appear to benefit the most from higher staffing levels.
+-   **Native Hawaiian/Pacific Islander** students show **no clear benefit**, despite experiencing the **highest rates of harassment**.
 
-This implies that infrastructure alone isn’t enough. Support staff must not only exist—but be:
+This implies that infrastructure alone isn’t enough.
+Support staff must not only exist—but be:
 
-- Culturally competent  
-- Well-integrated into restorative frameworks  
-- Empowered to challenge systemic biases
+-   Culturally competent\
+-   Well-integrated into restorative frameworks\
+-   Empowered to challenge systemic biases
 
 ## Conclusion: Toward Equity, Not Just Equality
 
@@ -178,14 +178,14 @@ Our data analysis points to a central truth:
 
 **Support staff reduce harassment, but not automatically or equally.**
 
-If we want safer schools, just hiring more people isn’t enough. We must also focus on:
+If we want safer schools, just hiring more people isn’t enough.
+We must also focus on:
 
-- Training staff to be trauma-informed and inclusive  
-- Allocating resources where they’re needed most  
-- Embedding equity into staffing models, discipline systems, and school cultures
+-   Training staff to be trauma-informed and inclusive\
+-   Allocating resources where they’re needed most\
+-   Embedding equity into staffing models, discipline systems, and school cultures
 
 As debates about school safety continue across the U.S., this work underscores a deeper need—not just for resources, but for reform rooted in justice, empathy, and community care.
-
 
 ## Rubric: Other components
 
