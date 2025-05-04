@@ -1,6 +1,76 @@
+#Harassment Allegations per 100 Students by State
+library(highcharter)
+library(dplyr)
+library(readr)
+library(viridisLite)
+harassment_data <-read_csv("merged_harassment_dataset.csv")
+
+# Define the enrollment columns
+enrollment_cols <- c(
+  "SCH_ENR_HI_M", "SCH_ENR_HI_F", 
+  "SCH_ENR_AM_M", "SCH_ENR_AM_F", 
+  "SCH_ENR_AS_M", "SCH_ENR_AS_F",
+  "SCH_ENR_HP_M", "SCH_ENR_HP_F",
+  "SCH_ENR_BL_M", "SCH_ENR_BL_F",
+  "SCH_ENR_WH_M", "SCH_ENR_WH_F",
+  "SCH_ENR_TR_M", "SCH_ENR_TR_F"
+)
+
+# Calculate total enrollment per school
+harassment_data <- harassment_data %>%
+  mutate(TOTAL_ENROLLMENT = rowSums(across(all_of(enrollment_cols)), na.rm = TRUE))
+
+# Aggregate by state and calculate rate per 100 students
+bullying_data <- harassment_data %>%
+  group_by(LEA_STATE) %>%
+  summarise(
+    total_allegations = sum(HBALLEGATIONS_RAC + HBALLEGATIONS_REL + HBALLEGATIONS_ORI, na.rm = TRUE),
+    total_students = sum(TOTAL_ENROLLMENT, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(rate_per_100 = round(total_allegations / total_students * 100, 2))
+# Create a key that matches highmaps "hc-key" format
+bullying_data <- bullying_data %>%
+  mutate(`hc-key` = paste0("us-", tolower(LEA_STATE)))
+library(highcharter)
+library(viridisLite)
+
+# Load map data FIRST
+usgeojson <- get_data_from_map(download_map_data("countries/us/us-all"))
+
+# Plot using hcmap instead of hchart
+hcmap(
+  "countries/us/us-all",     # Built-in Highmaps map
+  data = bullying_data,
+  name = "Allegations per 100 students",
+  value = "rate_per_100",
+  joinBy = c("hc-key", "hc-key"),  # key match for map + data
+  borderWidth = 0,
+  nullColor = "#d3d3d3"
+) %>%
+  hc_colorAxis(
+    stops = color_stops(colors = viridisLite::inferno(10)),
+    min = 0
+  ) %>%
+  hc_title(text = "Harassment/Bullying Allegations per 100 Students by State") %>%
+  hc_tooltip(pointFormat = "{point.name}: {point.value}")
 
 
-# 1. Load Libraries
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# Load Libraries
 library(shiny)
 library(plotly)
 library(highcharter)
@@ -11,8 +81,8 @@ library(tidyr)
 library(stringr)
 library(viridisLite)
 
-# 2. Load dataset (keep it small!)
-merged <- read_csv("merged_harassment_dataset.csv",
+# Load dataset
+merged <- read_csv("dataset/clean_data file/merged_harassment_dataset.csv",
                    col_types = cols(.default = col_double(),
                                     LEA_STATE = col_character(),
                                     LEA_STATE_NAME = col_character()))
@@ -20,16 +90,16 @@ merged <- read_csv("merged_harassment_dataset.csv",
 # Fix casing
 merged$LEA_STATE_NAME <- str_to_title(merged$LEA_STATE_NAME)
 
-# Create state name/abbreviation mapping
+# State abbreviation mapping
 state_codes <- data.frame(
   LEA_STATE_NAME = state.name,
   state_code = state.abb
 )
 
-# Compute total enrollment and staff per 100
+# Calculate staff per 100 students
 merged <- merged %>%
   mutate(
-    total_enrollment = TOT_ENR_M + TOT_ENR_F + TOT_ENR_X
+    total_enrollment = TOT_ENR_M + TOT_ENR_F
   ) %>%
   filter(!is.na(total_enrollment) & total_enrollment > 0) %>%
   mutate(
@@ -39,7 +109,6 @@ merged <- merged %>%
     security_per_100 = (SCH_FTESECURITY_GUA / total_enrollment) * 100
   )
 
-# Prepare state summary
 state_summary <- merged %>%
   group_by(LEA_STATE_NAME) %>%
   summarise(
@@ -51,15 +120,15 @@ state_summary <- merged %>%
   left_join(state_codes, by = "LEA_STATE_NAME") %>%
   filter(!is.na(state_code))
 
-# Prepare harassment data for map
+# Bullying rate data
 enrollment_cols <- c(
-  "SCH_ENR_HI_M", "SCH_ENR_HI_F", "SCH_ENR_HI_X",
-  "SCH_ENR_AM_M", "SCH_ENR_AM_F", "SCH_ENR_AM_X",
-  "SCH_ENR_AS_M", "SCH_ENR_AS_F", "SCH_ENR_AS_X",
-  "SCH_ENR_HP_M", "SCH_ENR_HP_F", "SCH_ENR_HP_X",
-  "SCH_ENR_BL_M", "SCH_ENR_BL_F", "SCH_ENR_BL_X",
-  "SCH_ENR_WH_M", "SCH_ENR_WH_F", "SCH_ENR_WH_X",
-  "SCH_ENR_TR_M", "SCH_ENR_TR_F", "SCH_ENR_TR_X"
+  "SCH_ENR_HI_M", "SCH_ENR_HI_F",
+  "SCH_ENR_AM_M", "SCH_ENR_AM_F",
+  "SCH_ENR_AS_M", "SCH_ENR_AS_F",
+  "SCH_ENR_HP_M", "SCH_ENR_HP_F",
+  "SCH_ENR_BL_M", "SCH_ENR_BL_F",
+  "SCH_ENR_WH_M", "SCH_ENR_WH_F",
+  "SCH_ENR_TR_M", "SCH_ENR_TR_F"
 )
 
 harassment_data <- merged %>%
@@ -79,7 +148,7 @@ bullying_data <- harassment_data %>%
 ui <- fluidPage(
   titlePanel("School Staffing and Harassment Visualization"),
   tabsetPanel(
-    tabPanel("Staffing Map",
+    tabPanel("Staff Map",
              sidebarLayout(
                sidebarPanel(
                  selectInput("map_metric", "Select Staff Type:", choices = c(
@@ -87,17 +156,40 @@ ui <- fluidPage(
                    "Nurses" = "avg_nurses",
                    "Psychologists" = "avg_psychologists",
                    "Security Guards" = "avg_security"
-                 )),
-                 selectInput("selected_state", "Select a State for Radar Chart:",
+                 ))
+               ),
+               mainPanel(
+                 plotlyOutput("us_map", height = "600px")
+               )
+             )
+    ),
+    
+    tabPanel("Radar Chart",
+             sidebarLayout(
+               sidebarPanel(
+                 selectInput("selected_state", "Select a State:",
                              choices = sort(unique(merged$LEA_STATE_NAME)),
                              selected = "Massachusetts")
                ),
                mainPanel(
-                 plotlyOutput("us_map"),
-                 plotOutput("radar_chart")
+                 plotOutput("radar_chart", height = "500px")
                )
              )
     ),
+    
+    tabPanel("Bar Chart",
+             sidebarLayout(
+               sidebarPanel(
+                 selectInput("selected_state_bar", "Select a State:",
+                             choices = sort(unique(merged$LEA_STATE_NAME)),
+                             selected = "Massachusetts")
+               ),
+               mainPanel(
+                 plotOutput("bar_chart", height = "500px")
+               )
+             )
+    ),
+    
     tabPanel("Bullying Rate Map",
              highchartOutput("bullying_map", height = "700px")
     )
@@ -106,7 +198,6 @@ ui <- fluidPage(
 
 # --- Server ---
 server <- function(input, output, session) {
-  selected_state <- reactiveVal("Massachusetts")
   
   output$us_map <- renderPlotly({
     plot_ly(
@@ -121,18 +212,8 @@ server <- function(input, output, session) {
       hoverinfo = "text",
       colorbar = list(title = "Staff per 100")
     ) %>%
-      layout(geo = list(scope = 'usa'), title = "Click a state to see staffing breakdown", clickmode = "event+select")
-  })
-  
-  observeEvent(event_data("plotly_click"), {
-    click <- event_data("plotly_click")
-    if (!is.null(click)) {
-      state_name <- state_codes$LEA_STATE_NAME[state_codes$state_code == click$key]
-      if (length(state_name) > 0) {
-        updateSelectInput(session, "selected_state", selected = state_name)
-        selected_state(state_name)
-      }
-    }
+      layout(geo = list(scope = 'usa'),
+             title = "Average Staff per 100 Students by State")
   })
   
   output$radar_chart <- renderPlot({
@@ -162,6 +243,25 @@ server <- function(input, output, session) {
                caxislabels = c(0, 1, 2, 3, 4),
                vlcex = 0.9,
                title = paste("Avg Staff per School in", input$selected_state))
+  })
+  
+  output$bar_chart <- renderPlot({
+    state_data <- merged %>%
+      filter(LEA_STATE_NAME == input$selected_state_bar) %>%
+      summarise(
+        Counselors = sum(SCH_FTECOUNSELORS, na.rm = TRUE),
+        Nurses = sum(SCH_FTESERVICES_NUR, na.rm = TRUE),
+        Psychologists = sum(SCH_FTESERVICES_PSY, na.rm = TRUE),
+        Security_Guards = sum(SCH_FTESECURITY_GUA, na.rm = TRUE)
+      ) %>%
+      pivot_longer(cols = everything(), names_to = "Staff", values_to = "Count")
+    
+    barplot(state_data$Count,
+            names.arg = state_data$Staff,
+            col = "tomato",
+            main = paste("Total Staff Count in", input$selected_state_bar),
+            ylab = "Total Count",
+            las = 2)
   })
   
   output$bullying_map <- renderHighchart({
